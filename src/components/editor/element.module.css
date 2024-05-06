@@ -1,0 +1,86 @@
+.element {
+    border: green 2px solid;
+    background-color: color-mix(in srgb, green 15%, transparent);
+    position: absolute;
+    display: block;
+}
+
+.element:hover, .element.hover {
+    background-color: color-mix(in srgb, green 50%, transparent);
+}
+
+.inner {
+    border: red 2px solid;
+    background-color: color-mix(in srgb, red 15%, transparent);
+}
+
+.element:hover .inner, .element.hover .inner {
+    background-color: color-mix(in srgb, red 50%, transparent);
+}
+
+.padding {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.element:hover::after, .element.active::after, .element.hover::after {
+    --border-width: 3px;
+    content: '';
+    display: block;
+    width: calc(100% - var(--border-width) - var(--border-width));
+    height: calc(100% - var(--border-width) - var(--border-width));
+    border: var(--border-width) dashed rgb(var(--select-rgb));
+}
+
+.element.active::after {
+    border: var(--border-width) dashed rgb(var(--select-rgb-active));
+}
+
+.element .inputsDescription {
+    color: white;
+}
+
+.padStickOverlay {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    position: absolute;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.padStickOverlay > div {
+    border: thin solid gray;
+}
+
+.thumbstickImage, .labelDiv {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+}
+
+.thumbstickImageEmpty > div {
+    background-color: color-mix(in srgb, blue 20%, transparent);
+}
+
+.expandGrid {
+    --handle-width: 10px;
+    width: calc(100% + var(--handle-width));
+    height: calc(100% + var(--handle-width));
+    top: calc(var(--handle-width) / 2 * -1);
+    left: calc(var(--handle-width) / 2 * -1);
+    display: grid;
+    grid-template-columns: var(--handle-width) 1fr var(--handle-width);
+    grid-template-rows: var(--handle-width) 1fr var(--handle-width);
+    position: absolute;
+}
+
+.expandGrid > div {
+    pointer-events: auto;
+}

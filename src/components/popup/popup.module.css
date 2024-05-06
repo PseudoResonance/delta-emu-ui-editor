@@ -1,0 +1,48 @@
+.popupHolder {
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000000;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+    pointer-events: none;
+}
+
+.show {
+    pointer-events: initial;
+    backdrop-filter: blur(5px);
+}
+
+.popup {
+    background-color: rgb(var(--secondary-rgb));
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+    border: thin rgb(var(--foreground-rgb)) solid;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button {
+    background-color: rgb(var(--tertiary-rgb));
+    transition: all 0.02s linear;
+    padding: 3px 5px;
+    font-size: 1em;
+    color: rgb(var(--foreground-rgb));
+    border: none;
+}
+
+.button:hover {
+    background-color: rgb(var(--tertiary-rgb-hover));
+}
+
+.confirm {
+    background-color: red;
+}

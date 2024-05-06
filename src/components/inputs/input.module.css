@@ -1,0 +1,84 @@
+.input {
+    padding: 3px 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+}
+
+.button {
+    transition: all 0.02s linear;
+}
+
+.button:hover > .inputInner, .button.checked > .inputInner {
+    background-color: rgb(var(--tertiary-rgb-hover));
+}
+
+.input > .label {
+    margin: 0;
+}
+
+.input > .inputInner {
+    flex-grow: 2;
+    border: none;
+    background-color: rgb(var(--tertiary-rgb));
+    transition: all 0.02s linear;
+    color: rgb(var(--foreground-rgb));
+    padding: 5px;
+}
+
+.input > input + .label {
+    width: 100%;
+    height: 100%;
+    transition: all 0.02s linear;
+}
+
+.input > .inputInner:focus, .input > .inputInner:hover {
+    background-color: rgb(var(--tertiary-rgb-hover));
+}
+
+.select {
+    position: relative;
+}
+
+.select::after {
+    position: relative;
+    float: right;
+    content: "";
+    top: 0.5em;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+}
+
+.select.active::after {
+    border-color: transparent transparent #fff transparent;
+    top: 0;
+}
+
+.selectItems div, .select {
+    background-color: rgb(var(--tertiary-rgb));
+    transition: all 0.02s linear;
+    color: rgb(var(--foreground-rgb));
+    padding: 5px;
+    border-bottom: thin solid gray;
+}
+
+.selectItems div:hover {
+    background-color: rgb(var(--tertiary-rgb-hover));
+}
+
+.selectItems {
+    left: 0px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    background-color: rgb(var(--tertiary-rgb));
+    border: thin gray solid;
+    width: calc(100% - 2px);
+    border-bottom: none;
+}
+
+.selectActive {
+    display: flex;
+}
+

@@ -1,0 +1,51 @@
+.tree {
+    font-size: 1em;
+    position: relative;
+}
+
+.tree > p {
+    margin: 0;
+    padding: 3px 0;
+}
+
+.treeSub {
+    padding-left: 20px;
+    position: relative;
+}
+
+.treeSub > .tree::before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    top: 0;
+    left: -11px;
+    background-color: rgb(var(--foreground-rgb));
+}
+
+.treeSub > .tree::after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    top: calc(((1.25em + 6px) / 2) - 1px);
+    left: -10px;
+    background-color: rgb(var(--foreground-rgb));
+}
+
+.treeSub > .tree:last-child::before {
+    width: 2px;
+    height: calc((1.25em + 6px) / 2 + 1px);
+    top: 0;
+    left: -11px;
+}
+
+.clickable > p {
+    transition: all 0.02s linear;
+}
+
+.clickable:hover, .active > p {
+    background-color: rgb(var(--secondary-rgb-hover));
+}
