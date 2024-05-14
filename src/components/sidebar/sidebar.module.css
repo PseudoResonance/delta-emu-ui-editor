@@ -16,25 +16,6 @@
 	flex-basis: calc(50% - var(--border-width));
 }
 
-.sidebar > div::-webkit-scrollbar {
-	width: var(--scrollbar-width);
-	position: absolute;
-	display: block;
-	right: 0;
-	background: transparent;
-	overflow: overlay;
-}
-
-.sidebar > div:hover::-webkit-scrollbar-thumb {
-	width: var(--scrollbar-width);
-	background: var(--scrollbar-rgb);
-}
-
-.sidebar > div::-webkit-scrollbar-thumb {
-	width: var(--scrollbar-width);
-	background: transparent;
-}
-
 .sidebar > hr {
 	width: 100%;
 	height: var(--border-width);
