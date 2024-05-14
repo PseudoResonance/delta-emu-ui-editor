@@ -15,6 +15,19 @@ export default function AboutInfo() {
 					PseudoResonance
 				</a>
 				<br />
+				PDF importing with{" "}
+				<a href="https://mozilla.github.io/pdf.js/" target="_blank">
+					PDF.js
+				</a>
+				<br />
+				Zip file support with{" "}
+				<a
+					href="https://gildas-lormeau.github.io/zip.js/"
+					target="_blank"
+				>
+					ZIP.js
+				</a>
+				<br />
 				Vectors and icons by{" "}
 				<a href="https://www.svgrepo.com" target="_blank">
 					SVG Repo

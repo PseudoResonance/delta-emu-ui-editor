@@ -6,6 +6,7 @@ This is a web-based editor/designer for [Delta](https://github.com/rileytestut/D
 
 -   [PDF.js](https://mozilla.github.io/pdf.js/) to render PDFs to images
 -   [ZIP.js](https://gildas-lormeau.github.io/zip.js/) to zip/unzip skin files
+-   [SVG Repo](https://www.svgrepo.com) for icons
 
 ## Getting Started
 
