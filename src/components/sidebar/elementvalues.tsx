@@ -1,234 +1,539 @@
 "use client";
 import styles from "./sidebar.module.css";
 import ValueInput from "../inputs/valueinput";
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Button from "../inputs/button";
 import DropdownInput from "../inputs/dropdowninput";
 import FileInput from "../inputs/fileinput";
-import convertPdfToImage from "@/utils/pdf/pdfToImg";
+import {
+	Asset,
+	EmulatorElement,
+	EmulatorElementType,
+	EmulatorLayout,
+} from "@/data/types";
+import { loadAsset } from "@/utils/readImage";
+import { Spec } from "immutability-helper";
 
 export default function ElementValues(args: {
-    elementIndex: number,
-    updateElement: (data: {
-        type: string,
-        data: Record<string, any>,
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        paddingTop: number,
-        paddingBottom: number,
-        paddingLeft: number,
-        paddingRight: number,
-    }) => void,
-    elementData: {
-        type: string,
-        data: Record<string, any>,
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        paddingTop: number,
-        paddingBottom: number,
-        paddingLeft: number,
-        paddingRight: number,
-    };
-    duplicateThis: () => void;
-    deleteThis: () => void;
-    parentWidth: number;
-    parentHeight: number;
-    showPopup: (popup: React.JSX.Element, onClose: () => void, onAccept?: () => void) => void;
+	assets: Record<string, Asset> | null;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	addAsset: (path: string, asset: Asset) => void;
+	elementIndex: number;
+	updateElement: (data: Spec<EmulatorElement, never>) => void;
+	elementData: EmulatorElement;
+	duplicateThis: () => void;
+	deleteThis: () => void;
+	parentWidth: number;
+	parentHeight: number;
+	layoutData: EmulatorLayout;
+	showPopup: (
+		popup: React.JSX.Element,
+		onClose: () => void,
+		onAccept?: () => void,
+	) => void;
 }) {
-    let data: React.JSX.Element[] = [];
-    switch (args.elementData.type) {
-        case "thumbstick":
-            data = [(<ValueInput key="thumbstickname" elementIndex={args.elementIndex} label="Thumbstick Name" value={args.elementData.data.thumbstick.name} onChange={(val: string) => {
-                if (!args.elementData.data.thumbstick) {
-                    args.elementData.data.thumbstick = {};
-                }
-                args.elementData.data.thumbstick.name = val;
-                args.updateElement(args.elementData);
-            }} />), (<FileInput key="thumbstickfile" label="Thumbstick Image" accept="image/*,.pdf" onChange={(val: File) => {
-                if (!args.elementData.data.thumbstick) {
-                    args.elementData.data.thumbstick = {};
-                }
-                if (val.name.toLocaleLowerCase().endsWith('.pdf')) {
-                    convertPdfToImage(val).then(url => {
-                        args.elementData.data.thumbstick.imageUrl = url;
-                        args.elementData.data.thumbstick.name = val.name;
-                        args.updateElement(args.elementData);
-                    }).catch(e => {
-                        console.error("Error while reading PDF!", e);
-                        args.showPopup(<><h1>Error</h1><p>Unable to read PDF!</p></>, () => {});
-                    });
-                } else {
-                    args.elementData.data.thumbstick.imageUrl = URL.createObjectURL(val);
-                    args.elementData.data.thumbstick.name = val.name;
-                    args.updateElement(args.elementData);
-                }
-            }} />), (<ValueInput key="thumbstickwidth" elementIndex={args.elementIndex} type="number" label="Thumbstick Width" minValue={0} value={args.elementData.data.thumbstick.width} onChange={(val: string) => {
-                if (!args.elementData.data.thumbstick) {
-                    args.elementData.data.thumbstick = {};
-                }
-                args.elementData.data.thumbstick.width = Number(val);
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="thumbstickheight" elementIndex={args.elementIndex} type="number" label="Thumbstick Height" minValue={0} value={args.elementData.data.thumbstick.height} onChange={(val: string) => {
-                if (!args.elementData.data.thumbstick) {
-                    args.elementData.data.thumbstick = {};
-                }
-                args.elementData.data.thumbstick.height = Number(val);
-                args.updateElement(args.elementData);
-            }} />)];
-        case "dpad":
-            data = [...data, (<ValueInput key="inputup" elementIndex={args.elementIndex} label="Input Up" value={args.elementData.data.inputsobj.up} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.up = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="inputdown" elementIndex={args.elementIndex} label="Input Down" value={args.elementData.data.inputsobj.down} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.down = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="inputleft" elementIndex={args.elementIndex} label="Input Left" value={args.elementData.data.inputsobj.left} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.left = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="inputright" elementIndex={args.elementIndex} label="Input Right" value={args.elementData.data.inputsobj.right} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.right = val;
-                args.updateElement(args.elementData);
-            }} />)];
-            break;
-        case "touchscreen":
-            data = [(<ValueInput key="touchscreenx" elementIndex={args.elementIndex} label="Touchscreen X" value={args.elementData.data.inputsobj.x} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.x = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="touchscreeny" elementIndex={args.elementIndex} label="Touchscreen Y" value={args.elementData.data.inputsobj.y} onChange={(val: string) => {
-                if (!args.elementData.data.inputsobj) {
-                    args.elementData.data.inputsobj = {};
-                }
-                args.elementData.data.inputsobj.y = val;
-                args.updateElement(args.elementData);
-            }} />)];
-            break;
-        case "screen":
-            data = [(<ValueInput key="screenx" elementIndex={args.elementIndex} type="number" label="Screen X" minValue={0} value={args.elementData.data.screen.x} onChange={(val: string) => {
-                if (!args.elementData.data.screen) {
-                    args.elementData.data.screen = {};
-                }
-                args.elementData.data.screen.x = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="screeny" elementIndex={args.elementIndex} type="number" label="Screen Y" minValue={0} value={args.elementData.data.screen.y} onChange={(val: string) => {
-                if (!args.elementData.data.screen) {
-                    args.elementData.data.screen = {};
-                }
-                args.elementData.data.screen.y = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="screenwidth" elementIndex={args.elementIndex} type="number" label="Screen Width" minValue={0} value={args.elementData.data.screen.width} onChange={(val: string) => {
-                if (!args.elementData.data.screen) {
-                    args.elementData.data.screen = {};
-                }
-                args.elementData.data.screen.width = val;
-                args.updateElement(args.elementData);
-            }} />), (<ValueInput key="screenheight" elementIndex={args.elementIndex} type="number" label="Screen Height" minValue={0} value={args.elementData.data.screen.height} onChange={(val: string) => {
-                if (!args.elementData.data.screen) {
-                    args.elementData.data.screen = {};
-                }
-                args.elementData.data.screen.height = val;
-                args.updateElement(args.elementData);
-            }} />)];
-            break;
-        default:
-            data = [(<ValueInput key="inputs" elementIndex={args.elementIndex} label="Inputs" value={args.elementData.data.inputs?.join(', ')} onChange={(val: string) => {
-                args.elementData.data.inputs = val.replace(/\s/g, '').split(',');
-                args.updateElement(args.elementData);
-            }} />)];
-            break;
-    }
-    let label = "Not Bound";
-    switch (args.elementData.type) {
-        case "thumbstick":
-            label = "Thumbstick";
-            break;
-        case "dpad":
-            label = "D-Pad";
-            break;
-        case "touchscreen":
-            label = "Touchscreen";
-            break;
-        case "screen":
-            label = "Screen";
-            break;
-        default:
-            if (args.elementData.data.inputs?.length > 0) {
-                label = args.elementData.data.inputs.join(", ");
-            }
-            break;
-    }
-    return (
-        <div className={styles.elementValues}>
-            <DropdownInput elementIndex={args.elementIndex} label="Type" defaultValue={args.elementData.type} values={{ "": "Button", "dpad": "D-Pad", "thumbstick": "Thumbstick", "touchscreen": "Touchscreen", "screen": "Screen" }} onChange={(val: string) => {
-                args.elementData.type = val;
-                args.updateElement(args.elementData);
-            }} />
-            {...data}
-            <ValueInput elementIndex={args.elementIndex} type="number" label="X" value={args.elementData.x.toFixed(0)} minValue={0} maxValue={args.parentWidth - args.elementData.width} onChange={(val: string) => {
-                args.elementData.x = Number(val);
-                args.updateElement(args.elementData);
-            }} />
-            <ValueInput elementIndex={args.elementIndex} type="number" label="Y" value={args.elementData.y.toFixed(0)} minValue={0} maxValue={args.parentHeight - args.elementData.height} onChange={(val: string) => {
-                args.elementData.y = Number(val);
-                args.updateElement(args.elementData);
-            }} />
-            <Button onClick={() => {
-                args.elementData.x = Number((args.parentWidth - args.elementData.width) / 2);
-                args.updateElement(args.elementData);
-            }} label="Center X" />
-            <Button onClick={() => {
-                args.elementData.y = Number((args.parentHeight - args.elementData.height) / 2);
-                args.updateElement(args.elementData);
-            }} label="Center Y" />
-            <ValueInput elementIndex={args.elementIndex} type="number" label="Width" value={args.elementData.width.toFixed(0)} minValue={0} maxValue={args.parentWidth - args.elementData.x} onChange={(val: string) => {
-                args.elementData.width = Number(val);
-                args.updateElement(args.elementData);
-            }} />
-            <ValueInput elementIndex={args.elementIndex} type="number" label="Height" value={args.elementData.height.toFixed(0)} minValue={0} maxValue={args.parentHeight - args.elementData.y} onChange={(val: string) => {
-                args.elementData.height = Number(val);
-                args.updateElement(args.elementData);
-            }} />
-            {...(args.elementData.type === "screen" ? [<></>] : [
-                (<ValueInput elementIndex={args.elementIndex} key={"paddingtop"} type="number" label="Padding Top" value={args.elementData.paddingTop.toFixed(0)} minValue={0} onChange={(val: string) => {
-                    args.elementData.paddingTop = Number(val);
-                    args.updateElement(args.elementData);
-                }} />),
-                (<ValueInput elementIndex={args.elementIndex} key={"paddingbottom"} type="number" label="Padding Bottom" value={args.elementData.paddingBottom.toFixed(0)} minValue={0} onChange={(val: string) => {
-                    args.elementData.paddingBottom = Number(val);
-                    args.updateElement(args.elementData);
-                }} />),
-                (<ValueInput elementIndex={args.elementIndex} key={"paddingleft"} type="number" label="Padding Left" value={args.elementData.paddingLeft.toFixed(0)} minValue={0} onChange={(val: string) => {
-                    args.elementData.paddingLeft = Number(val);
-                    args.updateElement(args.elementData);
-                }} />),
-                (<ValueInput elementIndex={args.elementIndex} key={"paddingright"} type="number" label="Padding Right" value={args.elementData.paddingRight.toFixed(0)} minValue={0} onChange={(val: string) => {
-                    args.elementData.paddingRight = Number(val);
-                    args.updateElement(args.elementData);
-                }} />)])}
-            <Button onClick={() => { args.duplicateThis() }} label="Duplicate Element" />
-            <Button onClick={() => {
-                args.showPopup(<><h2>Warning</h2><p>Confirm deleting &quot;{label}&quot;</p></>, () => { }, () => {
-                    args.deleteThis();
-                });
-            }} label="Delete Element" />
-        </div>
-    );
+	const loadAssetHelper = (fileName: string) => {
+		if (args.assets && fileName in args.assets) {
+			loadAsset(args.assets[fileName], () => {
+				if (args.assets && fileName in args.assets) {
+					const newAssets = Object.assign({}, args.assets);
+					newAssets[fileName].attemptLoad = true;
+					args.setAssets(newAssets);
+				}
+			}).then((res) => {
+				if (res) {
+					const newAssets = Object.assign({}, args.assets);
+					args.setAssets(newAssets);
+				}
+			});
+		}
+	};
+	let data: React.JSX.Element[] = [];
+	switch (args.elementData.type) {
+		case EmulatorElementType.Thumbstick:
+			data = [
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="thumbstickname"
+					label="Thumbstick Name"
+					debounce={100}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: { thumbstick: { name: { $set: val } } },
+						});
+						loadAssetHelper(val);
+					}}
+					value={args.elementData.data.thumbstick.name}
+				/>,
+				<FileInput
+					accept="image/*,.pdf"
+					key="thumbstickfile"
+					label="Thumbstick Image"
+					onChange={(val: File) => {
+						args.addAsset(val.name, {
+							file: val,
+							url: null,
+							width: -1,
+							height: -1,
+						});
+						args.updateElement({
+							data: { thumbstick: { name: { $set: val.name } } },
+						});
+					}}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="thumbstickwidth"
+					label="Thumbstick Width"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								thumbstick: { width: { $set: parseInt(val) } },
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.thumbstick.width)}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="thumbstickheight"
+					label="Thumbstick Height"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								thumbstick: { height: { $set: parseInt(val) } },
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.thumbstick.height)}
+				/>,
+			];
+		// eslint-disable-next-line no-fallthrough
+		case EmulatorElementType.Dpad:
+			data = [
+				...data,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="inputup"
+					label="Input Up"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									up: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.up}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="inputdown"
+					label="Input Down"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									down: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.down}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="inputleft"
+					label="Input Left"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									left: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.left}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="inputright"
+					label="Input Right"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									right: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.right}
+				/>,
+			];
+			break;
+		case EmulatorElementType.Touchscreen:
+			data = [
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="touchscreenx"
+					label="Touchscreen X"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									x: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.x}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="touchscreeny"
+					label="Touchscreen Y"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputsobj: {
+									y: { $set: val },
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputsobj.y}
+				/>,
+			];
+			break;
+		case EmulatorElementType.Screen:
+			data = [
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="screenx"
+					label="Screen X"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								screen: {
+									x: { $set: parseInt(val) },
+								},
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.screen.x)}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="screeny"
+					label="Screen Y"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								screen: {
+									y: { $set: parseInt(val) },
+								},
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.screen.y)}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="screenwidth"
+					label="Screen Width"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								screen: {
+									width: { $set: parseInt(val) },
+								},
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.screen.width)}
+				/>,
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="screenheight"
+					label="Screen Height"
+					minValue={0}
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								screen: {
+									height: { $set: parseInt(val) },
+								},
+							},
+						});
+					}}
+					type="number"
+					value={String(args.elementData.data.screen.height)}
+				/>,
+			];
+			break;
+		default:
+			data = [
+				<ValueInput
+					elementIndex={args.elementIndex}
+					key="inputs"
+					label="Inputs"
+					onChange={(val: string) => {
+						args.updateElement({
+							data: {
+								inputs: {
+									$set: val.replace(/\s/g, "").split(","),
+								},
+							},
+						});
+					}}
+					value={args.elementData.data.inputs?.join(", ")}
+				/>,
+			];
+			break;
+	}
+	let label = "";
+	switch (args.elementData.type) {
+		case EmulatorElementType.Thumbstick:
+			label = "Thumbstick";
+			break;
+		case EmulatorElementType.Dpad:
+			label = "D-Pad";
+			break;
+		case EmulatorElementType.Touchscreen:
+			label = "Touchscreen";
+			break;
+		case EmulatorElementType.Screen:
+			label = "Screen";
+			break;
+		case EmulatorElementType.Default:
+			if (args.elementData.data.inputs?.length > 0) {
+				label = args.elementData.data.inputs.join(", ");
+			}
+			break;
+	}
+	if (label.trim().length === 0) label = "Not Bound";
+	return (
+		<div className={styles.elementValues}>
+			<DropdownInput
+				value={args.elementData.type}
+				elementIndex={args.elementIndex}
+				label="Type"
+				onChange={(val: string) => {
+					args.updateElement({
+						type: {
+							$set: EmulatorElementType[
+								val as keyof typeof EmulatorElementType
+							],
+						},
+					});
+				}}
+				values={
+					{
+						[EmulatorElementType.Default]: "Button",
+						[EmulatorElementType.Dpad]: "D-Pad",
+						[EmulatorElementType.Thumbstick]: "Thumbstick",
+						[EmulatorElementType.Touchscreen]: "Touchscreen",
+						[EmulatorElementType.Screen]: "Screen",
+					} as { [key in EmulatorElementType]: string }
+				}
+			/>
+
+			{...data}
+			<ValueInput
+				elementIndex={args.elementIndex}
+				label="X"
+				maxValue={args.parentWidth - args.elementData.width}
+				minValue={0}
+				onChange={(val: string) => {
+					args.updateElement({
+						x: {
+							$set: parseInt(val),
+						},
+					});
+				}}
+				type="number"
+				value={args.elementData.x.toFixed(0)}
+			/>
+
+			<ValueInput
+				elementIndex={args.elementIndex}
+				label="Y"
+				maxValue={args.parentHeight - args.elementData.height}
+				minValue={0}
+				onChange={(val: string) => {
+					args.updateElement({
+						y: {
+							$set: parseInt(val),
+						},
+					});
+				}}
+				type="number"
+				value={args.elementData.y.toFixed(0)}
+			/>
+
+			<Button
+				label="Center X"
+				onClick={() => {
+					args.updateElement({
+						x: {
+							$set: Math.round(
+								(args.parentWidth - args.elementData.width) / 2,
+							),
+						},
+					});
+				}}
+			/>
+
+			<Button
+				label="Center Y"
+				onClick={() => {
+					args.updateElement({
+						y: {
+							$set: Math.round(
+								(args.parentHeight - args.elementData.height) /
+									2,
+							),
+						},
+					});
+				}}
+			/>
+
+			<ValueInput
+				elementIndex={args.elementIndex}
+				label="Width"
+				maxValue={args.parentWidth - args.elementData.x}
+				minValue={0}
+				onChange={(val: string) => {
+					args.updateElement({
+						width: {
+							$set: parseInt(val),
+						},
+					});
+				}}
+				type="number"
+				value={args.elementData.width.toFixed(0)}
+			/>
+
+			<ValueInput
+				elementIndex={args.elementIndex}
+				label="Height"
+				maxValue={args.parentHeight - args.elementData.y}
+				minValue={0}
+				onChange={(val: string) => {
+					args.updateElement({
+						height: {
+							$set: parseInt(val),
+						},
+					});
+				}}
+				type="number"
+				value={args.elementData.height.toFixed(0)}
+			/>
+
+			{...args.elementData.type === EmulatorElementType.Screen
+				? [<></>]
+				: [
+						<ValueInput
+							elementIndex={args.elementIndex}
+							key="paddingtop"
+							label="Padding Top"
+							minValue={0}
+							onChange={(val: string) => {
+								args.updateElement({
+									paddingTop: {
+										$set: parseInt(val),
+									},
+								});
+							}}
+							type="number"
+							value={args.elementData.paddingTop.toFixed(0)}
+						/>,
+						<ValueInput
+							elementIndex={args.elementIndex}
+							key="paddingbottom"
+							label="Padding Bottom"
+							minValue={0}
+							onChange={(val: string) => {
+								args.updateElement({
+									paddingBottom: {
+										$set: parseInt(val),
+									},
+								});
+							}}
+							type="number"
+							value={args.elementData.paddingBottom.toFixed(0)}
+						/>,
+						<ValueInput
+							elementIndex={args.elementIndex}
+							key="paddingleft"
+							label="Padding Left"
+							minValue={0}
+							onChange={(val: string) => {
+								args.updateElement({
+									paddingLeft: {
+										$set: parseInt(val),
+									},
+								});
+							}}
+							type="number"
+							value={args.elementData.paddingLeft.toFixed(0)}
+						/>,
+						<ValueInput
+							elementIndex={args.elementIndex}
+							key="paddingright"
+							label="Padding Right"
+							minValue={0}
+							onChange={(val: string) => {
+								args.updateElement({
+									paddingRight: {
+										$set: parseInt(val),
+									},
+								});
+							}}
+							type="number"
+							value={args.elementData.paddingRight.toFixed(0)}
+						/>,
+					]}
+			<Button
+				label="Duplicate Element"
+				onClick={() => {
+					args.duplicateThis();
+				}}
+			/>
+
+			<Button
+				label="Delete Element"
+				onClick={() => {
+					args.showPopup(
+						<>
+							<h2>Warning</h2>
+
+							<p>
+								Confirm deleting &quot;
+								{label}
+								&quot;
+							</p>
+						</>,
+						() => {},
+						() => {
+							args.deleteThis();
+						},
+					);
+				}}
+			/>
+		</div>
+	);
 }

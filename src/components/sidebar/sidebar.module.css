@@ -1,98 +1,46 @@
 .sidebar {
-    margin: 0;
-    background-color: rgb(var(--secondary-rgb));
-    flex-basis: 20em;
-    flex-shrink: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
+	margin: 0;
+	background-color: var(--secondary-rgb);
+	flex-basis: var(--sidebar-width);
+	flex-shrink: 0;
+	z-index: 100;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
 }
 
 .sidebar > div {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    flex-basis: calc(50% - 1px);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	flex-basis: calc(50% - var(--border-width));
 }
 
 .sidebar > div::-webkit-scrollbar {
-    --scrollbar-width: 5px;
-    width: var(--scrollbar-width);
-    position: absolute;
-    display: block;
-    right: 0;
-    background: transparent;
-    overflow: overlay;
+	width: var(--scrollbar-width);
+	position: absolute;
+	display: block;
+	right: 0;
+	background: transparent;
+	overflow: overlay;
 }
 
 .sidebar > div:hover::-webkit-scrollbar-thumb {
-    width: var(--scrollbar-width);
-    background: rgb(var(--foreground-rgb));
+	width: var(--scrollbar-width);
+	background: var(--scrollbar-rgb);
 }
 
 .sidebar > div::-webkit-scrollbar-thumb {
-    width: var(--scrollbar-width);
-    background: transparent;
+	width: var(--scrollbar-width);
+	background: transparent;
 }
 
 .sidebar > hr {
-    width: 100%;
-    height: 2px;
-    border: none;
-    background-color: rgb(var(--foreground-rgb));
-    margin: 0;
-    flex-shrink: 0;
-    flex-grow: 0;
-}
-
-.elementValues {
-    bottom: 0px;
-}
-
-.sidebarElements > div:not(:first-child)::before {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    top: 0;
-    left: 9px;
-    background-color: rgb(var(--foreground-rgb));
-}
-
-.sidebarElements > div:not(:first-child)::after {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 10px;
-    height: 2px;
-    top: calc(((1.25em + 6px) / 2) - 1px);
-    left: 10px;
-    background-color: rgb(var(--foreground-rgb));
-}
-
-.sidebarElements > div:last-child::before {
-    width: 2px;
-    height: calc((1.25em + 6px) / 2 + 1px);
-    top: 0;
-    left: 9px;
-}
-
-.sidebarElements > div {
-    padding-left: 20px;
-    position: relative;
-}
-
-.sidebarElements > div:first-child {
-    padding-left: 5px;
-}
-
-.elementSelector {
-    padding: 3px 5px;
-    transition: all 0.02s linear;
-}
-
-.elementSelector:hover, .elementSelector.active {
-    background-color: rgb(var(--secondary-rgb-hover));
+	width: 100%;
+	height: var(--border-width);
+	border: none;
+	background-color: var(--separator-rgb);
+	margin: 0;
+	flex-shrink: 0;
+	flex-grow: 0;
 }

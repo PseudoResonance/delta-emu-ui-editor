@@ -1,86 +1,130 @@
 .element {
-    border: green 2px solid;
-    background-color: color-mix(in srgb, green 15%, transparent);
-    position: absolute;
-    display: block;
+	border: var(--element-border-padding) var(--element-border-width) solid;
+	background-color: color-mix(
+		in srgb,
+		var(--element-border-padding) var(--element-background-opacity),
+		transparent
+	);
+	position: absolute;
+	display: block;
 }
 
-.element:hover, .element.hover {
-    background-color: color-mix(in srgb, green 50%, transparent);
+.element.hidden {
+	display: none;
+}
+
+.element:hover,
+.element.hover {
+	background-color: color-mix(
+		in srgb,
+		var(--element-border-padding) var(--element-background-opacity-hover),
+		transparent
+	);
 }
 
 .inner {
-    border: red 2px solid;
-    background-color: color-mix(in srgb, red 15%, transparent);
+	border: var(--element-border) var(--element-border-width) solid;
+	background-color: color-mix(
+		in srgb,
+		var(--element-border) var(--element-background-opacity),
+		transparent
+	);
 }
 
-.element:hover .inner, .element.hover .inner {
-    background-color: color-mix(in srgb, red 50%, transparent);
+.element:hover .inner,
+.element.hover .inner {
+	background-color: color-mix(
+		in srgb,
+		var(--element-border) var(--element-background-opacity-hover),
+		transparent
+	);
 }
 
 .padding {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    display: block;
-    pointer-events: none;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	display: block;
+	pointer-events: none;
 }
 
-.element:hover::after, .element.active::after, .element.hover::after {
-    --border-width: 3px;
-    content: '';
-    display: block;
-    width: calc(100% - var(--border-width) - var(--border-width));
-    height: calc(100% - var(--border-width) - var(--border-width));
-    border: var(--border-width) dashed rgb(var(--select-rgb));
+.element:hover::after,
+.element.active::after,
+.element.hover::after {
+	content: "";
+	display: block;
+	width: calc(
+		100% - var(--element-hover-border-width) -
+			var(--element-hover-border-width)
+	);
+	height: calc(
+		100% - var(--element-hover-border-width) -
+			var(--element-hover-border-width)
+	);
+	border: var(--element-hover-border-width) var(--select-rgb) dashed;
 }
 
 .element.active::after {
-    border: var(--border-width) dashed rgb(var(--select-rgb-active));
+	border: var(--element-hover-border-width) var(--select-rgb-active) dashed;
 }
 
 .element .inputsDescription {
-    color: white;
+	color: var(--element-description-rgb);
+	text-align: center;
+}
+
+.element .inputsDescription.emptyImage {
+	color: var(--element-description-rgb-emptyImage);
 }
 
 .padStickOverlay {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    position: absolute;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+	width: calc(100% + var(--element-border-width));
+	height: calc(100% + var(--element-border-width));
+	left: calc(var(--element-border-width) / -2);
+	top: calc(var(--element-border-width) / -2);
+	display: grid;
+	position: absolute;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr;
 }
 
 .padStickOverlay > div {
-    border: thin solid gray;
+	border: calc(var(--element-border-width) / 2) solid var(--pad-stick-overlay);
 }
 
-.thumbstickImage, .labelDiv {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    position: absolute;
-    justify-content: center;
-    align-items: center;
+.thumbstickImage,
+.labelDiv {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	position: absolute;
+	justify-content: center;
+	align-items: center;
 }
 
 .thumbstickImageEmpty > div {
-    background-color: color-mix(in srgb, blue 20%, transparent);
+	background-color: color-mix(
+		in srgb,
+		var(--thumbstick-image) var(--thumbstick-image-opacity),
+		transparent
+	);
 }
 
 .expandGrid {
-    --handle-width: 10px;
-    width: calc(100% + var(--handle-width));
-    height: calc(100% + var(--handle-width));
-    top: calc(var(--handle-width) / 2 * -1);
-    left: calc(var(--handle-width) / 2 * -1);
-    display: grid;
-    grid-template-columns: var(--handle-width) 1fr var(--handle-width);
-    grid-template-rows: var(--handle-width) 1fr var(--handle-width);
-    position: absolute;
+	width: calc(100% + var(--resize-handle-width));
+	height: calc(100% + var(--resize-handle-width));
+	top: calc(var(--resize-handle-width) / 2 * -1);
+	left: calc(var(--resize-handle-width) / 2 * -1);
+	display: grid;
+	grid-template-columns: var(--resize-handle-width) 1fr var(
+			--resize-handle-width
+		);
+	grid-template-rows: var(--resize-handle-width) 1fr var(
+			--resize-handle-width
+		);
+	position: absolute;
 }
 
 .expandGrid > div {
-    pointer-events: auto;
+	pointer-events: auto;
 }

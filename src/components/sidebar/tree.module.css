@@ -1,51 +1,65 @@
 .tree {
-    font-size: 1em;
-    position: relative;
+	font-size: 1em;
+	line-height: var(--tree-text-line-height);
+	position: relative;
 }
 
-.tree > p {
-    margin: 0;
-    padding: 3px 0;
+.tree > :not(.treeSub) {
+	margin: 0;
+	padding: var(--tree-padding-y) 0;
 }
 
 .treeSub {
-    padding-left: 20px;
-    position: relative;
+	padding-left: var(--tree-nest-depth);
+	position: relative;
 }
 
 .treeSub > .tree::before {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 2px;
-    height: 100%;
-    top: 0;
-    left: -11px;
-    background-color: rgb(var(--foreground-rgb));
+	content: "";
+	display: block;
+	position: absolute;
+	width: var(--tree-line-width);
+	height: 100%;
+	top: 0;
+	left: calc((var(--tree-nest-depth) / -2) - (var(--tree-line-width) / 2));
+	background-color: var(--tree-line-rgb);
 }
 
 .treeSub > .tree::after {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 10px;
-    height: 2px;
-    top: calc(((1.25em + 6px) / 2) - 1px);
-    left: -10px;
-    background-color: rgb(var(--foreground-rgb));
+	content: "";
+	display: block;
+	position: absolute;
+	width: calc(var(--tree-nest-depth) / 2);
+	height: var(--tree-line-width);
+	top: calc(
+		(
+				(
+						var(--tree-text-line-height) + var(--tree-padding-y) +
+							var(--tree-padding-y)
+					) / 2
+			) - (var(--tree-line-width) / 2)
+	);
+	left: calc(var(--tree-nest-depth) / -2);
+	background-color: var(--tree-line-rgb);
 }
 
 .treeSub > .tree:last-child::before {
-    width: 2px;
-    height: calc((1.25em + 6px) / 2 + 1px);
-    top: 0;
-    left: -11px;
+	width: var(--tree-line-width);
+	height: calc(
+		(
+				var(--tree-text-line-height) + var(--tree-padding-y) +
+					var(--tree-padding-y)
+			) / 2 + (var(--tree-line-width) / 2)
+	);
+	top: 0;
+	left: calc((var(--tree-nest-depth) / -2) - (var(--tree-line-width) / 2));
 }
 
-.clickable > p {
-    transition: all 0.02s linear;
+.clickable > :not(.treeSub) {
+	transition: all 0.02s linear;
 }
 
-.clickable:hover, .active > p {
-    background-color: rgb(var(--secondary-rgb-hover));
+.clickable:hover,
+.active > :not(.treeSub) {
+	background-color: var(--button-rgb-hover);
 }

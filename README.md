@@ -1,6 +1,11 @@
 # Delta Emulator UI Designer
 
-This is a web-based editor/designer for [Delta](https://github.com/rileytestut/Delta) emulator, built with [Next.js](https://nextjs.org/) and utilizing [PDF.js](https://mozilla.github.io/pdf.js/) to render PDFs.
+This is a web-based editor/designer for [Delta](https://github.com/rileytestut/Delta) emulator, built with [Next.js](https://nextjs.org/). It is capable of directly loading/exporting .deltaskin files, as well as loading the info.json and assets separately which is useful in developing and packaging a skin.
+
+## Major Dependencies
+
+-   [PDF.js](https://mozilla.github.io/pdf.js/) to render PDFs to images
+-   [ZIP.js](https://gildas-lormeau.github.io/zip.js/) to zip/unzip skin files
 
 ## Getting Started
 

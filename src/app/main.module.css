@@ -1,14 +1,32 @@
 .body {
-    margin: 0;
+	margin: 0;
 }
 
 .main {
-    display: grid;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-    grid-template-rows: 30px calc(100vh - 30px);
-    grid-template-columns: 20em calc(100vw - 20em - 20em) 20em;
+	display: grid;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	height: 100vh;
+	width: 100vw;
+	margin: 0;
+	gap: var(--border-width);
+	grid-template-rows: var(--menu-height) calc(
+			100vh - var(--menu-height) - var(--border-width)
+		);
+	grid-template-columns:
+		var(--sidebar-width) calc(
+			100vw - (2 * (var(--sidebar-width) + var(--border-width)))
+		)
+		var(--sidebar-width);
+}
+
+.overlay {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	pointer-events: none;
 }

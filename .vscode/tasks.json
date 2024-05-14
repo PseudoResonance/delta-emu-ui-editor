@@ -8,7 +8,7 @@
 			"label": "npm: dev",
 			"detail": "next dev",
 			"group": {
-				"kind": "build",
+				"kind": "none",
 				"isDefault": true
 			}
 		}

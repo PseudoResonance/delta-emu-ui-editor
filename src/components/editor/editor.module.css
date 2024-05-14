@@ -1,27 +1,28 @@
 .editor {
-    flex-grow: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    background-color: rgb(var(--background-rgb));
-    overflow: hidden;
+	flex-grow: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	background-color: var(--background-rgb);
+	overflow: hidden;
 }
 
 .window {
-    position: relative;
-    border: green 2px solid;
-    display: block;
+	position: relative;
+	border: var(--window-border-padding) var(--element-border-width) solid;
+	display: block;
 }
 
 .windowInner {
-    position: relative;
-    border: blue 2px solid;
-    display: block;
+	position: relative;
+	border: var(--window-border) var(--element-border-width) solid;
+	display: block;
 }
 
-.windowInner img {
-    object-fit: contain;
-    overflow: hidden;
-    pointer-events: none;
+.backgroundImage {
+	object-fit: contain;
+	overflow: hidden;
+	pointer-events: none;
+	position: absolute;
 }

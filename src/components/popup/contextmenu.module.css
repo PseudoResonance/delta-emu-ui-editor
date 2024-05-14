@@ -1,53 +1,65 @@
 .contextMenuHolder {
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000000;
-    position: absolute;
-    pointer-events: none;
+	width: 100vw;
+	height: 100vh;
+	z-index: 1000000;
+	position: absolute;
+	pointer-events: none;
 }
 
 .aligner {
-    flex-grow: 0;
-    flex-shrink: 1;
+	flex-grow: 0;
+	flex-shrink: 1;
 }
 
 .verticalAlign {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .horizontalAlign {
-    display: flex;
+	display: flex;
 }
 
 .show {
-    pointer-events: initial;
+	pointer-events: initial;
 }
 
 .contextMenu {
-    background-color: rgb(var(--secondary-rgb));
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    border: thin rgb(var(--foreground-rgb)) solid;
-    flex-shrink: 0;
-    flex-grow: 0;
+	background-color: var(--background-context-rgb);
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	border: var(--border-width) var(--border-rgb) solid;
+	border-radius: var(--border-radius);
+	flex-shrink: 0;
+	flex-grow: 0;
 }
 
 .contextMenu button {
-    border: none;
-    background-color: rgb(var(--secondary-rgb));
-    color: rgb(var(--foreground-rgb));
-    padding: 3px 5px;
-    font-size: 1em;
-    border-bottom: thin solid rgb(var(--foreground-rgb));
-    text-align: left;
+	border: none;
+	background-color: var(--background-context-rgb);
+	color: var(--foreground-rgb);
+	padding: 3px 5px;
+	font-size: 1em;
+	border-bottom: var(--border-width) var(--border-rgb) solid;
+	border-radius: 0;
+	text-align: left;
 }
 
 .contextMenu button:hover {
-    background-color: rgb(var(--secondary-rgb-hover));
+	background-color: var(--background-context-rgb-hover);
 }
 
-.contextMenu button:last-child {
-    border-bottom: none;
+.contextMenu button:first-child {
+	border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.contextMenu button:last-child:not(:first-child) {
+	border-bottom: none;
+	border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.contextMenu button:last-child:first-child {
+	border-bottom: none;
+	border-radius: var(--border-radius);
 }
