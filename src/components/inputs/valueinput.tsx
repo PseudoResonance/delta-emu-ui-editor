@@ -27,6 +27,7 @@ export default function ValueInput(args: {
 	onChange: (val: string) => void;
 	onFocusLost?: (val: string) => void;
 	debounce?: number;
+	suggestionsId?: string;
 }) {
 	const wheelLock = useRef<unknown>(null);
 	const value = useRef<string>("");
@@ -250,7 +251,9 @@ export default function ValueInput(args: {
 			if (args.onFocusLost) args.onFocusLost(value.current);
 		};
 	}
-
+	if (args.suggestionsId) {
+		attrs.list = args.suggestionsId;
+	}
 	return (
 		<div className={styles.input}>
 			<p className={styles.label}>{args.label}</p>

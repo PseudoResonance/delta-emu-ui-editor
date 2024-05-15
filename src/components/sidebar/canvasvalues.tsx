@@ -8,6 +8,7 @@ import { Asset, AssetType, EmulatorLayout } from "@/data/types";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 import CheckboxInput from "../inputs/checkboxinput";
+import Suggestions from "../inputs/inputSuggestions";
 
 export default function CanvasValues(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -56,11 +57,22 @@ export default function CanvasValues(args: {
 					} as { [key in AssetType]: string }
 				}
 			/>
+			<Suggestions
+				id={"assets"}
+				values={
+					args.assets
+						? Object.keys(args.assets).filter(
+								(name) => name !== "info.json",
+							)
+						: []
+				}
+			/>
 			{args.layoutData.assets.type === AssetType.PNG ? (
 				<>
 					<ValueInput
 						context={args.currentRepresentation}
 						label="Small"
+						suggestionsId="assets"
 						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
@@ -97,6 +109,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						label="Medium"
+						suggestionsId="assets"
 						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
@@ -133,6 +146,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						label="Large"
+						suggestionsId="assets"
 						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
@@ -172,6 +186,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						label="Resizable"
+						suggestionsId="assets"
 						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({

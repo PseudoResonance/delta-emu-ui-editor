@@ -299,6 +299,7 @@ export default function RightSidebar(args: {
 							parentHeight={args.layoutData.canvas.height}
 							parentWidth={args.layoutData.canvas.width}
 							showPopup={args.showPopup}
+							infoFile={args.infoFile}
 							updateElement={(
 								data: Spec<EmulatorElement, never>,
 							) => {

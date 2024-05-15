@@ -6,6 +6,8 @@ import ValueInput from "../inputs/valueinput";
 import CheckboxInput from "../inputs/checkboxinput";
 import { ContextMenu, InfoFile } from "@/data/types";
 import { Spec } from "immutability-helper";
+import Suggestions from "../inputs/inputSuggestions";
+import INPUT_PRESETS from "@/data/consoleInfo";
 
 export default function Sidebar(args: {
 	pressedKeys: string[];
@@ -172,9 +174,14 @@ export default function Sidebar(args: {
 					}
 				/>
 
+				<Suggestions
+					id={"gameTypeIdentifier"}
+					values={Object.keys(INPUT_PRESETS)}
+				/>
 				<ValueInput
 					context={"-1"}
 					label="Game Type ID"
+					suggestionsId="gameTypeIdentifier"
 					onChange={(val: string) => {
 						args.setInfoFile({ gameTypeIdentifier: { $set: val } });
 					}}
