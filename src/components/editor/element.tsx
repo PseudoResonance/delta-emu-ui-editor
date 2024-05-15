@@ -110,22 +110,32 @@ export default function EmulatorElementComponent(args: {
 			document.onmousemove = (e) => {
 				e.preventDefault();
 				let newTop = yStart + (e.clientY - yStartMouse) / args.scale;
-				if (newTop < 0) {
-					newTop = 0;
+				if (newTop < args.elementData.paddingTop) {
+					newTop = args.elementData.paddingTop;
 				} else if (
-					newTop + args.elementData.height >
+					newTop +
+						(args.elementData.height +
+							args.elementData.paddingBottom) >
 					args.parentHeight
 				) {
-					newTop = args.parentHeight - args.elementData.height;
+					newTop =
+						args.parentHeight -
+						(args.elementData.height +
+							args.elementData.paddingBottom);
 				}
 				let newLeft = xStart + (e.clientX - xStartMouse) / args.scale;
-				if (newLeft < 0) {
-					newLeft = 0;
+				if (newLeft < args.elementData.paddingLeft) {
+					newLeft = args.elementData.paddingLeft;
 				} else if (
-					newLeft + args.elementData.width >
+					newLeft +
+						(args.elementData.width +
+							args.elementData.paddingRight) >
 					args.parentWidth
 				) {
-					newLeft = args.parentWidth - args.elementData.width;
+					newLeft =
+						args.parentWidth -
+						(args.elementData.width +
+							args.elementData.paddingRight);
 				}
 				args.updateElement({
 					x: {
@@ -172,18 +182,10 @@ export default function EmulatorElementComponent(args: {
 					let x = -1;
 					let width = -1;
 					let height = -1;
-					const paddingTopStart = !inner
-						? args.elementData.paddingTop
-						: 0;
-					const paddingBottomStart = !inner
-						? args.elementData.paddingBottom
-						: 0;
-					const paddingLeftStart = !inner
-						? args.elementData.paddingLeft
-						: 0;
-					const paddingRightStart = !inner
-						? args.elementData.paddingRight
-						: 0;
+					const paddingTopStart = args.elementData.paddingTop;
+					const paddingBottomStart = args.elementData.paddingBottom;
+					const paddingLeftStart = args.elementData.paddingLeft;
+					const paddingRightStart = args.elementData.paddingRight;
 					const yStart = args.elementData.y;
 					const xStart = args.elementData.x;
 					const widthStart = args.elementData.width;
@@ -199,6 +201,8 @@ export default function EmulatorElementComponent(args: {
 								if (padding) {
 									if (paddingTopStart + diffY < 0)
 										paddingTop = 0;
+									else if (paddingTopStart + diffY > yStart)
+										paddingTop = yStart;
 									else paddingTop = paddingTopStart + diffY;
 								} else {
 									if (yStart - diffY <= 0) {
@@ -211,11 +215,27 @@ export default function EmulatorElementComponent(args: {
 										y = yStart - diffY;
 										height = heightStart + diffY;
 									}
+									if (paddingTopStart > 0) {
+										paddingTop =
+											paddingTopStart +
+											(heightStart - height);
+										if (paddingTop <= 0) {
+											paddingTop = 0;
+										}
+									}
 								}
 							} else {
 								if (padding) {
 									if (paddingBottomStart + diffY < 0)
 										paddingBottom = 0;
+									else if (
+										paddingBottomStart + diffY >
+										args.parentHeight - yStart - heightStart
+									)
+										paddingBottom =
+											args.parentHeight -
+											yStart -
+											heightStart;
 									else
 										paddingBottom =
 											paddingBottomStart + diffY;
@@ -229,6 +249,14 @@ export default function EmulatorElementComponent(args: {
 									} else {
 										height = heightStart + diffY;
 									}
+									if (paddingBottomStart > 0) {
+										paddingBottom =
+											paddingBottomStart +
+											(heightStart - height);
+										if (paddingBottom <= 0) {
+											paddingBottom = 0;
+										}
+									}
 								}
 							}
 						}
@@ -240,6 +268,8 @@ export default function EmulatorElementComponent(args: {
 								if (padding) {
 									if (paddingLeftStart + diffX < 0)
 										paddingLeft = 0;
+									else if (paddingLeftStart + diffX > xStart)
+										paddingLeft = xStart;
 									else paddingLeft = paddingLeftStart + diffX;
 								} else {
 									if (xStart - diffX <= 0) {
@@ -252,11 +282,27 @@ export default function EmulatorElementComponent(args: {
 										x = xStart - diffX;
 										width = widthStart + diffX;
 									}
+									if (paddingLeftStart > 0) {
+										paddingLeft =
+											paddingLeftStart +
+											(widthStart - width);
+										if (paddingLeft <= 0) {
+											paddingLeft = 0;
+										}
+									}
 								}
 							} else {
 								if (padding) {
 									if (paddingRightStart + diffX < 0)
 										paddingRight = 0;
+									else if (
+										paddingRightStart + diffX >
+										args.parentWidth - xStart - widthStart
+									)
+										paddingRight =
+											args.parentWidth -
+											xStart -
+											widthStart;
 									else
 										paddingRight =
 											paddingRightStart + diffX;
@@ -269,6 +315,14 @@ export default function EmulatorElementComponent(args: {
 										width = args.parentWidth - xStart;
 									} else {
 										width = widthStart + diffX;
+									}
+									if (paddingRightStart > 0) {
+										paddingRight =
+											paddingRightStart +
+											(widthStart - width);
+										if (paddingRight <= 0) {
+											paddingRight = 0;
+										}
 									}
 								}
 							}

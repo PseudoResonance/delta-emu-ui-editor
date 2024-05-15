@@ -1388,6 +1388,7 @@ export default function Home() {
 					showPopup={showPopup}
 					assets={assets}
 					updateElement={updateElement}
+					currentRepresentation={currentRepresentation}
 				/>
 			</main>
 

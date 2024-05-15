@@ -43,21 +43,20 @@ export default function RightSidebar(args: {
 		onAccept?: () => void,
 	) => void;
 	showContextMenu: ContextMenu;
+	currentRepresentation: string;
 }) {
 	return (
 		<div className={styles.sidebar}>
 			<div>
 				<ValueInput
-					elementIndex={0}
-					increment={0.01}
+					context={args.currentRepresentation}
 					label="Zoom"
 					minValue={0}
 					onChange={(val: string) => {
-						args.setScale(Number(val));
+						args.setScale(Number(val) / 100.0);
 					}}
-					places={4}
-					type="float"
-					value={args.scale.toFixed(4)}
+					type="number"
+					value={(args.scale * 100).toFixed(0)}
 				/>
 				{args.layoutData && (
 					<>
@@ -279,6 +278,7 @@ export default function RightSidebar(args: {
 				{args.layoutData &&
 					(args.editingElement >= 0 ? (
 						<ElementValues
+							currentRepresentation={args.currentRepresentation}
 							setAssets={args.setAssets}
 							layoutData={args.layoutData}
 							assets={args.assets}
@@ -307,6 +307,7 @@ export default function RightSidebar(args: {
 						/>
 					) : (
 						<CanvasValues
+							currentRepresentation={args.currentRepresentation}
 							getCurrentBackgroundAssetName={
 								args.getCurrentBackgroundAssetName
 							}

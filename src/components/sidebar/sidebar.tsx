@@ -71,7 +71,7 @@ export default function Sidebar(args: {
 													&quot;
 												</p>
 												<ValueInput
-													elementIndex={0}
+													context={"-1"}
 													label="Name"
 													onChange={(val: string) => {
 														newData[0] = val;
@@ -154,7 +154,7 @@ export default function Sidebar(args: {
 		<div className={styles.sidebar}>
 			<div>
 				<ValueInput
-					elementIndex={0}
+					context={"-1"}
 					label="Name"
 					onChange={(val: string) => {
 						args.setInfoFile({ name: { $set: val } });
@@ -162,7 +162,7 @@ export default function Sidebar(args: {
 					value={args.infoFile.name ? args.infoFile.name : ""}
 				/>
 				<ValueInput
-					elementIndex={0}
+					context={"-1"}
 					label="ID"
 					onChange={(val: string) => {
 						args.setInfoFile({ identifier: { $set: val } });
@@ -173,7 +173,7 @@ export default function Sidebar(args: {
 				/>
 
 				<ValueInput
-					elementIndex={0}
+					context={"-1"}
 					label="Game Type ID"
 					onChange={(val: string) => {
 						args.setInfoFile({ gameTypeIdentifier: { $set: val } });
@@ -212,14 +212,13 @@ export default function Sidebar(args: {
 										args.showPopup(
 											<>
 												<h2>Create Node</h2>
-
 												<p>
 													Add a node under
 													&quot;Representations&quot;
 												</p>
 
 												<ValueInput
-													elementIndex={0}
+													context={"-1"}
 													label="Name"
 													onChange={(val: string) => {
 														newData[0] = val;

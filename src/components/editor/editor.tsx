@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import EmulatorWindow from "./window";
 import styles from "./editor.module.css";
 import {
@@ -45,8 +45,27 @@ export default function MainEditor(args: {
 		document.onmouseup = null;
 		document.onmousemove = null;
 	};
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const onScroll = (e: Event) => {
+			e.preventDefault();
+		};
+		if (ref.current) {
+			ref.current.addEventListener("mousewheel", onScroll);
+			ref.current.addEventListener("wheel", onScroll);
+			return () => {
+				if (ref.current) {
+					ref.current.removeEventListener("mousewheel", onScroll);
+					ref.current.removeEventListener("wheel", onScroll);
+				}
+			};
+		}
+	}, []);
+
 	return (
 		<div
+			ref={ref}
 			className={styles.editor}
 			onContextMenu={(e) => {
 				const hasOnContextMenu: (elem: HTMLElement) => boolean = (
@@ -108,15 +127,29 @@ export default function MainEditor(args: {
 				}
 			}}
 			onWheel={(e) => {
-				let newVal = 0;
-				const delta = Math.sign(e.deltaY);
-				if (delta > 0) {
-					newVal = args.scale - 0.01;
-					if (newVal < 0) newVal = 0;
-				} else if (delta < 0) {
-					newVal = args.scale + 0.01;
+				if (ref.current && args.layoutData) {
+					let newScale = 0;
+					const delta = Math.sign(e.deltaY);
+					const oldScale = args.scale;
+					if (delta > 0) {
+						newScale = args.scale / 1.05;
+						if (newScale < 0) newScale = 0;
+					} else if (delta < 0) {
+						newScale = args.scale * 1.05;
+					}
+					const bounds = ref.current.getBoundingClientRect();
+					const mouseX =
+						e.clientX - bounds.x - bounds.width / 2 - args.xOffset;
+					const mouseY =
+						e.clientY - bounds.y - bounds.height / 2 - args.yOffset;
+					args.setScale(newScale);
+					args.setXOffset(
+						args.xOffset - mouseX * (newScale / oldScale) + mouseX,
+					);
+					args.setYOffset(
+						args.yOffset - mouseY * (newScale / oldScale) + mouseY,
+					);
 				}
-				args.setScale(newVal);
 			}}
 		>
 			{args.layoutData ? (

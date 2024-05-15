@@ -16,6 +16,7 @@ export default function CanvasValues(args: {
 	addAsset: (path: string, asset: Asset) => void;
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 	layoutData: EmulatorLayout;
+	currentRepresentation: string;
 }) {
 	const loadAssetHelper = (fileName: string) => {
 		if (args.assets && fileName in args.assets) {
@@ -58,9 +59,9 @@ export default function CanvasValues(args: {
 			{args.layoutData.assets.type === AssetType.PNG ? (
 				<>
 					<ValueInput
-						elementIndex={0}
+						context={args.currentRepresentation}
 						label="Small"
-						debounce={100}
+						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -94,9 +95,9 @@ export default function CanvasValues(args: {
 						}}
 					/>
 					<ValueInput
-						elementIndex={0}
+						context={args.currentRepresentation}
 						label="Medium"
-						debounce={100}
+						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -130,9 +131,9 @@ export default function CanvasValues(args: {
 						}}
 					/>
 					<ValueInput
-						elementIndex={0}
+						context={args.currentRepresentation}
 						label="Large"
-						debounce={100}
+						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -169,9 +170,9 @@ export default function CanvasValues(args: {
 			) : (
 				<>
 					<ValueInput
-						elementIndex={0}
+						context={args.currentRepresentation}
 						label="Resizable"
-						debounce={100}
+						debounce={1000}
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -209,7 +210,7 @@ export default function CanvasValues(args: {
 			)}
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Screen Width"
 				minValue={0}
 				onChange={(val: string) => {
@@ -249,7 +250,7 @@ export default function CanvasValues(args: {
 			/>
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Screen Height"
 				minValue={0}
 				onChange={(val: string) => {
@@ -289,68 +290,125 @@ export default function CanvasValues(args: {
 			/>
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Padding Top"
 				minValue={0}
 				onChange={(val: string) => {
-					args.setLayoutData({
-						padding: {
-							top: {
-								$set: parseInt(val),
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.setLayoutData({
+							padding: {
+								top: {
+									$set: num,
+								},
 							},
-						},
-					});
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.setLayoutData({
+							padding: {
+								top: {
+									$set: 0,
+								},
+							},
+						});
+					}
 				}}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.top))}
 			/>
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Padding Bottom"
 				minValue={0}
 				onChange={(val: string) => {
-					args.setLayoutData({
-						padding: {
-							bottom: {
-								$set: parseInt(val),
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.setLayoutData({
+							padding: {
+								bottom: {
+									$set: num,
+								},
 							},
-						},
-					});
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.setLayoutData({
+							padding: {
+								bottom: {
+									$set: 0,
+								},
+							},
+						});
+					}
 				}}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.bottom))}
 			/>
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Padding Left"
 				minValue={0}
 				onChange={(val: string) => {
-					args.setLayoutData({
-						padding: {
-							left: {
-								$set: parseInt(val),
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.setLayoutData({
+							padding: {
+								left: {
+									$set: num,
+								},
 							},
-						},
-					});
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.setLayoutData({
+							padding: {
+								left: {
+									$set: 0,
+								},
+							},
+						});
+					}
 				}}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.left))}
 			/>
 
 			<ValueInput
-				elementIndex={0}
+				context={args.currentRepresentation}
 				label="Padding Right"
 				minValue={0}
 				onChange={(val: string) => {
-					args.setLayoutData({
-						padding: {
-							right: {
-								$set: parseInt(val),
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.setLayoutData({
+							padding: {
+								right: {
+									$set: num,
+								},
 							},
-						},
-					});
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					console.log(val, isNaN(num));
+					if (isNaN(num) || val.length === 0) {
+						args.setLayoutData({
+							padding: {
+								right: {
+									$set: 0,
+								},
+							},
+						});
+					}
 				}}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.right))}

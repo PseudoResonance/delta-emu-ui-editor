@@ -6,9 +6,17 @@ import { ChangeEvent, KeyboardEvent, WheelEvent, useRef } from "react";
 const editorKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight"];
 const numberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 const decimalKeys = ["."];
+const shortcuts = (e: KeyboardEvent<unknown>) => {
+	if (
+		e.ctrlKey &&
+		(e.key === "a" || e.key === "c" || e.key === "v" || e.key === "x")
+	)
+		return true;
+	return false;
+};
 
 export default function ValueInput(args: {
-	elementIndex: number;
+	context: string;
 	label: string;
 	increment?: number;
 	places?: number;
@@ -24,6 +32,9 @@ export default function ValueInput(args: {
 	const value = useRef<string>("");
 	const debounceTimeout: NodeJS.Timeout[] = [];
 	const ref = useRef<HTMLInputElement>(null);
+	const contextRef = useRef<string | null>(null);
+	const onChangeRef = useRef<((val: string) => void) | null>(null);
+	const onFocusLostRef = useRef<((val: string) => void) | null>(null);
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if ("debounce" in args) {
 			if (debounceTimeout.length > 0) {
@@ -33,22 +44,35 @@ export default function ValueInput(args: {
 			debounceTimeout[0] = setTimeout(() => {
 				value.current = e.target.value;
 				args.onChange(e.target.value);
-				console.log(e.target.value);
 			}, args.debounce);
 		} else {
 			args.onChange(e.target.value);
-			console.log(e.target.value);
 		}
 	};
 	let onKeyDown = (_: KeyboardEvent<HTMLInputElement>) => {};
 	let onWheel = (_: WheelEvent<HTMLInputElement>) => {};
+	let inputmode:
+		| "text"
+		| "numeric"
+		| "decimal"
+		| "search"
+		| "none"
+		| "tel"
+		| "url"
+		| "email"
+		| undefined = "text";
 	switch (args.type) {
 		case "number":
+			inputmode = "numeric";
 			onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 				let newVal;
 				if (e.key === "Tab") return;
 				else if (
-					!(editorKeys.includes(e.key) || numberKeys.includes(e.key))
+					!(
+						editorKeys.includes(e.key) ||
+						numberKeys.includes(e.key) ||
+						shortcuts(e)
+					)
 				)
 					e.preventDefault();
 				if (ref.current != null) {
@@ -115,6 +139,7 @@ export default function ValueInput(args: {
 			};
 			break;
 		case "float":
+			inputmode = "decimal";
 			onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 				let newVal;
 				if (e.key === "Tab") return;
@@ -122,7 +147,8 @@ export default function ValueInput(args: {
 					!(
 						editorKeys.includes(e.key) ||
 						numberKeys.includes(e.key) ||
-						decimalKeys.includes(e.key)
+						decimalKeys.includes(e.key) ||
+						shortcuts(e)
 					)
 				)
 					e.preventDefault();
@@ -192,6 +218,14 @@ export default function ValueInput(args: {
 		default:
 			break;
 	}
+	if (contextRef.current !== null && args.context != contextRef.current) {
+		if (value.current != args.value && debounceTimeout.length <= 0) {
+			if (onChangeRef.current) onChangeRef.current(value.current);
+			if (onFocusLostRef.current) onFocusLostRef.current(value.current);
+		}
+		onChangeRef.current = args.onChange;
+		if (args.onFocusLost) onFocusLostRef.current = args.onFocusLost;
+	}
 	if (value.current != args.value && debounceTimeout.length <= 0) {
 		value.current = args.value;
 		clearTimeout(debounceTimeout[0]);
@@ -222,6 +256,7 @@ export default function ValueInput(args: {
 			<p className={styles.label}>{args.label}</p>
 
 			<input
+				inputMode={inputmode}
 				className={styles.inputInner}
 				defaultValue={args.value}
 				onChange={onChange}

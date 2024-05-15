@@ -31,6 +31,7 @@ export default function ElementValues(args: {
 		onClose: () => void,
 		onAccept?: () => void,
 	) => void;
+	currentRepresentation: string;
 }) {
 	const loadAssetHelper = (fileName: string) => {
 		if (args.assets && fileName in args.assets) {
@@ -53,10 +54,10 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Thumbstick:
 			data = [
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="thumbstickname"
 					label="Thumbstick Name"
-					debounce={100}
+					debounce={1000}
 					onChange={(val: string) => {
 						args.updateElement({
 							data: { thumbstick: { name: { $set: val } } },
@@ -82,31 +83,71 @@ export default function ElementValues(args: {
 					}}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="thumbstickwidth"
 					label="Thumbstick Width"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								thumbstick: { width: { $set: parseInt(val) } },
-							},
-						});
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									thumbstick: {
+										width: {
+											$set: num,
+										},
+									},
+								},
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									thumbstick: {
+										width: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.thumbstick.width)}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="thumbstickheight"
 					label="Thumbstick Height"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								thumbstick: { height: { $set: parseInt(val) } },
-							},
-						});
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									thumbstick: {
+										height: {
+											$set: num,
+										},
+									},
+								},
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									thumbstick: {
+										height: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.thumbstick.height)}
@@ -117,14 +158,16 @@ export default function ElementValues(args: {
 			data = [
 				...data,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="inputup"
 					label="Input Up"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									up: { $set: val },
+									up: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -132,14 +175,16 @@ export default function ElementValues(args: {
 					value={args.elementData.data.inputsobj.up}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="inputdown"
 					label="Input Down"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									down: { $set: val },
+									down: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -147,14 +192,16 @@ export default function ElementValues(args: {
 					value={args.elementData.data.inputsobj.down}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="inputleft"
 					label="Input Left"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									left: { $set: val },
+									left: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -162,14 +209,16 @@ export default function ElementValues(args: {
 					value={args.elementData.data.inputsobj.left}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="inputright"
 					label="Input Right"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									right: { $set: val },
+									right: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -181,14 +230,16 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Touchscreen:
 			data = [
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="touchscreenx"
 					label="Touchscreen X"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									x: { $set: val },
+									x: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -196,14 +247,16 @@ export default function ElementValues(args: {
 					value={args.elementData.data.inputsobj.x}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="touchscreeny"
 					label="Touchscreen Y"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputsobj: {
-									y: { $set: val },
+									y: {
+										$set: val,
+									},
 								},
 							},
 						});
@@ -215,69 +268,141 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Screen:
 			data = [
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="screenx"
 					label="Screen X"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								screen: {
-									x: { $set: parseInt(val) },
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									screen: {
+										x: {
+											$set: num,
+										},
+									},
 								},
-							},
-						});
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									screen: {
+										x: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.screen.x)}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="screeny"
 					label="Screen Y"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								screen: {
-									y: { $set: parseInt(val) },
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									screen: {
+										y: {
+											$set: num,
+										},
+									},
 								},
-							},
-						});
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									screen: {
+										y: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.screen.y)}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="screenwidth"
 					label="Screen Width"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								screen: {
-									width: { $set: parseInt(val) },
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									screen: {
+										width: {
+											$set: num,
+										},
+									},
 								},
-							},
-						});
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									screen: {
+										width: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.screen.width)}
 				/>,
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="screenheight"
 					label="Screen Height"
 					minValue={0}
 					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								screen: {
-									height: { $set: parseInt(val) },
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								data: {
+									screen: {
+										height: {
+											$set: num,
+										},
+									},
 								},
-							},
-						});
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								data: {
+									screen: {
+										height: {
+											$set: 0,
+										},
+									},
+								},
+							});
+						}
 					}}
 					type="number"
 					value={String(args.elementData.data.screen.height)}
@@ -287,14 +412,17 @@ export default function ElementValues(args: {
 		default:
 			data = [
 				<ValueInput
-					elementIndex={args.elementIndex}
+					context={String(args.elementIndex)}
 					key="inputs"
 					label="Inputs"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
 								inputs: {
-									$set: val.replace(/\s/g, "").split(","),
+									$set: val
+										.replace(/\s/g, "")
+										.split(",")
+										.filter((e) => e),
 								},
 							},
 						});
@@ -353,32 +481,56 @@ export default function ElementValues(args: {
 
 			{...data}
 			<ValueInput
-				elementIndex={args.elementIndex}
+				context={String(args.elementIndex)}
 				label="X"
 				maxValue={args.parentWidth - args.elementData.width}
 				minValue={0}
 				onChange={(val: string) => {
-					args.updateElement({
-						x: {
-							$set: parseInt(val),
-						},
-					});
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.updateElement({
+							x: {
+								$set: num,
+							},
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							x: {
+								$set: 0,
+							},
+						});
+					}
 				}}
 				type="number"
 				value={args.elementData.x.toFixed(0)}
 			/>
 
 			<ValueInput
-				elementIndex={args.elementIndex}
+				context={String(args.elementIndex)}
 				label="Y"
 				maxValue={args.parentHeight - args.elementData.height}
 				minValue={0}
 				onChange={(val: string) => {
-					args.updateElement({
-						y: {
-							$set: parseInt(val),
-						},
-					});
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.updateElement({
+							y: {
+								$set: num,
+							},
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							y: {
+								$set: 0,
+							},
+						});
+					}
 				}}
 				type="number"
 				value={args.elementData.y.toFixed(0)}
@@ -412,32 +564,56 @@ export default function ElementValues(args: {
 			/>
 
 			<ValueInput
-				elementIndex={args.elementIndex}
+				context={String(args.elementIndex)}
 				label="Width"
 				maxValue={args.parentWidth - args.elementData.x}
 				minValue={0}
 				onChange={(val: string) => {
-					args.updateElement({
-						width: {
-							$set: parseInt(val),
-						},
-					});
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.updateElement({
+							width: {
+								$set: num,
+							},
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							width: {
+								$set: 0,
+							},
+						});
+					}
 				}}
 				type="number"
 				value={args.elementData.width.toFixed(0)}
 			/>
 
 			<ValueInput
-				elementIndex={args.elementIndex}
+				context={String(args.elementIndex)}
 				label="Height"
 				maxValue={args.parentHeight - args.elementData.y}
 				minValue={0}
 				onChange={(val: string) => {
-					args.updateElement({
-						height: {
-							$set: parseInt(val),
-						},
-					});
+					const num = parseInt(val);
+					if (!isNaN(num))
+						args.updateElement({
+							height: {
+								$set: num,
+							},
+						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							height: {
+								$set: 0,
+							},
+						});
+					}
 				}}
 				type="number"
 				value={args.elementData.height.toFixed(0)}
@@ -447,61 +623,109 @@ export default function ElementValues(args: {
 				? [<></>]
 				: [
 						<ValueInput
-							elementIndex={args.elementIndex}
+							context={String(args.elementIndex)}
 							key="paddingtop"
 							label="Padding Top"
 							minValue={0}
 							onChange={(val: string) => {
-								args.updateElement({
-									paddingTop: {
-										$set: parseInt(val),
-									},
-								});
+								const num = parseInt(val);
+								if (!isNaN(num))
+									args.updateElement({
+										paddingTop: {
+											$set: num,
+										},
+									});
+							}}
+							onFocusLost={(val: string) => {
+								const num = parseInt(val);
+								if (isNaN(num) || val.length === 0) {
+									args.updateElement({
+										paddingTop: {
+											$set: 0,
+										},
+									});
+								}
 							}}
 							type="number"
 							value={args.elementData.paddingTop.toFixed(0)}
 						/>,
 						<ValueInput
-							elementIndex={args.elementIndex}
+							context={String(args.elementIndex)}
 							key="paddingbottom"
 							label="Padding Bottom"
 							minValue={0}
 							onChange={(val: string) => {
-								args.updateElement({
-									paddingBottom: {
-										$set: parseInt(val),
-									},
-								});
+								const num = parseInt(val);
+								if (!isNaN(num))
+									args.updateElement({
+										paddingBottom: {
+											$set: num,
+										},
+									});
+							}}
+							onFocusLost={(val: string) => {
+								const num = parseInt(val);
+								if (isNaN(num) || val.length === 0) {
+									args.updateElement({
+										paddingBottom: {
+											$set: 0,
+										},
+									});
+								}
 							}}
 							type="number"
 							value={args.elementData.paddingBottom.toFixed(0)}
 						/>,
 						<ValueInput
-							elementIndex={args.elementIndex}
+							context={String(args.elementIndex)}
 							key="paddingleft"
 							label="Padding Left"
 							minValue={0}
 							onChange={(val: string) => {
-								args.updateElement({
-									paddingLeft: {
-										$set: parseInt(val),
-									},
-								});
+								const num = parseInt(val);
+								if (!isNaN(num))
+									args.updateElement({
+										paddingLeft: {
+											$set: num,
+										},
+									});
+							}}
+							onFocusLost={(val: string) => {
+								const num = parseInt(val);
+								if (isNaN(num) || val.length === 0) {
+									args.updateElement({
+										paddingLeft: {
+											$set: 0,
+										},
+									});
+								}
 							}}
 							type="number"
 							value={args.elementData.paddingLeft.toFixed(0)}
 						/>,
 						<ValueInput
-							elementIndex={args.elementIndex}
+							context={String(args.elementIndex)}
 							key="paddingright"
 							label="Padding Right"
 							minValue={0}
 							onChange={(val: string) => {
-								args.updateElement({
-									paddingRight: {
-										$set: parseInt(val),
-									},
-								});
+								const num = parseInt(val);
+								if (!isNaN(num))
+									args.updateElement({
+										paddingRight: {
+											$set: num,
+										},
+									});
+							}}
+							onFocusLost={(val: string) => {
+								const num = parseInt(val);
+								if (isNaN(num) || val.length === 0) {
+									args.updateElement({
+										paddingRight: {
+											$set: 0,
+										},
+									});
+								}
 							}}
 							type="number"
 							value={args.elementData.paddingRight.toFixed(0)}
@@ -520,7 +744,6 @@ export default function ElementValues(args: {
 					args.showPopup(
 						<>
 							<h2>Warning</h2>
-
 							<p>
 								Confirm deleting &quot;
 								{label}
