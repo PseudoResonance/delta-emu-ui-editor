@@ -31,6 +31,7 @@ export default function EmulatorElementComponent(args: {
 	showContextMenu: ContextMenu;
 	duplicateThis: () => void;
 	deleteThis: () => void;
+	zIndex: number | null;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const [isActive, setIsActive] = useState<boolean>(false);
@@ -455,6 +456,7 @@ export default function EmulatorElementComponent(args: {
 							: args.elementData.paddingLeft)) *
 						args.scale -
 					CONSTANT.ELEMENT_BORDER_WIDTH,
+				zIndex: args.zIndex !== null ? args.zIndex : "auto",
 			}}
 		>
 			<div className={styles.expandGrid}>

@@ -144,6 +144,7 @@ export interface Asset {
 export interface HistoryEvent {
 	readonly infoFile: InfoFile;
 	readonly currentRepresentation: string;
+	readonly focusState: FocusState;
 }
 
 type MutableObject<T> = {
@@ -170,4 +171,15 @@ export interface ScaleData {
 	scale: number;
 	xOffset: number;
 	yOffset: number;
+}
+
+export enum FocusTarget {
+	ELEMENT = "ELEMENT",
+	REPRESENTATION = "REPRESENTATION",
+}
+
+export interface FocusState {
+	target: FocusTarget | null;
+	elements: number[];
+	representation: string;
 }

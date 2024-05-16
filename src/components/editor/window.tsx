@@ -2,13 +2,14 @@
 import React, { Dispatch, SetStateAction } from "react";
 import EmulatorElementComponent from "./element";
 import styles from "./editor.module.css";
-import { Asset, ContextMenu, EmulatorElement } from "@/data/types";
+import { Asset, ContextMenu, EmulatorElement, FocusState } from "@/data/types";
 import * as CONSTANT from "@/utils/constants";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
 export default function EmulatorWindow(args: {
 	getCurrentBackgroundAssetName: () => string;
+	focusState: FocusState;
 	assets: Record<string, Asset> | null;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	pressedKeys: string[];
@@ -17,7 +18,7 @@ export default function EmulatorWindow(args: {
 	removeElement: (key: number) => void;
 	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 	editingElement: number;
-	setEditingElement: Dispatch<SetStateAction<number>>;
+	setEditingElement: (val: number) => void;
 	style: object;
 	scale: number;
 	width: number;
@@ -111,6 +112,11 @@ export default function EmulatorWindow(args: {
 
 					{args.elements.map((val: EmulatorElement, i: number) => (
 						<EmulatorElementComponent
+							zIndex={
+								args.focusState.elements.includes(i)
+									? args.focusState.elements.indexOf(i)
+									: null
+							}
 							assets={args.assets}
 							setAssets={args.setAssets}
 							deleteThis={() => {

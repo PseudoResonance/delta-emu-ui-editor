@@ -33,7 +33,7 @@ export default function RightSidebar(args: {
 	layoutData: EmulatorLayout | null;
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 	editingElement: number;
-	setEditingElement: Dispatch<SetStateAction<number>>;
+	setEditingElement: (val: number) => void;
 	scale: ScaleData;
 	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;

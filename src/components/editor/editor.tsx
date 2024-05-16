@@ -7,6 +7,7 @@ import {
 	ContextMenu,
 	EmulatorElement,
 	EmulatorLayout,
+	FocusState,
 	ScaleData,
 } from "@/data/types";
 import { Spec } from "immutability-helper";
@@ -14,6 +15,7 @@ import { getReactProps } from "@/utils/reactInternals";
 
 export default function MainEditor(args: {
 	getCurrentBackgroundAssetName: () => string;
+	focusState: FocusState;
 	assets: Record<string, Asset> | null;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	pressedKeys: string[];
@@ -23,7 +25,7 @@ export default function MainEditor(args: {
 	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 	layoutData: EmulatorLayout | null;
 	editingElement: number;
-	setEditingElement: Dispatch<SetStateAction<number>>;
+	setEditingElement: (val: number) => void;
 	scale: ScaleData;
 	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;
@@ -243,6 +245,7 @@ export default function MainEditor(args: {
 					getCurrentBackgroundAssetName={
 						args.getCurrentBackgroundAssetName
 					}
+					focusState={args.focusState}
 					assets={args.assets}
 					setAssets={args.setAssets}
 					addElementData={args.addElementData}

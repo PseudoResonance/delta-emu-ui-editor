@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import MenuBar from "@/components/menubar/menubar";
 import Sidebar from "@/components/sidebar/sidebar";
 import MainEditor from "@/components/editor/editor";
@@ -15,6 +15,8 @@ import {
 	EmulatorElement,
 	EmulatorElementType,
 	EmulatorLayout,
+	FocusState,
+	FocusTarget,
 	HistoryEvent,
 	InfoFile,
 	Mutable,
@@ -23,6 +25,7 @@ import {
 } from "@/data/types";
 import update, { Spec } from "immutability-helper";
 import * as CONSTANT from "@/utils/constants";
+import ValueInput from "@/components/inputs/valueinput";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 250;
@@ -144,7 +147,36 @@ export default function Home() {
 		xOffset: 0,
 		yOffset: 0,
 	});
-	const [editingElement, setEditingElement] = useState<number>(-1);
+	const [focusState, setFocusState] = useState<FocusState>({
+		target: null,
+		elements: [],
+		representation: "",
+	});
+	const [editingElement, setEditingElementInternal] = useState<number>(-1);
+	const setEditingElement = useCallback((val: number) => {
+		setEditingElementInternal(val);
+		if (val > -1) {
+			setFocusState((state) => {
+				const ret = {
+					target: FocusTarget.ELEMENT,
+					elements: state.elements.includes(val)
+						? state.elements.sort((x, y) =>
+								x == val ? 1 : y == val ? -1 : 0,
+							)
+						: [...state.elements, val],
+					representation: currentRepresentation,
+				};
+				return ret;
+			});
+		} else {
+			setFocusState((state) =>
+				update(state, {
+					target: { $set: FocusTarget.REPRESENTATION },
+					representation: { $set: currentRepresentation },
+				}),
+			);
+		}
+	}, []);
 	const [hoverIndex, setHoverIndex] = useState<number>(-1);
 	const [pressedKeys, setPressedKeys] = useState<string[]>([]);
 
@@ -241,6 +273,17 @@ export default function Home() {
 			{ elements: { $splice: [[key, 1]] } },
 			currentRepresentation,
 		);
+		setFocusState((state) =>
+			update(state, {
+				elements: {
+					$set: state.elements.flatMap((val) => {
+						if (val < key) return val;
+						else if (val > key) return val - 1;
+						else return [];
+					}),
+				},
+			}),
+		);
 	};
 
 	useEffect(() => {
@@ -266,20 +309,46 @@ export default function Home() {
 				? (e.target as HTMLElement).nodeName.toLocaleLowerCase()
 				: "";
 			if (
-				editingElement >= 0 &&
+				focusState.target &&
 				e.clipboardData &&
 				!(nodeType === "input" || nodeType === "textarea")
 			) {
-				const representation = getRepresentation(
-					infoFile,
-					currentRepresentation,
-				);
-				if (representation) {
-					e.clipboardData.setData(
-						CONSTANT.CLIPBOARD_ELEMENT,
-						JSON.stringify(representation.elements[editingElement]),
-					);
-					e.preventDefault();
+				let representation;
+				switch (focusState.target) {
+					case FocusTarget.ELEMENT:
+						representation = getRepresentation(
+							infoFile,
+							currentRepresentation,
+						);
+						if (representation && focusState.elements.length > 0) {
+							e.clipboardData.setData(
+								CONSTANT.CLIPBOARD_ELEMENT,
+								JSON.stringify(
+									representation.elements[
+										focusState.elements[
+											focusState.elements.length - 1
+										]
+									],
+								),
+							);
+							e.preventDefault();
+						}
+						break;
+					case FocusTarget.REPRESENTATION:
+						if (focusState.representation.length > 0) {
+							representation = getRepresentation(
+								infoFile,
+								focusState.representation,
+							);
+							if (representation) {
+								e.clipboardData.setData(
+									CONSTANT.CLIPBOARD_REPRESENTATION,
+									JSON.stringify(representation),
+								);
+								e.preventDefault();
+							}
+						}
+						break;
 				}
 			}
 		};
@@ -291,15 +360,58 @@ export default function Home() {
 				: "";
 			if (
 				e.clipboardData &&
-				e.clipboardData.types.includes(CONSTANT.CLIPBOARD_ELEMENT) &&
 				!(nodeType === "input" || nodeType === "textarea")
 			) {
-				addElementData({
-					...JSON.parse(
-						e.clipboardData.getData(CONSTANT.CLIPBOARD_ELEMENT),
-					),
-				});
-				e.preventDefault();
+				if (
+					e.clipboardData.types.includes(CONSTANT.CLIPBOARD_ELEMENT)
+				) {
+					addElementData({
+						...JSON.parse(
+							e.clipboardData.getData(CONSTANT.CLIPBOARD_ELEMENT),
+						),
+					});
+					e.preventDefault();
+				} else if (
+					e.clipboardData.types.includes(
+						CONSTANT.CLIPBOARD_REPRESENTATION,
+					)
+				) {
+					const newData = [""];
+					const split = currentRepresentation.split(".");
+					const newRepresentation: Representation = JSON.parse(
+						e.clipboardData.getData(
+							CONSTANT.CLIPBOARD_REPRESENTATION,
+						),
+					);
+					let newKey = "";
+					if (split.length > 0) {
+						newKey = split.slice(0, split.length - 1).join(".");
+					}
+					showPopup(
+						<>
+							<h2>Paste Node</h2>
+							<p>Paste node under &quot;{newKey}&quot;</p>
+							<ValueInput
+								context={"-1"}
+								label="Name"
+								onChange={(val: string) => {
+									newData[0] = val;
+								}}
+								value=""
+							/>
+						</>,
+						() => {},
+						() => {
+							if ((newData[0] as string).length > 0) {
+								addNode(
+									`${newKey}.${newData[0]}`,
+									newRepresentation,
+								);
+							}
+						},
+					);
+					e.preventDefault();
+				}
 			}
 		};
 		window.addEventListener("paste", paste);
@@ -316,7 +428,7 @@ export default function Home() {
 			window.removeEventListener("paste", paste);
 			window.removeEventListener("blur", onClear);
 		};
-	}, [editingElement]);
+	}, [focusState]);
 
 	const createNode: (key: string, isLayout: boolean) => void = (
 		key: string,
@@ -334,6 +446,39 @@ export default function Home() {
 								layout: structuredClone(defaultLayout),
 							}
 						: {};
+				}
+			} else {
+				if (val in data) {
+					data = data[val] as Record<string, object>;
+				} else {
+					console.error(`Unable to find key ${val} in data!`);
+				}
+			}
+		});
+		setInfoFile(newInfoFile);
+	};
+
+	const addNode: (key: string, representation: Representation) => void = (
+		key: string,
+		representation: Representation,
+	) => {
+		const newInfoFile = Object.assign({}, infoFile);
+		const parts = key.split(".");
+		let data: Record<string, object> = newInfoFile.representations;
+		parts.forEach((val: string, i: number) => {
+			if (i == parts.length - 1) {
+				if (!(val in data)) {
+					data[val] = representation;
+				} else {
+					console.error(`Node ${key} already exists!`);
+					showPopup(
+						<>
+							<h1>Error</h1>
+
+							<p>Node &quot;{key}&quot; already exists!</p>
+						</>,
+						() => {},
+					);
 				}
 			} else {
 				if (val in data) {
@@ -403,7 +548,12 @@ export default function Home() {
 		);
 		const checkAssets = newAssets ? newAssets : assets;
 		if (data) {
-			setEditingElement(-1);
+			setEditingElementInternal(-1);
+			setFocusState({
+				target: FocusTarget.REPRESENTATION,
+				elements: [],
+				representation: key,
+			});
 			setCurrentRepresentation(key);
 			if (checkAssets) {
 				const layoutAssets = data.layout.assets;
@@ -535,7 +685,8 @@ export default function Home() {
 	};
 
 	const clearUI: () => void = () => {
-		setEditingElement(-1);
+		setEditingElementInternal(-1);
+		setFocusState({ target: null, elements: [], representation: "" });
 		setCurrentRepresentation("");
 	};
 
@@ -1189,6 +1340,7 @@ export default function Home() {
 					newHistory.push({
 						infoFile: structuredClone(infoFile),
 						currentRepresentation: currentRepresentation,
+						focusState: focusState,
 					});
 					historyInfo.currentState = newHistory.length;
 					setHistory(newHistory);
@@ -1223,6 +1375,7 @@ export default function Home() {
 			) {
 				setHoverIndex(-1);
 			}
+			setFocusState(history[index - 1].focusState);
 			setInfoFile(history[index - 1].infoFile);
 			setCurrentRepresentation(history[index - 1].currentRepresentation);
 			historyInfo.currentState = index;
@@ -1346,6 +1499,7 @@ export default function Home() {
 					getCurrentBackgroundAssetName={
 						getCurrentBackgroundAssetName
 					}
+					focusState={focusState}
 					assets={assets}
 					setAssets={setAssets}
 					addElementData={addElementData}
