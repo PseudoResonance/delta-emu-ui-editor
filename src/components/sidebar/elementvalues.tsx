@@ -78,16 +78,16 @@ export default function ElementValues(args: {
 				/>,
 				<ValueInput
 					context={String(args.elementIndex)}
+					debounce={1000}
 					key="thumbstickname"
 					label="Thumbstick Name"
-					suggestionsId="assets"
-					debounce={1000}
 					onChange={(val: string) => {
 						args.updateElement({
 							data: { thumbstick: { name: { $set: val } } },
 						});
 						loadAssetHelper(val);
 					}}
+					suggestionsId="assets"
 					value={args.elementData.data.thumbstick.name}
 				/>,
 				<FileInput
@@ -196,7 +196,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="inputup"
 					label="Input Up"
-					suggestionsId="inputUp"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -208,6 +207,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputUp"
 					value={args.elementData.data.inputsobj.up}
 				/>,
 				<Suggestions
@@ -225,7 +225,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="inputdown"
 					label="Input Down"
-					suggestionsId="inputDown"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -237,6 +236,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputDown"
 					value={args.elementData.data.inputsobj.down}
 				/>,
 				<Suggestions
@@ -254,7 +254,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="inputleft"
 					label="Input Left"
-					suggestionsId="inputLeft"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -266,6 +265,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputLeft"
 					value={args.elementData.data.inputsobj.left}
 				/>,
 				<Suggestions
@@ -283,7 +283,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="inputright"
 					label="Input Right"
-					suggestionsId="inputRight"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -295,6 +294,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputRight"
 					value={args.elementData.data.inputsobj.right}
 				/>,
 			];
@@ -316,7 +316,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="touchscreenx"
 					label="Touchscreen X"
-					suggestionsId="inputX"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -328,6 +327,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputX"
 					value={args.elementData.data.inputsobj.x}
 				/>,
 				<Suggestions
@@ -345,7 +345,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="touchscreeny"
 					label="Touchscreen Y"
-					suggestionsId="inputY"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -357,6 +356,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputY"
 					value={args.elementData.data.inputsobj.y}
 				/>,
 			];
@@ -377,7 +377,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="screenx"
 					label="Screen X"
-					suggestionsId="screenX"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -406,6 +405,7 @@ export default function ElementValues(args: {
 							});
 						}
 					}}
+					suggestionsId="screenX"
 					type="number"
 					value={String(args.elementData.data.screen.x)}
 				/>,
@@ -423,7 +423,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="screeny"
 					label="Screen Y"
-					suggestionsId="screenY"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -452,6 +451,7 @@ export default function ElementValues(args: {
 							});
 						}
 					}}
+					suggestionsId="screenY"
 					type="number"
 					value={String(args.elementData.data.screen.y)}
 				/>,
@@ -469,7 +469,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="screenwidth"
 					label="Screen Width"
-					suggestionsId="screenWidth"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -498,6 +497,7 @@ export default function ElementValues(args: {
 							});
 						}
 					}}
+					suggestionsId="screenWidth"
 					type="number"
 					value={String(args.elementData.data.screen.width)}
 				/>,
@@ -515,7 +515,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="screenheight"
 					label="Screen Height"
-					suggestionsId="screenHeight"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -544,6 +543,7 @@ export default function ElementValues(args: {
 							});
 						}
 					}}
+					suggestionsId="screenHeight"
 					type="number"
 					value={String(args.elementData.data.screen.height)}
 				/>,
@@ -565,7 +565,6 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					key="inputs"
 					label="Inputs"
-					suggestionsId="inputs"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -578,6 +577,7 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
+					suggestionsId="inputs"
 					value={args.elementData.data.inputs?.join(", ")}
 				/>,
 			];
@@ -587,7 +587,6 @@ export default function ElementValues(args: {
 	return (
 		<div className={styles.elementValues}>
 			<DropdownInput
-				value={args.elementData.type}
 				elementIndex={args.elementIndex}
 				label="Type"
 				onChange={(val: string) => {
@@ -599,6 +598,7 @@ export default function ElementValues(args: {
 						},
 					});
 				}}
+				value={args.elementData.type}
 				values={
 					{
 						[EmulatorElementType.Default]: "Button",

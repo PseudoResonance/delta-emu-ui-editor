@@ -257,17 +257,17 @@ export default function MenuBar(args: {
 				setIsActive={setIsActive}
 				subElements={[
 					<MenuButton
+						disabled={!args.canUndo}
 						key="undo"
 						label="Undo"
-						disabled={!args.canUndo}
 						onClick={() => {
 							args.undo();
 						}}
 					/>,
 					<MenuButton
+						disabled={!args.canRedo}
 						key="redo"
 						label="Redo"
-						disabled={!args.canRedo}
 						onClick={() => {
 							args.redo();
 						}}

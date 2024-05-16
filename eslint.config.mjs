@@ -42,6 +42,8 @@ export default [
 					varsIgnorePattern: "^_",
 				},
 			],
+			"react/jsx-sort-props": ["warn"],
+			"react/sort-default-props": ["warn"],
 		},
 		settings: {
 			react: {

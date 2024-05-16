@@ -1452,25 +1452,25 @@ export default function Home() {
 		<>
 			<main className={styles.main}>
 				<MenuBar
-					infoFile={infoFile}
+					assets={assets}
 					canRedo={historyInfo.currentState < history.length}
 					canUndo={
 						historyInfo.currentState > 1 || historyInfo.writing
 					}
 					elements={currentElements}
+					getReferencedAssets={getReferencedAssets}
+					infoFile={infoFile}
 					layoutData={currentLayout}
 					parseJSON={parseJSON}
 					pressedKeys={pressedKeys}
-					assets={assets}
-					setAssets={setAssets}
 					redo={() => {
 						if (historyInfo.currentState < history.length) {
 							revertHistory(historyInfo.currentState + 1);
 						}
 					}}
-					getReferencedAssets={getReferencedAssets}
 					saveJSON={saveJSON}
 					scale={scale}
+					setAssets={setAssets}
 					setScale={setScale}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
@@ -1496,20 +1496,20 @@ export default function Home() {
 				/>
 
 				<MainEditor
+					addElementData={addElementData}
+					assets={assets}
+					editingElement={editingElement}
+					elements={currentElements}
+					focusState={focusState}
 					getCurrentBackgroundAssetName={
 						getCurrentBackgroundAssetName
 					}
-					focusState={focusState}
-					assets={assets}
-					setAssets={setAssets}
-					addElementData={addElementData}
-					editingElement={editingElement}
 					hoverIndex={hoverIndex}
-					elements={currentElements}
 					layoutData={currentLayout}
 					pressedKeys={pressedKeys}
 					removeElement={removeElement}
 					scale={scale}
+					setAssets={setAssets}
 					setEditingElement={setEditingElement}
 					setScale={setScale}
 					showContextMenu={showContextMenu}
@@ -1518,21 +1518,23 @@ export default function Home() {
 				/>
 
 				<RightSidebar
-					getCurrentBackgroundAssetName={
-						getCurrentBackgroundAssetName
-					}
-					setAssets={setAssets}
-					infoFile={infoFile}
 					addAsset={addAsset}
 					addElement={addElement}
 					addElementData={addElementData}
+					assets={assets}
+					currentRepresentation={currentRepresentation}
 					editingElement={editingElement}
-					hoverIndex={hoverIndex}
 					elements={currentElements}
+					getCurrentBackgroundAssetName={
+						getCurrentBackgroundAssetName
+					}
+					hoverIndex={hoverIndex}
+					infoFile={infoFile}
 					layoutData={currentLayout}
 					pressedKeys={pressedKeys}
 					removeElement={removeElement}
 					scale={scale}
+					setAssets={setAssets}
 					setEditingElement={setEditingElement}
 					setHoverIndex={setHoverIndex}
 					setLayoutData={(layout: Spec<EmulatorLayout, never>) => {
@@ -1544,9 +1546,7 @@ export default function Home() {
 					setScale={setScale}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
-					assets={assets}
 					updateElement={updateElement}
-					currentRepresentation={currentRepresentation}
 				/>
 			</main>
 

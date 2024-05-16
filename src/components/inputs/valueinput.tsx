@@ -259,9 +259,9 @@ export default function ValueInput(args: {
 			<p className={styles.label}>{args.label}</p>
 
 			<input
-				inputMode={inputmode}
 				className={styles.inputInner}
 				defaultValue={args.value}
+				inputMode={inputmode}
 				onChange={onChange}
 				onKeyDown={onKeyDown}
 				onMouseEnter={() => {

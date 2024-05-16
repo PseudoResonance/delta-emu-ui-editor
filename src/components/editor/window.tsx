@@ -112,13 +112,7 @@ export default function EmulatorWindow(args: {
 
 					{args.elements.map((val: EmulatorElement, i: number) => (
 						<EmulatorElementComponent
-							zIndex={
-								args.focusState.elements.includes(i)
-									? args.focusState.elements.indexOf(i)
-									: null
-							}
 							assets={args.assets}
-							setAssets={args.setAssets}
 							deleteThis={() => {
 								if (args.editingElement >= i)
 									args.setEditingElement(
@@ -142,6 +136,7 @@ export default function EmulatorWindow(args: {
 							parentWidth={args.width}
 							pressedKeys={args.pressedKeys}
 							scale={args.scale}
+							setAssets={args.setAssets}
 							showContextMenu={args.showContextMenu}
 							showPopup={args.showPopup}
 							updateElement={(
@@ -149,6 +144,11 @@ export default function EmulatorWindow(args: {
 							) => {
 								args.updateElement(i, data);
 							}}
+							zIndex={
+								args.focusState.elements.includes(i)
+									? args.focusState.elements.indexOf(i)
+									: null
+							}
 						/>
 					))}
 				</div>

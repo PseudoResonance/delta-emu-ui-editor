@@ -58,6 +58,15 @@ export default function ControlsInfo() {
 			</div>
 			<hr />
 			<div className={styles.controlEntry}>
+				<p>Fast Nudge Element</p>
+				<div className={styles.controls}>
+					<p className={styles.key}>Shift</p>
+					<p>+</p>
+					<p className={styles.key}>Arrow Key</p>
+				</div>
+			</div>
+			<hr />
+			<div className={styles.controlEntry}>
 				<p>Delete Element</p>
 				<div className={styles.controls}>
 					<p className={styles.key}>Backspace</p>

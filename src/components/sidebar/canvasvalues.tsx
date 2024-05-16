@@ -38,7 +38,6 @@ export default function CanvasValues(args: {
 	return (
 		<>
 			<DropdownInput
-				value={args.layoutData.assets.type}
 				elementIndex={0}
 				label="Asset Type"
 				onChange={(val: string) => {
@@ -50,6 +49,7 @@ export default function CanvasValues(args: {
 						},
 					});
 				}}
+				value={args.layoutData.assets.type}
 				values={
 					{
 						[AssetType.PDF]: "PDF",
@@ -71,9 +71,8 @@ export default function CanvasValues(args: {
 				<>
 					<ValueInput
 						context={args.currentRepresentation}
-						label="Small"
-						suggestionsId="assets"
 						debounce={1000}
+						label="Small"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -84,6 +83,7 @@ export default function CanvasValues(args: {
 							});
 							loadAssetHelper(val);
 						}}
+						suggestionsId="assets"
 						value={args.layoutData.assets.small}
 					/>
 					<FileInput
@@ -108,9 +108,8 @@ export default function CanvasValues(args: {
 					/>
 					<ValueInput
 						context={args.currentRepresentation}
-						label="Medium"
-						suggestionsId="assets"
 						debounce={1000}
+						label="Medium"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -121,6 +120,7 @@ export default function CanvasValues(args: {
 							});
 							loadAssetHelper(val);
 						}}
+						suggestionsId="assets"
 						value={args.layoutData.assets.medium}
 					/>
 					<FileInput
@@ -145,9 +145,8 @@ export default function CanvasValues(args: {
 					/>
 					<ValueInput
 						context={args.currentRepresentation}
-						label="Large"
-						suggestionsId="assets"
 						debounce={1000}
+						label="Large"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -158,6 +157,7 @@ export default function CanvasValues(args: {
 							});
 							loadAssetHelper(val);
 						}}
+						suggestionsId="assets"
 						value={args.layoutData.assets.large}
 					/>
 					<FileInput
@@ -185,9 +185,8 @@ export default function CanvasValues(args: {
 				<>
 					<ValueInput
 						context={args.currentRepresentation}
-						label="Resizable"
-						suggestionsId="assets"
 						debounce={1000}
+						label="Resizable"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -198,6 +197,7 @@ export default function CanvasValues(args: {
 							});
 							loadAssetHelper(val);
 						}}
+						suggestionsId="assets"
 						value={args.layoutData.assets.resizable}
 					/>
 
@@ -430,7 +430,6 @@ export default function CanvasValues(args: {
 			/>
 
 			<CheckboxInput
-				value={args.layoutData.translucent}
 				label="Translucent"
 				onChange={(val: boolean) => {
 					args.setLayoutData({
@@ -439,10 +438,10 @@ export default function CanvasValues(args: {
 						},
 					});
 				}}
+				value={args.layoutData.translucent}
 			/>
 
 			<CheckboxInput
-				value={args.layoutData.lockBackgroundRatio}
 				label="Lock Background Ratio"
 				onChange={(val: boolean) => {
 					const bgName = args.getCurrentBackgroundAssetName();
@@ -474,6 +473,7 @@ export default function CanvasValues(args: {
 						}),
 					});
 				}}
+				value={args.layoutData.lockBackgroundRatio}
 			/>
 
 			<Button

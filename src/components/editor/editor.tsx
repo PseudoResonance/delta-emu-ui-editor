@@ -265,7 +265,6 @@ export default function MainEditor(args: {
 
 	return (
 		<div
-			ref={ref}
 			className={styles.editor}
 			onContextMenu={(e) => {
 				const hasOnContextMenu: (elem: HTMLElement) => boolean = (
@@ -355,24 +354,25 @@ export default function MainEditor(args: {
 					});
 				}
 			}}
+			ref={ref}
 		>
 			{args.layoutData ? (
 				<EmulatorWindow
+					addElementData={args.addElementData}
+					assets={args.assets}
+					editingElement={args.editingElement}
+					elements={args.elements}
+					focusState={args.focusState}
 					getCurrentBackgroundAssetName={
 						args.getCurrentBackgroundAssetName
 					}
-					focusState={args.focusState}
-					assets={args.assets}
-					setAssets={args.setAssets}
-					addElementData={args.addElementData}
-					editingElement={args.editingElement}
-					elements={args.elements}
 					height={args.layoutData.canvas.height}
 					hoverIndex={args.hoverIndex}
 					padding={args.layoutData.padding}
 					pressedKeys={args.pressedKeys}
 					removeElement={args.removeElement}
 					scale={args.scale.scale}
+					setAssets={args.setAssets}
 					setEditingElement={args.setEditingElement}
 					showContextMenu={args.showContextMenu}
 					showPopup={args.showPopup}

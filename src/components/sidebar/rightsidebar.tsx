@@ -126,10 +126,6 @@ export default function RightSidebar(args: {
 														</p>
 														<div
 															className={`${visibilityStyles.visibilityToggle}${args.elements[i].hidden ? " " + visibilityStyles.hidden : ""}`}
-															style={{
-																height: "var(--tree-text-line-height)",
-																width: "var(--tree-text-line-height)",
-															}}
 															onClick={() => {
 																args.updateElement(
 																	i,
@@ -143,6 +139,10 @@ export default function RightSidebar(args: {
 																		},
 																	},
 																);
+															}}
+															style={{
+																height: "var(--tree-text-line-height)",
+																width: "var(--tree-text-line-height)",
 															}}
 														></div>
 													</div>
@@ -233,11 +233,9 @@ export default function RightSidebar(args: {
 				{args.layoutData &&
 					(args.editingElement >= 0 ? (
 						<ElementValues
-							currentRepresentation={args.currentRepresentation}
-							setAssets={args.setAssets}
-							layoutData={args.layoutData}
-							assets={args.assets}
 							addAsset={args.addAsset}
+							assets={args.assets}
+							currentRepresentation={args.currentRepresentation}
 							deleteThis={() => {
 								args.setEditingElement(args.editingElement - 1);
 								args.removeElement(args.editingElement);
@@ -251,10 +249,12 @@ export default function RightSidebar(args: {
 							}}
 							elementData={args.elements[args.editingElement]}
 							elementIndex={args.editingElement}
+							infoFile={args.infoFile}
+							layoutData={args.layoutData}
 							parentHeight={args.layoutData.canvas.height}
 							parentWidth={args.layoutData.canvas.width}
+							setAssets={args.setAssets}
 							showPopup={args.showPopup}
-							infoFile={args.infoFile}
 							updateElement={(
 								data: Spec<EmulatorElement, never>,
 							) => {
@@ -263,14 +263,14 @@ export default function RightSidebar(args: {
 						/>
 					) : (
 						<CanvasValues
+							addAsset={args.addAsset}
+							assets={args.assets}
 							currentRepresentation={args.currentRepresentation}
 							getCurrentBackgroundAssetName={
 								args.getCurrentBackgroundAssetName
 							}
-							setAssets={args.setAssets}
 							layoutData={args.layoutData}
-							assets={args.assets}
-							addAsset={args.addAsset}
+							setAssets={args.setAssets}
 							setLayoutData={args.setLayoutData}
 						/>
 					))}

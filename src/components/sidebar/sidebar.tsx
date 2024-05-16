@@ -81,13 +81,13 @@ export default function Sidebar(args: {
 													value=""
 												/>
 												<CheckboxInput
-													value={depth >= 1}
 													label="Layout Node"
 													onChange={(
 														val: boolean,
 													) => {
 														newData[1] = val;
 													}}
+													value={depth >= 1}
 												/>
 											</>,
 											() => {},
@@ -181,10 +181,10 @@ export default function Sidebar(args: {
 				<ValueInput
 					context={"-1"}
 					label="Game Type ID"
-					suggestionsId="gameTypeIdentifier"
 					onChange={(val: string) => {
 						args.setInfoFile({ gameTypeIdentifier: { $set: val } });
 					}}
+					suggestionsId="gameTypeIdentifier"
 					value={
 						args.infoFile.gameTypeIdentifier
 							? args.infoFile.gameTypeIdentifier
@@ -193,11 +193,11 @@ export default function Sidebar(args: {
 				/>
 
 				<CheckboxInput
-					value={args.infoFile.debug}
 					label="Debug"
 					onChange={(val: boolean) => {
 						args.setInfoFile({ debug: { $set: val } });
 					}}
+					value={args.infoFile.debug}
 				/>
 			</div>
 			<hr />
@@ -234,13 +234,13 @@ export default function Sidebar(args: {
 												/>
 
 												<CheckboxInput
-													value={false}
 													label="Layout Node"
 													onChange={(
 														val: boolean,
 													) => {
 														newData[1] = val;
 													}}
+													value={false}
 												/>
 											</>,
 											() => {},
