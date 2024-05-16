@@ -11,6 +11,8 @@ import * as CONSTANT from "@/utils/constants";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
+const PADDING_EXPANDS_WITH_BOX_MOVE = false;
+
 export default function EmulatorElementComponent(args: {
 	assets: Record<string, Asset> | null;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
@@ -83,7 +85,7 @@ export default function EmulatorElementComponent(args: {
 	const bgUrl =
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
-	const moveHelper = (e: React.PointerEvent) => {
+	const moveHelper = (e: React.PointerEvent, inner: boolean) => {
 		if (!e.ctrlKey) {
 			args.onClick();
 			e.preventDefault();
@@ -92,36 +94,74 @@ export default function EmulatorElementComponent(args: {
 			const yStartMouse = e.clientY;
 			const xStart = args.elementData.x;
 			const yStart = args.elementData.y;
+			const paddingTopStart = args.elementData.paddingTop;
+			const paddingBottomStart = args.elementData.paddingBottom;
+			const paddingLeftStart = args.elementData.paddingLeft;
+			const paddingRightStart = args.elementData.paddingRight;
+			let paddingTop = -1;
+			let paddingBottom = -1;
+			let paddingLeft = -1;
+			let paddingRight = -1;
 			const moveHandler = (e: PointerEvent) => {
 				e.preventDefault();
+				if (!PADDING_EXPANDS_WITH_BOX_MOVE && inner) {
+					paddingTop =
+						paddingTopStart +
+						(e.clientY - yStartMouse) / args.scale;
+					paddingBottom =
+						paddingBottomStart -
+						(e.clientY - yStartMouse) / args.scale;
+					if (paddingTop < 0) {
+						paddingTop = 0;
+						paddingBottom = paddingBottomStart + paddingTopStart;
+					} else if (paddingBottom < 0) {
+						paddingBottom = 0;
+						paddingTop = paddingBottomStart + paddingTopStart;
+					}
+					paddingLeft =
+						paddingLeftStart +
+						(e.clientX - xStartMouse) / args.scale;
+					paddingRight =
+						paddingRightStart -
+						(e.clientX - xStartMouse) / args.scale;
+					if (paddingLeft < 0) {
+						paddingLeft = 0;
+						paddingRight = paddingRightStart + paddingLeftStart;
+					} else if (paddingRight < 0) {
+						paddingRight = 0;
+						paddingLeft = paddingRightStart + paddingLeftStart;
+					}
+				}
 				let newTop = yStart + (e.clientY - yStartMouse) / args.scale;
-				if (newTop < args.elementData.paddingTop) {
-					newTop = args.elementData.paddingTop;
-				} else if (
-					newTop +
-						(args.elementData.height +
-							args.elementData.paddingBottom) >
-					args.parentHeight
-				) {
-					newTop =
-						args.parentHeight -
-						(args.elementData.height +
-							args.elementData.paddingBottom);
-				}
+				newTop = Math.max(
+					newTop,
+					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+						? args.elementData.paddingTop
+						: 0,
+				);
+				newTop = Math.min(
+					newTop,
+					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+						? args.parentHeight -
+								(args.elementData.height +
+									args.elementData.paddingBottom)
+						: args.parentHeight - args.elementData.height,
+				);
 				let newLeft = xStart + (e.clientX - xStartMouse) / args.scale;
-				if (newLeft < args.elementData.paddingLeft) {
-					newLeft = args.elementData.paddingLeft;
-				} else if (
-					newLeft +
-						(args.elementData.width +
-							args.elementData.paddingRight) >
-					args.parentWidth
-				) {
-					newLeft =
-						args.parentWidth -
-						(args.elementData.width +
-							args.elementData.paddingRight);
-				}
+				newLeft = Math.max(
+					newLeft,
+					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+						? args.elementData.paddingLeft
+						: 0,
+				);
+				newLeft = Math.min(
+					newLeft,
+					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+						? args.parentWidth -
+								(args.elementData.width +
+									args.elementData.paddingRight)
+						: args.parentWidth - args.elementData.width,
+				);
 				args.updateElement({
 					x: {
 						$set: newLeft,
@@ -129,6 +169,26 @@ export default function EmulatorElementComponent(args: {
 					y: {
 						$set: newTop,
 					},
+					...(paddingTop >= 0 && {
+						paddingTop: {
+							$set: paddingTop,
+						},
+					}),
+					...(paddingBottom >= 0 && {
+						paddingBottom: {
+							$set: paddingBottom,
+						},
+					}),
+					...(paddingLeft >= 0 && {
+						paddingLeft: {
+							$set: paddingLeft,
+						},
+					}),
+					...(paddingRight >= 0 && {
+						paddingRight: {
+							$set: paddingRight,
+						},
+					}),
 				});
 			};
 			const stopHandler = () => {
@@ -489,7 +549,9 @@ export default function EmulatorElementComponent(args: {
 				></div>
 
 				<div
-					onPointerDown={moveHelper}
+					onPointerDown={(e) => {
+						moveHelper(e, false);
+					}}
 					style={{ cursor: "move" }}
 				></div>
 
@@ -661,7 +723,9 @@ export default function EmulatorElementComponent(args: {
 						></div>
 
 						<div
-							onPointerDown={moveHelper}
+							onPointerDown={(e) => {
+								moveHelper(e, true);
+							}}
 							style={{ cursor: "move" }}
 						></div>
 
