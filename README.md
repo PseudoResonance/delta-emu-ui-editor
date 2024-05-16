@@ -25,3 +25,8 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Known Issues
+
+-   The previous skin's asset may override the current skin if it is still being rendered when a new skin is loaded.
+-   Some input fields reformat the contents while still typing.
