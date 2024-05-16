@@ -9,7 +9,6 @@ import {
 	Asset,
 	ContextMenu,
 	EmulatorElement,
-	EmulatorElementType,
 	EmulatorLayout,
 	InfoFile,
 	ScaleData,
@@ -17,6 +16,7 @@ import {
 import TreeElement from "./treeElement";
 import { Spec } from "immutability-helper";
 import CanvasValues from "./canvasvalues";
+import { getElementLabel } from "../editor/element";
 
 export default function RightSidebar(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -98,27 +98,10 @@ export default function RightSidebar(args: {
 							>
 								{args.elements.map(
 									(val: EmulatorElement, i: number) => {
-										let label = "";
-										switch (val.type) {
-											case EmulatorElementType.Thumbstick:
-												label = "Thumbstick";
-												break;
-											case EmulatorElementType.Dpad:
-												label = "D-Pad";
-												break;
-											case EmulatorElementType.Touchscreen:
-												label = "Touchscreen";
-												break;
-											case EmulatorElementType.Screen:
-												label = "Screen";
-												break;
-											case EmulatorElementType.Default:
-												label =
-													val.data.inputs.join(", ");
-												break;
-										}
-										if (label.trim().length === 0)
-											label = "Not Bound";
+										const label = getElementLabel(
+											val,
+											true,
+										);
 										return (
 											<TreeElement
 												key={i}
@@ -196,45 +179,10 @@ export default function RightSidebar(args: {
 																				Confirm
 																				deleting
 																				&quot;
-																				{(() => {
-																					let label =
-																						"Not Bound";
-																					switch (
-																						val.type
-																					) {
-																						case EmulatorElementType.Thumbstick:
-																							label =
-																								"Thumbstick";
-																							break;
-																						case EmulatorElementType.Dpad:
-																							label =
-																								"D-Pad";
-																							break;
-																						case EmulatorElementType.Touchscreen:
-																							label =
-																								"Touchscreen";
-																							break;
-																						case EmulatorElementType.Screen:
-																							label =
-																								"Screen";
-																							break;
-																						case EmulatorElementType.Default:
-																							if (
-																								val
-																									.data
-																									.inputs
-																									?.length >
-																								0
-																							) {
-																								label =
-																									val.data.inputs.join(
-																										", ",
-																									);
-																							}
-																							break;
-																					}
-																					return label;
-																				})()}
+																				{getElementLabel(
+																					val,
+																					true,
+																				)}
 																				&quot;
 																			</p>
 																		</>,

@@ -16,6 +16,7 @@ import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 import Suggestions from "../inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
+import { getElementLabel } from "../editor/element";
 
 export default function ElementValues(args: {
 	assets: Record<string, Asset> | null;
@@ -582,27 +583,7 @@ export default function ElementValues(args: {
 			];
 			break;
 	}
-	let label = "";
-	switch (args.elementData.type) {
-		case EmulatorElementType.Thumbstick:
-			label = "Thumbstick";
-			break;
-		case EmulatorElementType.Dpad:
-			label = "D-Pad";
-			break;
-		case EmulatorElementType.Touchscreen:
-			label = "Touchscreen";
-			break;
-		case EmulatorElementType.Screen:
-			label = "Screen";
-			break;
-		case EmulatorElementType.Default:
-			if (args.elementData.data.inputs?.length > 0) {
-				label = args.elementData.data.inputs.join(", ");
-			}
-			break;
-	}
-	if (label.trim().length === 0) label = "Not Bound";
+	const label = getElementLabel(args.elementData, true);
 	return (
 		<div className={styles.elementValues}>
 			<DropdownInput

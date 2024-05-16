@@ -12,6 +12,7 @@ import {
 } from "@/data/types";
 import { Spec } from "immutability-helper";
 import { getReactProps } from "@/utils/reactInternals";
+import { getElementLabel } from "./element";
 
 export default function MainEditor(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -37,6 +38,7 @@ export default function MainEditor(args: {
 	showContextMenu: ContextMenu;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
+	const focused = useRef<boolean>(false);
 
 	const pointerCache: PointerEvent[] = [];
 
@@ -54,7 +56,121 @@ export default function MainEditor(args: {
 				}
 			};
 		}
-	}, []);
+	}, [args.elements, args.editingElement]);
+
+	useEffect(() => {
+		const onKeyDown = (e: KeyboardEvent) => {
+			const nodeType = e.target
+				? (e.target as HTMLElement).nodeName.toLocaleLowerCase()
+				: "";
+			if (
+				!(nodeType === "input" || nodeType === "textarea") &&
+				focused.current
+			) {
+				if (args.editingElement > -1 && args.layoutData) {
+					const elem = args.elements[args.editingElement];
+					const delta = e.shiftKey ? 10 : 1;
+					switch (e.key) {
+						case "Delete":
+						case "Backspace":
+							args.showPopup(
+								<>
+									<h2>Warning</h2>
+									<p>
+										Confirm deleting &quot;
+										{getElementLabel(elem, true)}
+										&quot;
+									</p>
+								</>,
+								() => {},
+								() => {
+									args.setEditingElement(
+										args.editingElement - 1,
+									);
+									args.removeElement(args.editingElement);
+								},
+							);
+							break;
+						case "ArrowUp":
+							if (elem.y - elem.paddingTop > 0)
+								args.updateElement(args.editingElement, {
+									y: {
+										$set: Math.max(
+											elem.y - delta,
+											elem.paddingTop,
+										),
+									},
+								});
+							break;
+						case "ArrowDown":
+							if (
+								elem.y + elem.height + elem.paddingBottom <
+								args.layoutData.canvas.height
+							)
+								args.updateElement(args.editingElement, {
+									y: {
+										$set: Math.min(
+											args.layoutData.canvas.height -
+												(elem.paddingBottom +
+													elem.height),
+											elem.y + delta,
+										),
+									},
+								});
+							break;
+						case "ArrowLeft":
+							if (elem.x - elem.paddingLeft > 0)
+								args.updateElement(args.editingElement, {
+									x: {
+										$set: Math.max(
+											elem.x - delta,
+											elem.paddingLeft,
+										),
+									},
+								});
+							break;
+						case "ArrowRight":
+							if (
+								elem.x + elem.width + elem.paddingRight <
+								args.layoutData.canvas.width
+							)
+								args.updateElement(args.editingElement, {
+									x: {
+										$set: Math.min(
+											args.layoutData.canvas.width -
+												(elem.paddingRight +
+													elem.width),
+											elem.x + delta,
+										),
+									},
+								});
+							break;
+					}
+				}
+			}
+		};
+		const onPointerDown = (e: PointerEvent) => {
+			if (
+				ref.current &&
+				e.target &&
+				ref.current.contains(e.target as HTMLElement)
+			) {
+				focused.current = true;
+			} else {
+				focused.current = false;
+			}
+		};
+		if (ref.current) {
+			window.addEventListener("keydown", onKeyDown);
+			window.addEventListener("pointerdown", onPointerDown);
+			return () => {
+				if (ref.current) {
+					window.removeEventListener("keydown", onKeyDown);
+					window.removeEventListener("pointerdown", onPointerDown);
+				}
+			};
+		}
+	}, [args.elements, args.editingElement]);
 
 	const pointerDown = (e: React.PointerEvent) => {
 		pointerCache.push(e.nativeEvent);

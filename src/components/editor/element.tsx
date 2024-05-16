@@ -37,26 +37,7 @@ export default function EmulatorElementComponent(args: {
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const [isActive, setIsActive] = useState<boolean>(false);
-	let label = "";
-	switch (args.elementData.type) {
-		case EmulatorElementType.Thumbstick:
-			label = "Thumbstick";
-			break;
-		case EmulatorElementType.Dpad:
-			label = "D-Pad";
-			break;
-		case EmulatorElementType.Touchscreen:
-			label = "Touchscreen";
-			break;
-		case EmulatorElementType.Screen:
-			label = "Screen";
-			break;
-		case EmulatorElementType.Default:
-			if (args.elementData.data.inputs?.length > 0) {
-				label = args.elementData.data.inputs.join(", ");
-			}
-			break;
-	}
+	const label = getElementLabel(args.elementData);
 	const bgAsset =
 		args.elementData.type === EmulatorElementType.Thumbstick &&
 		args.assets &&
@@ -430,6 +411,7 @@ export default function EmulatorElementComponent(args: {
 			}
 		}
 	};
+
 	return (
 		<div
 			className={`${styles.element}${
@@ -774,3 +756,36 @@ export default function EmulatorElementComponent(args: {
 		</div>
 	);
 }
+
+export const getElementLabel = (
+	e: EmulatorElement,
+	showButtonDefault?: boolean,
+) => {
+	let label = "";
+	switch (e.type) {
+		case EmulatorElementType.Thumbstick:
+			label = "Thumbstick";
+			break;
+		case EmulatorElementType.Dpad:
+			label = "D-Pad";
+			break;
+		case EmulatorElementType.Touchscreen:
+			label = "Touchscreen";
+			break;
+		case EmulatorElementType.Screen:
+			label = "Screen";
+			break;
+		case EmulatorElementType.Default:
+			if (e.data.inputs?.length > 0) {
+				label = e.data.inputs.join(", ");
+			}
+			break;
+	}
+	if (
+		showButtonDefault &&
+		e.type === EmulatorElementType.Default &&
+		label.trim().length === 0
+	)
+		label = "Not Bound";
+	return label;
+};
