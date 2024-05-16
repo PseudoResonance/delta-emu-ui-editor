@@ -1,15 +1,14 @@
 "use client";
 import styles from "./tree.module.css";
-import React from "react";
-import { MouseEvent } from "react";
+import React, { MouseEvent, PointerEvent } from "react";
 
 interface BaseArgs {
 	label: string | React.JSX.Element;
 	showActive?: boolean;
 	onClick?: (e: MouseEvent<HTMLDivElement>) => void;
 	onContextMenu?: (e: MouseEvent<HTMLDivElement>) => void;
-	onMouseEnter?: (e: MouseEvent<HTMLDivElement>) => void;
-	onMouseLeave?: (e: MouseEvent<HTMLDivElement>) => void;
+	onPointerEnter?: (e: PointerEvent<HTMLDivElement>) => void;
+	onPointerLeave?: (e: PointerEvent<HTMLDivElement>) => void;
 }
 
 interface ChildrenDefined extends BaseArgs {
@@ -35,10 +34,10 @@ export default function TreeElement(args: Args) {
 		actionHandlers.onClick = args.onClick;
 	if (typeof args.onContextMenu === "function")
 		actionHandlers.onContextMenu = args.onContextMenu;
-	if (typeof args.onMouseEnter === "function")
-		actionHandlers.onMouseEnter = args.onMouseEnter;
-	if (typeof args.onMouseLeave === "function")
-		actionHandlers.onMouseLeave = args.onMouseLeave;
+	if (typeof args.onPointerEnter === "function")
+		actionHandlers.onMouseEnter = args.onPointerEnter;
+	if (typeof args.onPointerLeave === "function")
+		actionHandlers.onMouseLeave = args.onPointerLeave;
 	return (
 		<div
 			className={`${styles.tree}${

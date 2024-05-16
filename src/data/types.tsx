@@ -165,3 +165,9 @@ export type ContextMenu = (
 	x: number,
 	y: number,
 ) => void;
+
+export interface ScaleData {
+	scale: number;
+	xOffset: number;
+	yOffset: number;
+}

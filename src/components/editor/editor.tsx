@@ -7,6 +7,7 @@ import {
 	ContextMenu,
 	EmulatorElement,
 	EmulatorLayout,
+	ScaleData,
 } from "@/data/types";
 import { Spec } from "immutability-helper";
 import { getReactProps } from "@/utils/reactInternals";
@@ -23,12 +24,8 @@ export default function MainEditor(args: {
 	layoutData: EmulatorLayout | null;
 	editingElement: number;
 	setEditingElement: Dispatch<SetStateAction<number>>;
-	scale: number;
-	setScale: Dispatch<SetStateAction<number>>;
-	xOffset: number;
-	setXOffset: Dispatch<SetStateAction<number>>;
-	yOffset: number;
-	setYOffset: Dispatch<SetStateAction<number>>;
+	scale: ScaleData;
+	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;
 	showPopup: (
 		popup: React.JSX.Element,
@@ -37,15 +34,9 @@ export default function MainEditor(args: {
 	) => void;
 	showContextMenu: ContextMenu;
 }) {
-	let xStart = 0,
-		yStart = 0,
-		xStartMouse = 0,
-		yStartMouse = 0;
-	const stopDragging = () => {
-		document.onmouseup = null;
-		document.onmousemove = null;
-	};
 	const ref = useRef<HTMLDivElement>(null);
+
+	const pointerCache: PointerEvent[] = [];
 
 	useEffect(() => {
 		const onScroll = (e: Event) => {
@@ -62,6 +53,97 @@ export default function MainEditor(args: {
 			};
 		}
 	}, []);
+
+	const pointerDown = (e: React.PointerEvent) => {
+		pointerCache.push(e.nativeEvent);
+		if (pointerCache.length === 1) {
+			let moveHandler: (e: PointerEvent) => void;
+			if (e.ctrlKey) {
+				e.preventDefault();
+				const xStartMouse = e.clientX;
+				const yStartMouse = e.clientY;
+				const xStart = args.scale.xOffset;
+				const yStart = args.scale.yOffset;
+				moveHandler = (e: PointerEvent) => {
+					const i = pointerCache.findIndex(
+						(ev) => ev.pointerId === e.pointerId,
+					);
+					pointerCache[i] = e;
+					e.preventDefault();
+					const newY = yStart + (e.clientY - yStartMouse);
+					const newX = xStart + (e.clientX - xStartMouse);
+					args.setScale({
+						scale: args.scale.scale,
+						xOffset: newX,
+						yOffset: newY,
+					});
+				};
+			} else {
+				let previousDiff = -1;
+				let previousX: number | null = null;
+				let previousY: number | null = null;
+				moveHandler = (e: PointerEvent) => {
+					const i = pointerCache.findIndex(
+						(ev) => ev.pointerId === e.pointerId,
+					);
+					pointerCache[i] = e;
+					e.preventDefault();
+					if (pointerCache.length === 2) {
+						const pointerDiff = Math.sqrt(
+							(pointerCache[0].clientX -
+								pointerCache[1].clientX) **
+								2 +
+								(pointerCache[0].clientY -
+									pointerCache[1].clientY) **
+									2,
+						);
+						if (previousDiff > 0 && ref.current) {
+							const delta = pointerDiff - previousDiff;
+							const mouseX =
+								(pointerCache[0].clientX +
+									pointerCache[1].clientX) /
+								2;
+							const mouseY =
+								(pointerCache[0].clientY +
+									pointerCache[1].clientY) /
+								2;
+							let xDiff = 0;
+							let yDiff = 0;
+							if (previousX !== null && previousY !== null) {
+								xDiff = mouseX - previousX;
+								yDiff = mouseY - previousY;
+							}
+							previousX = mouseX;
+							previousY = mouseY;
+							args.setScale((oldScale) => {
+								return {
+									scale: oldScale.scale * (1 + delta / 300),
+									xOffset: oldScale.xOffset + xDiff,
+									yOffset: oldScale.yOffset + yDiff,
+								};
+							});
+						}
+						previousDiff = pointerDiff;
+					}
+				};
+			}
+			const stopHandler = () => {
+				document.removeEventListener("pointerup", stopHandler);
+				if (moveHandler)
+					document.removeEventListener("pointermove", moveHandler);
+			};
+			document.addEventListener("pointerup", stopHandler);
+			if (moveHandler)
+				document.addEventListener("pointermove", moveHandler);
+		}
+	};
+
+	const pointerUp = (e: React.PointerEvent) => {
+		const i = pointerCache.findIndex(
+			(ev) => ev.pointerId === e.nativeEvent.pointerId,
+		);
+		pointerCache.splice(i, 1);
+	};
 
 	return (
 		<div
@@ -90,14 +172,25 @@ export default function MainEditor(args: {
 							{
 								label: "Return to Center",
 								onClick: () => {
-									args.setXOffset(0);
-									args.setYOffset(0);
+									args.setScale((oldScale) => {
+										return {
+											scale: oldScale.scale,
+											xOffset: 0,
+											yOffset: 0,
+										};
+									});
 								},
 							},
 							{
 								label: "Reset Zoom",
 								onClick: () => {
-									args.setScale(1);
+									args.setScale((oldScale) => {
+										return {
+											scale: 1,
+											xOffset: oldScale.xOffset,
+											yOffset: oldScale.yOffset,
+										};
+									});
 								},
 							},
 						],
@@ -106,49 +199,42 @@ export default function MainEditor(args: {
 					);
 				}
 			}}
-			onMouseDown={(e) => {
-				if (
-					args.pressedKeys.includes("ControlLeft") ||
-					args.pressedKeys.includes("ControlRight")
-				) {
-					e.preventDefault();
-					xStartMouse = e.clientX;
-					yStartMouse = e.clientY;
-					xStart = args.xOffset;
-					yStart = args.yOffset;
-					document.onmouseup = stopDragging;
-					document.onmousemove = (e) => {
-						e.preventDefault();
-						const newY = yStart + (e.clientY - yStartMouse);
-						const newX = xStart + (e.clientX - xStartMouse);
-						args.setXOffset(newX);
-						args.setYOffset(newY);
-					};
-				}
-			}}
+			onPointerDown={pointerDown}
+			onPointerUp={pointerUp}
 			onWheel={(e) => {
 				if (ref.current && args.layoutData) {
 					let newScale = 0;
 					const delta = Math.sign(e.deltaY);
-					const oldScale = args.scale;
 					if (delta > 0) {
-						newScale = args.scale / 1.05;
+						newScale = args.scale.scale / 1.05;
 						if (newScale < 0) newScale = 0;
 					} else if (delta < 0) {
-						newScale = args.scale * 1.05;
+						newScale = args.scale.scale * 1.05;
 					}
 					const bounds = ref.current.getBoundingClientRect();
 					const mouseX =
-						e.clientX - bounds.x - bounds.width / 2 - args.xOffset;
+						e.clientX -
+						bounds.x -
+						bounds.width / 2 -
+						args.scale.xOffset;
 					const mouseY =
-						e.clientY - bounds.y - bounds.height / 2 - args.yOffset;
-					args.setScale(newScale);
-					args.setXOffset(
-						args.xOffset - mouseX * (newScale / oldScale) + mouseX,
-					);
-					args.setYOffset(
-						args.yOffset - mouseY * (newScale / oldScale) + mouseY,
-					);
+						e.clientY -
+						bounds.y -
+						bounds.height / 2 -
+						args.scale.yOffset;
+					args.setScale((oldScale) => {
+						return {
+							scale: newScale,
+							xOffset:
+								oldScale.xOffset -
+								mouseX * (newScale / oldScale.scale) +
+								mouseX,
+							yOffset:
+								oldScale.yOffset -
+								mouseY * (newScale / oldScale.scale) +
+								mouseY,
+						};
+					});
 				}
 			}}
 		>
@@ -167,12 +253,12 @@ export default function MainEditor(args: {
 					padding={args.layoutData.padding}
 					pressedKeys={args.pressedKeys}
 					removeElement={args.removeElement}
-					scale={args.scale}
+					scale={args.scale.scale}
 					setEditingElement={args.setEditingElement}
 					showContextMenu={args.showContextMenu}
 					showPopup={args.showPopup}
 					style={{
-						transform: `translate(${args.xOffset}px, ${args.yOffset}px)`,
+						transform: `translate(${args.scale.xOffset}px, ${args.scale.yOffset}px)`,
 					}}
 					updateElement={args.updateElement}
 					width={args.layoutData.canvas.width}

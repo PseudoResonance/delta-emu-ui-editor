@@ -12,6 +12,7 @@ import {
 	EmulatorElementType,
 	EmulatorLayout,
 	InfoFile,
+	ScaleData,
 } from "@/data/types";
 import TreeElement from "./treeElement";
 import { Spec } from "immutability-helper";
@@ -33,8 +34,8 @@ export default function RightSidebar(args: {
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 	editingElement: number;
 	setEditingElement: Dispatch<SetStateAction<number>>;
-	scale: number;
-	setScale: Dispatch<SetStateAction<number>>;
+	scale: ScaleData;
+	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;
 	setHoverIndex: Dispatch<SetStateAction<number>>;
 	showPopup: (
@@ -53,10 +54,16 @@ export default function RightSidebar(args: {
 					label="Zoom"
 					minValue={0}
 					onChange={(val: string) => {
-						args.setScale(Number(val) / 100.0);
+						args.setScale((oldScale) => {
+							return {
+								scale: Number(val) / 100.0,
+								xOffset: oldScale.xOffset,
+								yOffset: oldScale.yOffset,
+							};
+						});
 					}}
 					type="number"
-					value={(args.scale * 100).toFixed(0)}
+					value={(args.scale.scale * 100).toFixed(0)}
 				/>
 				{args.layoutData && (
 					<>
@@ -253,10 +260,10 @@ export default function RightSidebar(args: {
 														e.pageY,
 													);
 												}}
-												onMouseEnter={() => {
+												onPointerEnter={() => {
 													args.setHoverIndex(i);
 												}}
-												onMouseLeave={() => {
+												onPointerLeave={() => {
 													args.setHoverIndex(-1);
 												}}
 												showActive={

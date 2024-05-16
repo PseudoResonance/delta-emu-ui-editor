@@ -19,12 +19,13 @@ import {
 	InfoFile,
 	Mutable,
 	Representation,
+	ScaleData,
 } from "@/data/types";
 import update, { Spec } from "immutability-helper";
 import * as CONSTANT from "@/utils/constants";
 
 const MAX_HISTORY = 100;
-const HISTORY_DEBOUNCE = 100;
+const HISTORY_DEBOUNCE = 250;
 
 const historyInfo = {
 	writing: false,
@@ -138,9 +139,11 @@ export default function Home() {
 	const [currentRepresentation, setCurrentRepresentation] = useState<string>(
 		getFirstRepresentation(defaultInfoFile),
 	);
-	const [scale, setScale] = useState<number>(1);
-	const [xOffset, setXOffset] = useState<number>(0);
-	const [yOffset, setYOffset] = useState<number>(0);
+	const [scale, setScale] = useState<ScaleData>({
+		scale: 1,
+		xOffset: 0,
+		yOffset: 0,
+	});
 	const [editingElement, setEditingElement] = useState<number>(-1);
 	const [hoverIndex, setHoverIndex] = useState<number>(-1);
 	const [pressedKeys, setPressedKeys] = useState<string[]>([]);
@@ -301,11 +304,17 @@ export default function Home() {
 		};
 		window.addEventListener("paste", paste);
 
+		const onClear = () => {
+			setPressedKeys([]);
+		};
+		window.addEventListener("blur", onClear);
+
 		return () => {
 			window.removeEventListener("keydown", keyDown);
 			window.removeEventListener("keyup", keyUp);
 			window.removeEventListener("copy", copy);
 			window.removeEventListener("paste", paste);
+			window.removeEventListener("blur", onClear);
 		};
 	}, [editingElement]);
 
@@ -1308,9 +1317,8 @@ export default function Home() {
 					}}
 					getReferencedAssets={getReferencedAssets}
 					saveJSON={saveJSON}
+					scale={scale}
 					setScale={setScale}
-					setXOffset={setXOffset}
-					setYOffset={setYOffset}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
 					undo={() => {
@@ -1350,13 +1358,9 @@ export default function Home() {
 					scale={scale}
 					setEditingElement={setEditingElement}
 					setScale={setScale}
-					setXOffset={setXOffset}
-					setYOffset={setYOffset}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
 					updateElement={updateElement}
-					xOffset={xOffset}
-					yOffset={yOffset}
 				/>
 
 				<RightSidebar

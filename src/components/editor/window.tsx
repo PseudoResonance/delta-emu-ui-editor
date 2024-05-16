@@ -56,7 +56,8 @@ export default function EmulatorWindow(args: {
 		<div
 			style={
 				{
-					"--element-border-width": `${CONSTANT.BORDER_WIDTH}px`,
+					"--element-border-width": `${CONSTANT.ELEMENT_BORDER_WIDTH}px`,
+					"--resize-handle-width": `${CONSTANT.RESIZE_HANDLE_WIDTH}px`,
 				} as React.CSSProperties
 			}
 		>
@@ -67,28 +68,29 @@ export default function EmulatorWindow(args: {
 					width:
 						(args.width + args.padding.left + args.padding.right) *
 							args.scale -
-						2 * CONSTANT.BORDER_WIDTH,
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 					height:
 						(args.height + args.padding.top + args.padding.bottom) *
 							args.scale -
-						2 * CONSTANT.BORDER_WIDTH,
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				}}
 			>
 				<div
 					className={styles.windowInner}
 					style={{
 						width:
-							args.width * args.scale - 2 * CONSTANT.BORDER_WIDTH,
+							args.width * args.scale -
+							2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 						height:
 							args.height * args.scale -
-							2 * CONSTANT.BORDER_WIDTH,
+							2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 						marginTop:
 							args.padding.top * args.scale -
-							CONSTANT.BORDER_WIDTH,
+							CONSTANT.ELEMENT_BORDER_WIDTH,
 						marginBottom: args.padding.bottom * args.scale,
 						marginLeft:
 							args.padding.left * args.scale -
-							CONSTANT.BORDER_WIDTH,
+							CONSTANT.ELEMENT_BORDER_WIDTH,
 						marginRight: args.padding.right * args.scale,
 					}}
 				>
@@ -101,8 +103,8 @@ export default function EmulatorWindow(args: {
 								display: bgUrl.length > 0 ? "inherit" : "none",
 								width: args.width * args.scale,
 								height: args.height * args.scale,
-								top: -CONSTANT.BORDER_WIDTH,
-								left: -CONSTANT.BORDER_WIDTH,
+								top: -CONSTANT.ELEMENT_BORDER_WIDTH,
+								left: -CONSTANT.ELEMENT_BORDER_WIDTH,
 							}}
 						/>
 					}

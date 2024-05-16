@@ -34,16 +34,6 @@ export default function EmulatorElementComponent(args: {
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const [isActive, setIsActive] = useState<boolean>(false);
-	const stopDragging = () => {
-		document.onmouseup = null;
-		document.onmousemove = null;
-		setIsActive(false);
-	};
-	const stopResizing = () => {
-		document.onmouseup = null;
-		document.onmousemove = null;
-		setIsActive(false);
-	};
 	let label = "";
 	switch (args.elementData.type) {
 		case EmulatorElementType.Thumbstick:
@@ -92,13 +82,8 @@ export default function EmulatorElementComponent(args: {
 	const bgUrl =
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
-	const moveHelper = (e: React.MouseEvent) => {
-		if (
-			!(
-				args.pressedKeys.includes("ControlLeft") ||
-				args.pressedKeys.includes("ControlRight")
-			)
-		) {
+	const moveHelper = (e: React.PointerEvent) => {
+		if (!e.ctrlKey) {
 			args.onClick();
 			e.preventDefault();
 			setIsActive(true);
@@ -106,8 +91,7 @@ export default function EmulatorElementComponent(args: {
 			const yStartMouse = e.clientY;
 			const xStart = args.elementData.x;
 			const yStart = args.elementData.y;
-			document.onmouseup = stopDragging;
-			document.onmousemove = (e) => {
+			const moveHandler = (e: PointerEvent) => {
 				e.preventDefault();
 				let newTop = yStart + (e.clientY - yStartMouse) / args.scale;
 				if (newTop < args.elementData.paddingTop) {
@@ -146,34 +130,32 @@ export default function EmulatorElementComponent(args: {
 					},
 				});
 			};
+			const stopHandler = () => {
+				document.removeEventListener("pointerup", stopHandler);
+				document.removeEventListener("pointermove", moveHandler);
+				setIsActive(false);
+			};
+			document.addEventListener("pointerup", stopHandler);
+			document.addEventListener("pointermove", moveHandler);
 		}
 	};
 
 	const resizeHelper = (
-		e: React.MouseEvent,
+		e: React.PointerEvent,
 		yScale: number,
 		xScale: number,
 		inner: boolean,
 	) => {
 		if (yScale != 0 || xScale != 0) {
-			if (
-				!(
-					args.pressedKeys.includes("ControlLeft") ||
-					args.pressedKeys.includes("ControlRight")
-				)
-			) {
+			if (!e.ctrlKey) {
 				if (ref.current) {
 					let padding = !inner;
-					if (
-						args.pressedKeys.includes("ShiftLeft") ||
-						args.pressedKeys.includes("ShiftRight")
-					)
-						padding = true;
+					if (e.shiftKey) padding = true;
 					args.onClick();
 					e.preventDefault();
 					setIsActive(true);
-					const yStartMouse = e.clientY;
 					const xStartMouse = e.clientX;
+					const yStartMouse = e.clientY;
 					let paddingTop = -1;
 					let paddingBottom = -1;
 					let paddingLeft = -1;
@@ -182,16 +164,19 @@ export default function EmulatorElementComponent(args: {
 					let x = -1;
 					let width = -1;
 					let height = -1;
-					const paddingTopStart = args.elementData.paddingTop;
-					const paddingBottomStart = args.elementData.paddingBottom;
-					const paddingLeftStart = args.elementData.paddingLeft;
-					const paddingRightStart = args.elementData.paddingRight;
+					const paddingTopStart =
+						padding && inner ? 0 : args.elementData.paddingTop;
+					const paddingBottomStart =
+						padding && inner ? 0 : args.elementData.paddingBottom;
+					const paddingLeftStart =
+						padding && inner ? 0 : args.elementData.paddingLeft;
+					const paddingRightStart =
+						padding && inner ? 0 : args.elementData.paddingRight;
 					const yStart = args.elementData.y;
 					const xStart = args.elementData.x;
 					const widthStart = args.elementData.width;
 					const heightStart = args.elementData.height;
-					document.onmouseup = stopResizing;
-					document.onmousemove = (e) => {
+					const moveHandler = (e: PointerEvent) => {
 						e.preventDefault();
 						if (yScale != 0) {
 							const diffY =
@@ -370,6 +355,16 @@ export default function EmulatorElementComponent(args: {
 							}),
 						});
 					};
+					const stopHandler = () => {
+						document.removeEventListener("pointerup", stopHandler);
+						document.removeEventListener(
+							"pointermove",
+							moveHandler,
+						);
+						setIsActive(false);
+					};
+					document.addEventListener("pointerup", stopHandler);
+					document.addEventListener("pointermove", moveHandler);
 				}
 			}
 		}
@@ -434,7 +429,7 @@ export default function EmulatorElementComponent(args: {
 							: args.elementData.paddingLeft +
 								args.elementData.paddingRight)) *
 						args.scale -
-						2 * CONSTANT.BORDER_WIDTH,
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				),
 				height: Math.max(
 					0,
@@ -444,7 +439,7 @@ export default function EmulatorElementComponent(args: {
 							: args.elementData.paddingTop +
 								args.elementData.paddingBottom)) *
 						args.scale -
-						2 * CONSTANT.BORDER_WIDTH,
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				),
 				top:
 					(args.elementData.y -
@@ -452,75 +447,73 @@ export default function EmulatorElementComponent(args: {
 							? 0
 							: args.elementData.paddingTop)) *
 						args.scale -
-					CONSTANT.BORDER_WIDTH,
+					CONSTANT.ELEMENT_BORDER_WIDTH,
 				left:
 					(args.elementData.x -
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
 							: args.elementData.paddingLeft)) *
 						args.scale -
-					CONSTANT.BORDER_WIDTH,
+					CONSTANT.ELEMENT_BORDER_WIDTH,
 			}}
 		>
 			<div className={styles.expandGrid}>
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, -1, -1, false);
 					}}
 					style={{ cursor: "nw-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, -1, 0, false);
 					}}
 					style={{ cursor: "n-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, -1, 1, false);
 					}}
 					style={{ cursor: "ne-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, 0, -1, false);
 					}}
 					style={{ cursor: "w-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
-						moveHelper(e);
-					}}
+					onPointerDown={moveHelper}
 					style={{ cursor: "move" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, 0, 1, false);
 					}}
 					style={{ cursor: "e-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, 1, -1, false);
 					}}
 					style={{ cursor: "sw-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, 1, 0, false);
 					}}
 					style={{ cursor: "s-resize" }}
 				></div>
 
 				<div
-					onMouseDown={(e) => {
+					onPointerDown={(e) => {
 						resizeHelper(e, 1, 1, false);
 					}}
 					style={{ cursor: "se-resize" }}
@@ -556,12 +549,12 @@ export default function EmulatorElementComponent(args: {
 						width: Math.max(
 							0,
 							args.elementData.width * args.scale -
-								2 * CONSTANT.BORDER_WIDTH,
+								2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 						),
 						height: Math.max(
 							0,
 							args.elementData.height * args.scale -
-								2 * CONSTANT.BORDER_WIDTH,
+								2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 						),
 						top:
 							(args.elementData.type ===
@@ -569,14 +562,14 @@ export default function EmulatorElementComponent(args: {
 								? 0
 								: args.elementData.paddingTop) *
 								args.scale -
-							CONSTANT.BORDER_WIDTH,
+							CONSTANT.ELEMENT_BORDER_WIDTH,
 						left:
 							(args.elementData.type ===
 							EmulatorElementType.Screen
 								? 0
 								: args.elementData.paddingLeft) *
 								args.scale -
-							CONSTANT.BORDER_WIDTH,
+							CONSTANT.ELEMENT_BORDER_WIDTH,
 					}}
 				>
 					{args.elementData.type === EmulatorElementType.Dpad ||
@@ -638,63 +631,61 @@ export default function EmulatorElementComponent(args: {
 
 					<div className={styles.expandGrid}>
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, -1, -1, true);
 							}}
 							style={{ cursor: "nw-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, -1, 0, true);
 							}}
 							style={{ cursor: "n-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, -1, 1, true);
 							}}
 							style={{ cursor: "ne-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, 0, -1, true);
 							}}
 							style={{ cursor: "w-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
-								moveHelper(e);
-							}}
+							onPointerDown={moveHelper}
 							style={{ cursor: "move" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, 0, 1, true);
 							}}
 							style={{ cursor: "e-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, 1, -1, true);
 							}}
 							style={{ cursor: "sw-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, 1, 0, true);
 							}}
 							style={{ cursor: "s-resize" }}
 						></div>
 
 						<div
-							onMouseDown={(e) => {
+							onPointerDown={(e) => {
 								resizeHelper(e, 1, 1, true);
 							}}
 							style={{ cursor: "se-resize" }}

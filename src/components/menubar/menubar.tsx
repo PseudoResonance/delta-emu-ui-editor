@@ -10,6 +10,7 @@ import {
 	EmulatorElement,
 	EmulatorLayout,
 	InfoFile,
+	ScaleData,
 } from "@/data/types";
 import zipRead from "@/utils/zip/zipRead";
 import AboutInfo from "../popup/popups/aboutinfo";
@@ -21,9 +22,8 @@ export default function MenuBar(args: {
 	elements: EmulatorElement[];
 	layoutData: EmulatorLayout | null;
 	infoFile: InfoFile;
-	setXOffset: Dispatch<SetStateAction<number>>;
-	setYOffset: Dispatch<SetStateAction<number>>;
-	setScale: Dispatch<SetStateAction<number>>;
+	scale: ScaleData;
+	setScale: Dispatch<SetStateAction<ScaleData>>;
 	saveJSON: () => { json: string; infoFile: InfoFile };
 	parseJSON: (json: Record<string, unknown>) => void;
 	canUndo: boolean;
@@ -284,15 +284,26 @@ export default function MenuBar(args: {
 						key="returncenter"
 						label="Return to Center"
 						onClick={() => {
-							args.setXOffset(0);
-							args.setYOffset(0);
+							args.setScale((oldScale) => {
+								return {
+									scale: oldScale.scale,
+									xOffset: 0,
+									yOffset: 0,
+								};
+							});
 						}}
 					/>,
 					<MenuButton
 						key="resetzoom"
 						label="Reset Zoom"
 						onClick={() => {
-							args.setScale(1);
+							args.setScale((oldScale) => {
+								return {
+									scale: 1,
+									xOffset: oldScale.xOffset,
+									yOffset: oldScale.yOffset,
+								};
+							});
 						}}
 					/>,
 				]}
