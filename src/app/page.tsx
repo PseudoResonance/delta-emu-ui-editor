@@ -28,7 +28,7 @@ import * as CONSTANT from "@/utils/constants";
 import ValueInput from "@/components/inputs/valueinput";
 
 const MAX_HISTORY = 100;
-const HISTORY_DEBOUNCE = 250;
+const HISTORY_DEBOUNCE = 200;
 
 const historyInfo = {
 	writing: false,
@@ -292,6 +292,32 @@ export default function Home() {
 				const newElements = pressedKeys.slice();
 				newElements.push(e.code);
 				setPressedKeys(newElements);
+			}
+			const nodeType = e.target
+				? (e.target as HTMLElement).nodeName.toLocaleLowerCase()
+				: "";
+			if (!(nodeType === "input" || nodeType === "textarea")) {
+				if (e.ctrlKey) {
+					if (
+						(e.code === "KeyZ" && !e.shiftKey) ||
+						(e.code === "KeyY" && e.shiftKey)
+					) {
+						if (historyInfo.writing) {
+							revertHistory(historyInfo.currentState);
+						} else if (historyInfo.currentState > 1) {
+							revertHistory(historyInfo.currentState - 1);
+						}
+						e.preventDefault();
+					} else if (
+						(e.code === "KeyY" && !e.shiftKey) ||
+						(e.code === "KeyZ" && e.shiftKey)
+					) {
+						if (historyInfo.currentState < history.length) {
+							revertHistory(historyInfo.currentState + 1);
+						}
+						e.preventDefault();
+					}
+				}
 			}
 		};
 		window.addEventListener("keydown", keyDown);
@@ -1332,23 +1358,26 @@ export default function Home() {
 			historyInfo.writing = true;
 			const timeout = setTimeout(() => {
 				if (!historyInfo.isHistoryEdit) {
-					const newHistory =
-						historyInfo.currentState != history.length &&
-						historyInfo.currentState <= MAX_HISTORY
-							? history.slice(0, historyInfo.currentState)
-							: history.slice(-MAX_HISTORY);
-					newHistory.push({
-						infoFile: structuredClone(infoFile),
-						currentRepresentation: currentRepresentation,
-						focusState: focusState,
+					setHistory((oldHistory) => {
+						const newHistory =
+							historyInfo.currentState != oldHistory.length &&
+							historyInfo.currentState <= MAX_HISTORY
+								? oldHistory.slice(0, historyInfo.currentState)
+								: oldHistory.slice(-MAX_HISTORY);
+						newHistory.push({
+							infoFile: structuredClone(infoFile),
+							currentRepresentation: currentRepresentation,
+							focusState: focusState,
+						});
+						historyInfo.currentState = newHistory.length;
+						return newHistory;
 					});
-					historyInfo.currentState = newHistory.length;
-					setHistory(newHistory);
 				}
 				historyInfo.writing = false;
 			}, HISTORY_DEBOUNCE);
 			return () => {
 				clearTimeout(timeout);
+				historyInfo.writing = false;
 			};
 		} else if (!historyInfo.processing) {
 			historyInfo.isHistoryEdit = false;

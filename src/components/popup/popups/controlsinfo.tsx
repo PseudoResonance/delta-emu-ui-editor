@@ -26,6 +26,26 @@ export default function ControlsInfo() {
 			</div>
 			<hr />
 			<div className={styles.controlEntry}>
+				<p>Undo</p>
+				<div className={styles.controls}>
+					<p className={styles.key}>Ctrl</p>
+					<p>+</p>
+					<p className={styles.key}>Z</p>
+				</div>
+			</div>
+			<hr />
+			<div className={styles.controlEntry}>
+				<p>Redo</p>
+				<div className={styles.controls}>
+					<p className={styles.key}>Ctrl</p>
+					<p>+</p>
+					<p className={styles.key}>Shift</p>
+					<p>+</p>
+					<p className={styles.key}>Z</p>
+				</div>
+			</div>
+			<hr />
+			<div className={styles.controlEntry}>
 				<p>Zoom</p>
 				<div className={styles.controls}>
 					<p className={styles.key}>Scroll Editor</p>
