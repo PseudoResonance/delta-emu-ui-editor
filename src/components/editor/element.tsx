@@ -145,29 +145,29 @@ export default function EmulatorElementComponent(args: {
 				);
 				args.updateElement({
 					x: {
-						$set: newLeft,
+						$set: Math.round(newLeft),
 					},
 					y: {
-						$set: newTop,
+						$set: Math.round(newTop),
 					},
 					...(paddingTop >= 0 && {
 						paddingTop: {
-							$set: paddingTop,
+							$set: Math.round(paddingTop),
 						},
 					}),
 					...(paddingBottom >= 0 && {
 						paddingBottom: {
-							$set: paddingBottom,
+							$set: Math.round(paddingBottom),
 						},
 					}),
 					...(paddingLeft >= 0 && {
 						paddingLeft: {
-							$set: paddingLeft,
+							$set: Math.round(paddingLeft),
 						},
 					}),
 					...(paddingRight >= 0 && {
 						paddingRight: {
-							$set: paddingRight,
+							$set: Math.round(paddingRight),
 						},
 					}),
 				});
@@ -357,42 +357,42 @@ export default function EmulatorElementComponent(args: {
 						args.updateElement({
 							...(paddingTop >= 0 && {
 								paddingTop: {
-									$set: paddingTop,
+									$set: Math.round(paddingTop),
 								},
 							}),
 							...(paddingBottom >= 0 && {
 								paddingBottom: {
-									$set: paddingBottom,
+									$set: Math.round(paddingBottom),
 								},
 							}),
 							...(paddingLeft >= 0 && {
 								paddingLeft: {
-									$set: paddingLeft,
+									$set: Math.round(paddingLeft),
 								},
 							}),
 							...(paddingRight >= 0 && {
 								paddingRight: {
-									$set: paddingRight,
+									$set: Math.round(paddingRight),
 								},
 							}),
 							...(x >= 0 && {
 								x: {
-									$set: x,
+									$set: Math.round(x),
 								},
 							}),
 							...(y >= 0 && {
 								y: {
-									$set: y,
+									$set: Math.round(y),
 								},
 							}),
 							...(width >= 0 && {
 								width: {
-									$set: width,
+									$set: Math.round(width),
 								},
 							}),
 							...(height >= 0 && {
 								height: {
-									$set: height,
+									$set: Math.round(height),
 								},
 							}),
 						});

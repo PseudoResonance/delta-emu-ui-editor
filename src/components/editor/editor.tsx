@@ -13,6 +13,7 @@ import {
 import { Spec } from "immutability-helper";
 import { getReactProps } from "@/utils/reactInternals";
 import { getElementLabel } from "./element";
+import * as CONSTANT from "@/utils/constants";
 
 export default function MainEditor(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -233,11 +234,37 @@ export default function MainEditor(args: {
 							}
 							previousX = mouseX;
 							previousY = mouseY;
+							const bounds = ref.current.getBoundingClientRect();
+							const zoomX =
+								mouseX -
+								bounds.x -
+								bounds.width / 2 -
+								args.scale.xOffset;
+							const zoomY =
+								mouseY -
+								bounds.y -
+								bounds.height / 2 -
+								args.scale.yOffset;
 							args.setScale((oldScale) => {
+								const newScale = Math.min(
+									Math.max(
+										oldScale.scale * (1 + delta / 300),
+										CONSTANT.ZOOM_MIN,
+									),
+									CONSTANT.ZOOM_MAX,
+								);
 								return {
-									scale: oldScale.scale * (1 + delta / 300),
-									xOffset: oldScale.xOffset + xDiff,
-									yOffset: oldScale.yOffset + yDiff,
+									scale: newScale,
+									xOffset:
+										oldScale.xOffset -
+										zoomX * (newScale / oldScale.scale) +
+										zoomX +
+										xDiff,
+									yOffset:
+										oldScale.yOffset -
+										zoomY * (newScale / oldScale.scale) +
+										zoomY +
+										yDiff,
 								};
 							});
 						}
@@ -323,11 +350,17 @@ export default function MainEditor(args: {
 					let newScale = 0;
 					const delta = Math.sign(e.deltaY);
 					if (delta > 0) {
-						newScale = args.scale.scale / 1.05;
-						if (newScale < 0) newScale = 0;
+						newScale = Math.max(
+							args.scale.scale / 1.05,
+							CONSTANT.ZOOM_MIN,
+						);
 					} else if (delta < 0) {
-						newScale = args.scale.scale * 1.05;
+						newScale = Math.min(
+							args.scale.scale * 1.05,
+							CONSTANT.ZOOM_MAX,
+						);
 					}
+
 					const bounds = ref.current.getBoundingClientRect();
 					const mouseX =
 						e.clientX -

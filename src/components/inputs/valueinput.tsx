@@ -15,6 +15,16 @@ const shortcuts = (e: KeyboardEvent<unknown>) => {
 	return false;
 };
 
+const clamp = (
+	min: number | undefined,
+	input: number,
+	max: number | undefined,
+) => {
+	if (min !== undefined && input <= min) return min;
+	else if (max !== undefined && input >= max) return max;
+	return input;
+};
+
 export default function ValueInput(args: {
 	context: string;
 	label: string;
@@ -43,11 +53,46 @@ export default function ValueInput(args: {
 				delete debounceTimeout[0];
 			}
 			debounceTimeout[0] = setTimeout(() => {
-				value.current = e.target.value;
-				args.onChange(e.target.value);
+				if (args.type === "number" || args.type === "float") {
+					const valNum = clamp(
+						args.minValue,
+						Number(e.target.value),
+						args.maxValue,
+					);
+					let val;
+					if (args.type === "number" || args.places !== undefined) {
+						val = valNum.toFixed(
+							args.type === "number" ? 0 : args.places,
+						);
+					} else {
+						val = String(valNum);
+					}
+					value.current = val;
+					args.onChange(val);
+				} else {
+					value.current = e.target.value;
+					args.onChange(e.target.value);
+				}
 			}, args.debounce);
 		} else {
-			args.onChange(e.target.value);
+			if (args.type === "number" || args.type === "float") {
+				const valNum = clamp(
+					args.minValue,
+					Number(e.target.value),
+					args.maxValue,
+				);
+				let val;
+				if (args.type === "number" || args.places !== undefined) {
+					val = valNum.toFixed(
+						args.type === "number" ? 0 : args.places,
+					);
+				} else {
+					val = String(valNum);
+				}
+				args.onChange(val);
+			} else {
+				args.onChange(e.target.value);
+			}
 		}
 	};
 	let onKeyDown = (_: KeyboardEvent<HTMLInputElement>) => {};

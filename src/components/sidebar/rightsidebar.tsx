@@ -17,6 +17,7 @@ import TreeElement from "./treeElement";
 import { Spec } from "immutability-helper";
 import CanvasValues from "./canvasvalues";
 import { getElementLabel } from "../editor/element";
+import * as Constants from "@/utils/constants";
 
 export default function RightSidebar(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -52,13 +53,23 @@ export default function RightSidebar(args: {
 				<ValueInput
 					context={args.currentRepresentation}
 					label="Zoom"
-					minValue={0}
+					maxValue={Constants.ZOOM_MAX * 100.0}
+					minValue={Constants.ZOOM_MIN * 100.0}
 					onChange={(val: string) => {
+						const newScale = Number(val) / 100.0;
+						const centerX = -args.scale.xOffset;
+						const centerY = -args.scale.yOffset;
 						args.setScale((oldScale) => {
 							return {
-								scale: Number(val) / 100.0,
-								xOffset: oldScale.xOffset,
-								yOffset: oldScale.yOffset,
+								scale: newScale,
+								xOffset:
+									oldScale.xOffset -
+									centerX * (newScale / oldScale.scale) +
+									centerX,
+								yOffset:
+									oldScale.yOffset -
+									centerY * (newScale / oldScale.scale) +
+									centerY,
 							};
 						});
 					}}
