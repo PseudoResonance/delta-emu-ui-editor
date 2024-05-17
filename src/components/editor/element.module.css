@@ -111,10 +111,10 @@
 }
 
 .expandGrid {
-	width: calc(100% + var(--resize-handle-width));
-	height: calc(100% + var(--resize-handle-width));
-	top: calc(var(--resize-handle-width) / 2 * -1);
-	left: calc(var(--resize-handle-width) / 2 * -1);
+	width: calc(100% + var(--resize-handle-width) + 2 * var(--element-border-width));
+	height: calc(100% + var(--resize-handle-width) + 2 * var(--element-border-width));
+	top: calc((var(--resize-handle-width) / 2 + var(--element-border-width)) * -1);
+	left: calc((var(--resize-handle-width) / 2 + var(--element-border-width)) * -1);
 	display: grid;
 	grid-template-columns: var(--resize-handle-width) 1fr var(
 			--resize-handle-width
