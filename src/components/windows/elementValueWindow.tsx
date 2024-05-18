@@ -1,8 +1,8 @@
 "use client";
 
 import { Spec } from "immutability-helper";
-import CanvasValues from "../sidebar/canvasvalues";
-import ElementValues from "../sidebar/elementvalues";
+import CanvasValues from "./subelements/canvasvalues";
+import ElementValues from "./subelements/elementvalues";
 import { Asset, EmulatorElement, EmulatorLayout, InfoFile } from "@/data/types";
 import { Dispatch, SetStateAction } from "react";
 

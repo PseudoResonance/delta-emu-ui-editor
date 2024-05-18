@@ -10,8 +10,7 @@
 	transition: all 0.02s linear;
 }
 
-.button:hover > .inputInner,
-.button.checked > .inputInner {
+.button:hover > .inputInner {
 	background-color: var(--button-rgb-hover);
 }
 
@@ -26,6 +25,8 @@
 	transition: all 0.02s linear;
 	color: var(--foreground-rgb);
 	padding: 5px;
+	min-width: 0;
+	width: 100%;
 }
 
 .input > input + .label {
@@ -79,6 +80,7 @@
 	border: var(--border-width) var(--border-rgb) solid;
 	border-radius: var(--dropdown-border-radius);
 	width: calc(100% - 2px);
+	z-index: 1000;
 }
 
 .dropdownItems div {

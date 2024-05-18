@@ -23,6 +23,7 @@
 
 .backgroundImage {
 	object-fit: contain;
+	object-position: top left;
 	overflow: hidden;
 	pointer-events: none;
 	position: absolute;

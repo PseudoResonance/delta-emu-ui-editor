@@ -33,7 +33,7 @@ export default function ElementListWindow(args: {
 }) {
 	const allHidden = args.elements.reduce<boolean>(
 		(prev, cur) => prev && cur.hidden,
-		true,
+		args.elements.length > 0,
 	);
 
 	return (
@@ -83,10 +83,10 @@ export default function ElementListWindow(args: {
 											args.updateAllElements(data);
 										}}
 										style={{
-											height: "var(--tree-text-line-height)",
-											width: "var(--tree-text-line-height)",
+											height: "var(--icon-size)",
+											width: "var(--icon-size)",
 										}}
-									></div>
+									/>
 								</div>
 							}
 							onClick={() => {
@@ -149,8 +149,8 @@ export default function ElementListWindow(args: {
 															);
 														}}
 														style={{
-															height: "var(--tree-text-line-height)",
-															width: "var(--tree-text-line-height)",
+															height: "var(--icon-size)",
+															width: "var(--icon-size)",
 														}}
 													></div>
 												</div>
@@ -272,8 +272,8 @@ export default function ElementListWindow(args: {
 																	);
 																}}
 																style={{
-																	height: "var(--tree-text-line-height)",
-																	width: "var(--tree-text-line-height)",
+																	height: "var(--icon-size)",
+																	width: "var(--icon-size)",
 																}}
 															></div>
 														</div>

@@ -24,7 +24,12 @@ export default function EmulatorWindow(args: {
 	width: number;
 	height: number;
 	hoverIndex: number;
-	padding: { top: number; bottom: number; left: number; right: number };
+	defaultPadding: {
+		top: number;
+		bottom: number;
+		left: number;
+		right: number;
+	};
 	showPopup: (
 		popup: React.JSX.Element,
 		onClose: () => void,
@@ -67,12 +72,10 @@ export default function EmulatorWindow(args: {
 				style={{
 					...args.style,
 					width:
-						(args.width + args.padding.left + args.padding.right) *
-							args.scale -
+						args.width * args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 					height:
-						(args.height + args.padding.top + args.padding.bottom) *
-							args.scale -
+						args.height * args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				}}
 			>
@@ -85,14 +88,8 @@ export default function EmulatorWindow(args: {
 						height:
 							args.height * args.scale -
 							2 * CONSTANT.ELEMENT_BORDER_WIDTH,
-						marginTop:
-							args.padding.top * args.scale -
-							CONSTANT.ELEMENT_BORDER_WIDTH,
-						marginBottom: args.padding.bottom * args.scale,
-						marginLeft:
-							args.padding.left * args.scale -
-							CONSTANT.ELEMENT_BORDER_WIDTH,
-						marginRight: args.padding.right * args.scale,
+						marginTop: -CONSTANT.ELEMENT_BORDER_WIDTH,
+						marginLeft: -CONSTANT.ELEMENT_BORDER_WIDTH,
 					}}
 				>
 					{
@@ -113,6 +110,7 @@ export default function EmulatorWindow(args: {
 					{args.elements.map((val: EmulatorElement, i: number) => (
 						<EmulatorElementComponent
 							assets={args.assets}
+							defaultPadding={args.defaultPadding}
 							deleteThis={() => {
 								if (args.editingElement >= i)
 									args.setEditingElement(

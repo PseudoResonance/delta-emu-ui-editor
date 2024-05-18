@@ -1,10 +1,11 @@
 "use client";
-import styles from "./sidebar.module.css";
-import ValueInput from "../inputs/valueinput";
+import style from "./elementvalues.module.css";
+import icons from "@/utils/icons.module.css";
+import ValueInput from "../../inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
-import Button from "../inputs/button";
-import DropdownInput from "../inputs/dropdowninput";
-import FileInput from "../inputs/fileinput";
+import Button from "../../inputs/button";
+import DropdownInput from "../../inputs/dropdowninput";
+import FileInput from "../../inputs/fileinput";
 import {
 	Asset,
 	EmulatorElement,
@@ -14,9 +15,9 @@ import {
 } from "@/data/types";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
-import Suggestions from "../inputs/inputSuggestions";
+import Suggestions from "../../inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
-import { getElementLabel } from "../editor/element";
+import { getElementLabel } from "../../editor/element";
 
 export default function ElementValues(args: {
 	assets: Record<string, Asset> | null;
@@ -585,7 +586,7 @@ export default function ElementValues(args: {
 	}
 	const label = getElementLabel(args.elementData, true);
 	return (
-		<div className={styles.elementValues}>
+		<div>
 			<DropdownInput
 				elementIndex={args.elementIndex}
 				label="Type"
@@ -611,88 +612,109 @@ export default function ElementValues(args: {
 			/>
 
 			{...data}
-			<ValueInput
-				context={String(args.elementIndex)}
-				label="X"
-				maxValue={args.parentWidth - args.elementData.width}
-				minValue={0}
-				onChange={(val: string) => {
-					const num = parseInt(val);
-					if (!isNaN(num))
+			<div className={style.inputFlex}>
+				<ValueInput
+					context={String(args.elementIndex)}
+					label="X"
+					maxValue={args.parentWidth - args.elementData.width}
+					minValue={0}
+					onChange={(val: string) => {
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								x: {
+									$set: num,
+								},
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								x: {
+									$set: 0,
+								},
+							});
+						}
+					}}
+					type="number"
+					value={args.elementData.x.toFixed(0)}
+				/>
+				<Button
+					label={
+						<div
+							className={`${icons.icon} ${icons.horizontalAlign}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
+							}}
+						/>
+					}
+					onClick={() => {
 						args.updateElement({
 							x: {
-								$set: num,
+								$set: Math.round(
+									(args.parentWidth -
+										args.elementData.width) /
+										2,
+								),
 							},
 						});
-				}}
-				onFocusLost={(val: string) => {
-					const num = parseInt(val);
-					if (isNaN(num) || val.length === 0) {
-						args.updateElement({
-							x: {
-								$set: 0,
-							},
-						});
-					}
-				}}
-				type="number"
-				value={args.elementData.x.toFixed(0)}
-			/>
+					}}
+				/>
+			</div>
 
-			<ValueInput
-				context={String(args.elementIndex)}
-				label="Y"
-				maxValue={args.parentHeight - args.elementData.height}
-				minValue={0}
-				onChange={(val: string) => {
-					const num = parseInt(val);
-					if (!isNaN(num))
+			<div className={style.inputFlex}>
+				<ValueInput
+					context={String(args.elementIndex)}
+					label="Y"
+					maxValue={args.parentHeight - args.elementData.height}
+					minValue={0}
+					onChange={(val: string) => {
+						const num = parseInt(val);
+						if (!isNaN(num))
+							args.updateElement({
+								y: {
+									$set: num,
+								},
+							});
+					}}
+					onFocusLost={(val: string) => {
+						const num = parseInt(val);
+						if (isNaN(num) || val.length === 0) {
+							args.updateElement({
+								y: {
+									$set: 0,
+								},
+							});
+						}
+					}}
+					type="number"
+					value={args.elementData.y.toFixed(0)}
+				/>
+				<Button
+					label={
+						<div
+							className={`${icons.icon} ${icons.verticalAlign}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
+							}}
+						/>
+					}
+					onClick={() => {
 						args.updateElement({
 							y: {
-								$set: num,
+								$set: Math.round(
+									(args.parentHeight -
+										args.elementData.height) /
+										2,
+								),
 							},
 						});
-				}}
-				onFocusLost={(val: string) => {
-					const num = parseInt(val);
-					if (isNaN(num) || val.length === 0) {
-						args.updateElement({
-							y: {
-								$set: 0,
-							},
-						});
-					}
-				}}
-				type="number"
-				value={args.elementData.y.toFixed(0)}
-			/>
-
-			<Button
-				label="Center X"
-				onClick={() => {
-					args.updateElement({
-						x: {
-							$set: Math.round(
-								(args.parentWidth - args.elementData.width) / 2,
-							),
-						},
-					});
-				}}
-			/>
-
-			<Button
-				label="Center Y"
-				onClick={() => {
-					args.updateElement({
-						y: {
-							$set: Math.round(
-								(args.parentHeight - args.elementData.height) /
-									2,
-							),
-						},
-					});
-				}}
-			/>
+					}}
+				/>
+			</div>
 
 			<ValueInput
 				context={String(args.elementIndex)}

@@ -21,6 +21,12 @@ export default function EmulatorElementComponent(args: {
 	parentWidth: number;
 	parentHeight: number;
 	elementData: EmulatorElement;
+	defaultPadding: {
+		top: number;
+		bottom: number;
+		left: number;
+		right: number;
+	};
 	onClick: () => void;
 	updateElement: (data: Spec<EmulatorElement, never>) => void;
 	isHover: boolean;

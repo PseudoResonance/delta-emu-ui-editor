@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./contextmenu.module.css";
 import ContextMenu, { ContextMenuEntry } from "./contextmenu";
 
@@ -11,53 +11,55 @@ export default function ContextMenuHolder(args: {
 		y: number;
 	};
 }) {
+	const elem = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const onClick = (e: PointerEvent) => {
+			if (elem.current) {
+				if (!elem.current.contains(e.target as HTMLElement)) {
+					args.clear();
+				}
+			}
+		};
+		document.addEventListener("pointerdown", onClick);
+		return () => {
+			document.removeEventListener("pointerdown", onClick);
+		};
+	}, []);
 	return (
 		<div
 			className={`${styles.contextMenuHolder} ${styles.verticalAlign}${
 				args.menu.data != null ? " " + styles.show : ""
 			}`}
-			onClick={(e) => {
-				if (e.currentTarget == e.target) {
-					args.clear();
-				}
-			}}
 			onContextMenu={(e) => e.preventDefault()}
+			style={{
+				pointerEvents: "none",
+			}}
 		>
 			{args.menu.data != null ? (
 				<>
 					<div
 						className={styles.aligner}
-						onClick={(e) => {
-							if (e.currentTarget == e.target) {
-								args.clear();
-							}
-						}}
 						style={{
+							pointerEvents: "none",
 							flexBasis: `${args.menu.y}px`,
 						}}
 					/>
 
-					<div
-						className={styles.horizontalAlign}
-						onClick={(e) => {
-							if (e.currentTarget == e.target) {
-								args.clear();
-							}
-						}}
-					>
+					<div className={styles.horizontalAlign}>
 						<div
 							className={styles.aligner}
-							onClick={(e) => {
-								if (e.currentTarget == e.target) {
-									args.clear();
-								}
-							}}
 							style={{
+								pointerEvents: "none",
 								flexBasis: `${args.menu.x}px`,
 							}}
 						/>
 
-						<div>
+						<div
+							ref={elem}
+							style={{
+								pointerEvents: "initial",
+							}}
+						>
 							<ContextMenu
 								data={args.menu.data}
 								removeSelf={args.clear}

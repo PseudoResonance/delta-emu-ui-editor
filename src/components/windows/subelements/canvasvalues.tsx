@@ -1,14 +1,17 @@
 "use client";
-import ValueInput from "../inputs/valueinput";
+import lockRatioStyle from "./lockRatio.module.css";
+import icons from "@/utils/icons.module.css";
+import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
-import Button from "../inputs/button";
-import DropdownInput from "../inputs/dropdowninput";
-import FileInput from "../inputs/fileinput";
+import Button from "@/components/inputs/button";
+import DropdownInput from "@/components/inputs/dropdowninput";
+import FileInput from "@/components/inputs/fileinput";
 import { Asset, AssetType, EmulatorLayout } from "@/data/types";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
-import CheckboxInput from "../inputs/checkboxinput";
-import Suggestions from "../inputs/inputSuggestions";
+import CheckboxInput from "@/components/inputs/checkboxinput";
+import Suggestions from "@/components/inputs/inputSuggestions";
+import IconCheckboxInput from "@/components/inputs/iconCheckbox";
 
 export default function CanvasValues(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -224,85 +227,139 @@ export default function CanvasValues(args: {
 				</>
 			)}
 
-			<ValueInput
-				context={args.currentRepresentation}
-				label="Canvas Width"
-				minValue={0}
-				onChange={(val: string) => {
-					const res = parseInt(val);
-					if (!isNaN(res)) {
-						let height = -1;
-						const bgName = args.getCurrentBackgroundAssetName();
-						if (
-							args.layoutData &&
-							args.layoutData.lockBackgroundRatio &&
-							args.assets &&
-							bgName in args.assets &&
-							args.assets[bgName].height > -1 &&
-							args.assets[bgName].width > -1
-						) {
-							height =
-								res *
-								(args.assets[bgName].height /
-									args.assets[bgName].width);
-						}
-						args.setLayoutData({
-							canvas: {
-								width: {
-									$set: res,
-								},
-								...(height > -1 && {
-									height: {
-										$set: height,
+			<div className={lockRatioStyle.container}>
+				<div className={lockRatioStyle.inputs}>
+					<ValueInput
+						context={args.currentRepresentation}
+						label="Canvas Width"
+						minValue={0}
+						onChange={(val: string) => {
+							const res = parseInt(val);
+							if (!isNaN(res)) {
+								let height = -1;
+								if (
+									args.layoutData &&
+									args.layoutData.lockBackgroundRatio
+								) {
+									height =
+										res *
+										(args.layoutData.canvas.height /
+											args.layoutData.canvas.width);
+								}
+								args.setLayoutData({
+									canvas: {
+										width: {
+											$set: res,
+										},
+										...(height > -1 && {
+											height: {
+												$set: height,
+											},
+										}),
 									},
-								}),
-							},
-						});
-					}
-				}}
-				type="number"
-				value={String(Math.round(args.layoutData.canvas.width))}
-			/>
+								});
+							}
+						}}
+						type="number"
+						value={String(Math.round(args.layoutData.canvas.width))}
+					/>
 
-			<ValueInput
-				context={args.currentRepresentation}
-				label="Canvas Height"
-				minValue={0}
-				onChange={(val: string) => {
-					const res = parseInt(val);
-					if (!isNaN(res)) {
-						let width = -1;
-						const bgName = args.getCurrentBackgroundAssetName();
-						if (
-							args.layoutData &&
-							args.layoutData.lockBackgroundRatio &&
-							args.assets &&
-							bgName in args.assets &&
-							args.assets[bgName].height > -1 &&
-							args.assets[bgName].width > -1
-						) {
-							width =
-								res *
-								(args.assets[bgName].width /
-									args.assets[bgName].height);
-						}
-						args.setLayoutData({
-							canvas: {
-								height: {
-									$set: res,
-								},
-								...(width > -1 && {
-									width: {
-										$set: width,
+					<ValueInput
+						context={args.currentRepresentation}
+						label="Canvas Height"
+						minValue={0}
+						onChange={(val: string) => {
+							const res = parseInt(val);
+							if (!isNaN(res)) {
+								let width = -1;
+								if (
+									args.layoutData &&
+									args.layoutData.lockBackgroundRatio
+								) {
+									width =
+										res *
+										(args.layoutData.canvas.width /
+											args.layoutData.canvas.height);
+								}
+								args.setLayoutData({
+									canvas: {
+										height: {
+											$set: res,
+										},
+										...(width > -1 && {
+											width: {
+												$set: width,
+											},
+										}),
 									},
-								}),
-							},
-						});
-					}
-				}}
-				type="number"
-				value={String(Math.round(args.layoutData.canvas.height))}
-			/>
+								});
+							}
+						}}
+						type="number"
+						value={String(
+							Math.round(args.layoutData.canvas.height),
+						)}
+					/>
+				</div>
+				<div className={lockRatioStyle.buttonContainer}>
+					<div className={lockRatioStyle.buttonTop}>
+						<div className={lockRatioStyle.buttonAlignerSquare}>
+							<div />
+							<div />
+						</div>
+						<div className={lockRatioStyle.buttonAligner}>
+							<div
+								style={{
+									borderTop:
+										"var(--tree-line-width) var(--tree-line-rgb) solid",
+									borderRight:
+										"var(--tree-line-width) var(--tree-line-rgb) solid",
+								}}
+							/>
+							<div />
+						</div>
+					</div>
+					<IconCheckboxInput
+						icon={
+							<div
+								className={`${icons.icon} ${icons.chain} ${lockRatioStyle.button}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						}
+						onChange={(val) => {
+							args.setLayoutData({
+								lockBackgroundRatio: {
+									$set: val,
+								},
+							});
+						}}
+						value={
+							args.layoutData &&
+							args.layoutData.lockBackgroundRatio
+						}
+					/>
+					<div className={lockRatioStyle.buttonBottom}>
+						<div className={lockRatioStyle.buttonAligner}>
+							<div
+								style={{
+									borderBottom:
+										"var(--tree-line-width) var(--tree-line-rgb) solid",
+									borderRight:
+										"var(--tree-line-width) var(--tree-line-rgb) solid",
+								}}
+							/>
+							<div />
+						</div>
+						<div className={lockRatioStyle.buttonAlignerSquare}>
+							<div />
+							<div />
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<ValueInput
 				context={args.currentRepresentation}
@@ -439,41 +496,6 @@ export default function CanvasValues(args: {
 					});
 				}}
 				value={args.layoutData.translucent}
-			/>
-
-			<CheckboxInput
-				label="Lock Background Ratio"
-				onChange={(val: boolean) => {
-					const bgName = args.getCurrentBackgroundAssetName();
-					let height = -1;
-					if (
-						args.layoutData &&
-						val &&
-						args.assets &&
-						bgName in args.assets &&
-						args.assets[bgName].height > -1 &&
-						args.assets[bgName].width > -1
-					) {
-						height = Math.round(
-							args.layoutData.canvas.width *
-								(args.assets[bgName].height /
-									args.assets[bgName].width),
-						);
-					}
-					args.setLayoutData({
-						lockBackgroundRatio: {
-							$set: val,
-						},
-						...(height > -1 && {
-							canvas: {
-								height: {
-									$set: height,
-								},
-							},
-						}),
-					});
-				}}
-				value={args.layoutData.lockBackgroundRatio}
 			/>
 
 			<Button

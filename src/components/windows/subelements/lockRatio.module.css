@@ -1,0 +1,47 @@
+.container {
+	display: flex;
+}
+
+.inputs {
+	display: flex;
+	flex-direction: column;
+}
+
+.buttonContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+	align-items: stretch;
+}
+
+.button {
+	flex-shrink: 0;
+	flex-grow: 0;
+}
+
+.buttonTop, .buttonBottom {
+	flex-grow: 1;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.buttonAligner, .buttonAlignerSquare {
+	display: flex;
+	align-items: stretch;
+}
+
+.buttonAligner > div, .buttonAlignerSquare > div {
+	width: 100%;
+}
+
+.buttonAligner {
+	flex-grow: 1;
+}
+
+.buttonAlignerSquare > div {
+	aspect-ratio: 1/1;
+	flex-grow: 0;
+}

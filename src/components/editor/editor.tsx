@@ -393,6 +393,7 @@ export default function MainEditor(args: {
 				<EmulatorWindow
 					addElementData={args.addElementData}
 					assets={args.assets}
+					defaultPadding={args.layoutData.padding}
 					editingElement={args.editingElement}
 					elements={args.elements}
 					focusState={args.focusState}
@@ -401,7 +402,6 @@ export default function MainEditor(args: {
 					}
 					height={args.layoutData.canvas.height}
 					hoverIndex={args.hoverIndex}
-					padding={args.layoutData.padding}
 					pressedKeys={args.pressedKeys}
 					removeElement={args.removeElement}
 					scale={args.scale.scale}

@@ -12,6 +12,7 @@
 	--tree-line-width: 2px;
 	--tree-padding-y: 3px;
 	--tree-text-line-height: 1.25em;
+	--icon-size: 1.25em;
 	--tree-nest-depth: 20px;
 	--scrollbar-width: 5px;
 
@@ -21,6 +22,7 @@
 	--secondary-rgb-hover: rgba(190, 190, 190, 1);
 	--button-rgb: rgb(192, 192, 192);
 	--button-rgb-hover: rgba(0, 0, 0, 0.3);
+	--button-icon-rgb-active: rgba(0, 0, 0, 0.8);
 	--separator-rgb: rgb(167, 167, 167);
 	--border-rgb: rgb(194, 194, 194);
 	--select-rgb: rgb(100, 100, 100);
@@ -64,6 +66,7 @@
 		--secondary-rgb-hover: rgba(50, 50, 50, 1);
 		--button-rgb: rgba(40, 40, 40, 1);
 		--button-rgb-hover: rgba(255, 255, 255, 0.15);
+		--button-icon-rgb-active: rgba(0, 0, 0, 0.3);
 		--separator-rgb: rgb(65, 65, 65);
 		--border-rgb: rgb(99, 99, 99);
 		--select-rgb: rgba(150, 150, 150, 1);

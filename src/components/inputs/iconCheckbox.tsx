@@ -3,8 +3,8 @@ import styles from "./input.module.css";
 import checkboxStyles from "./checkbox.module.css";
 import React, { useEffect, useState } from "react";
 
-export default function CheckboxInput(args: {
-	label: string;
+export default function IconCheckboxInput(args: {
+	icon: React.JSX.Element;
 	value: boolean;
 	onChange: (val: boolean) => void;
 }) {
@@ -21,20 +21,13 @@ export default function CheckboxInput(args: {
 	}, [args.value]);
 	return (
 		<div
-			className={`${styles.input} ${styles.button}${
-				state ? " " + styles.checked : ""
+			className={`${styles.input} ${checkboxStyles.iconState} ${styles.button}${
+				state ? " " + checkboxStyles.checked : ""
 			}`}
 			onClick={onChange}
 		>
 			<div className={`${styles.inputInner} ${checkboxStyles.container}`}>
-				<div
-					className={`${checkboxStyles.checkbox}${state ? " " + checkboxStyles.checked : ""}`}
-					style={{
-						height: "var(--icon-size)",
-						width: "var(--icon-size)",
-					}}
-				/>
-				<p>{args.label}</p>
+				{args.icon}
 			</div>
 		</div>
 	);
