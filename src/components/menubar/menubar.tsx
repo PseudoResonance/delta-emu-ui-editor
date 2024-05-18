@@ -54,7 +54,7 @@ export default function MenuBar(args: {
 				subElements={[
 					<MenuButton
 						key="loadskin"
-						label="Load Skin"
+						label="Load Deltaskin"
 						onClick={() => {
 							setIsActive(false);
 							const elem = document.createElement("input");
@@ -141,7 +141,7 @@ export default function MenuBar(args: {
 					/>,
 					<MenuButton
 						key="saveskin"
-						label="Save Skin"
+						label="Save Deltaskin"
 						onClick={() => {
 							setIsActive(false);
 							const exportObj = args.saveJSON();
@@ -189,7 +189,7 @@ export default function MenuBar(args: {
 					/>,
 					<MenuButton
 						key="savejson"
-						label="Save JSON"
+						label="Save info.json"
 						onClick={() => {
 							setIsActive(false);
 							const exportObj = args.saveJSON();
@@ -206,7 +206,7 @@ export default function MenuBar(args: {
 					/>,
 					<MenuButton
 						key="loadjson"
-						label="Load JSON"
+						label="Load info.json"
 						onClick={() => {
 							setIsActive(false);
 							const elem = document.createElement("input");

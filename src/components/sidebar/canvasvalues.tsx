@@ -39,7 +39,7 @@ export default function CanvasValues(args: {
 		<>
 			<DropdownInput
 				elementIndex={0}
-				label="Asset Type"
+				label="Background Type"
 				onChange={(val: string) => {
 					args.setLayoutData({
 						assets: {
@@ -72,7 +72,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Small"
+						label="Small Name"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -109,7 +109,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Medium"
+						label="Medium Name"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -146,7 +146,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Large"
+						label="Large Name"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -186,7 +186,7 @@ export default function CanvasValues(args: {
 					<ValueInput
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Resizable"
+						label="PDF Name"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -204,7 +204,7 @@ export default function CanvasValues(args: {
 					<FileInput
 						accept=".pdf"
 						key="resizablefile"
-						label="Choose Resizable Image"
+						label="Choose PDF Image"
 						onChange={(val: File) => {
 							args.addAsset(val.name, {
 								file: val,
@@ -226,7 +226,7 @@ export default function CanvasValues(args: {
 
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Screen Width"
+				label="Canvas Width"
 				minValue={0}
 				onChange={(val: string) => {
 					const res = parseInt(val);
@@ -266,7 +266,7 @@ export default function CanvasValues(args: {
 
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Screen Height"
+				label="Canvas Height"
 				minValue={0}
 				onChange={(val: string) => {
 					const res = parseInt(val);
@@ -430,7 +430,7 @@ export default function CanvasValues(args: {
 			/>
 
 			<CheckboxInput
-				label="Translucent"
+				label="Translucent Layout"
 				onChange={(val: boolean) => {
 					args.setLayoutData({
 						translucent: {

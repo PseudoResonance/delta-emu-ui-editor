@@ -9,6 +9,10 @@ interface ConsoleInfo {
 			values: string[] | Record<string, string[]>;
 		};
 	};
+	inputScreen: {
+		width: number;
+		height: number;
+	};
 	screens: {
 		x: number;
 		y: number;
@@ -50,6 +54,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 					right: ["right"],
 				},
 			},
+		},
+		inputScreen: {
+			width: 160,
+			height: 144,
 		},
 		screens: [
 			{
@@ -94,6 +102,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 					right: ["right"],
 				},
 			},
+		},
+		inputScreen: {
+			width: 240,
+			height: 160,
 		},
 		screens: [
 			{
@@ -147,6 +159,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 				},
 			},
 		},
+		inputScreen: {
+			width: 256,
+			height: 384,
+		},
 		screens: [
 			{
 				x: 0,
@@ -195,6 +211,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 				},
 			},
 		},
+		inputScreen: {
+			width: 256,
+			height: 240,
+		},
 		screens: [
 			{
 				x: 0,
@@ -240,6 +260,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 					right: ["right"],
 				},
 			},
+		},
+		inputScreen: {
+			width: 256,
+			height: 224,
 		},
 		screens: [
 			{
@@ -289,6 +313,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 				},
 			},
 		},
+		inputScreen: {
+			width: 256,
+			height: 224,
+		},
 		screens: [
 			{
 				x: 0,
@@ -334,6 +362,10 @@ const INPUT_PRESETS: Record<string, ConsoleInfo> = {
 					right: ["right"],
 				},
 			},
+		},
+		inputScreen: {
+			width: 320,
+			height: 240,
 		},
 		screens: [
 			{

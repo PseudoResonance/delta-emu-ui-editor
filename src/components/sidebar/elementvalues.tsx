@@ -80,7 +80,7 @@ export default function ElementValues(args: {
 					context={String(args.elementIndex)}
 					debounce={1000}
 					key="thumbstickname"
-					label="Thumbstick Name"
+					label="Image Name"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: { thumbstick: { name: { $set: val } } },
@@ -195,7 +195,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="inputup"
-					label="Input Up"
+					label="Bind Up"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -224,7 +224,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="inputdown"
-					label="Input Down"
+					label="Bind Down"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -253,7 +253,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="inputleft"
-					label="Input Left"
+					label="Bind Left"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -282,7 +282,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="inputright"
-					label="Input Right"
+					label="Bind Right"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -315,7 +315,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="touchscreenx"
-					label="Touchscreen X"
+					label="Bind Touch X"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -344,7 +344,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="touchscreeny"
-					label="Touchscreen Y"
+					label="Bind Touch Y"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {
@@ -376,7 +376,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="screenx"
-					label="Screen X"
+					label="Capture Screen X"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -422,7 +422,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="screeny"
-					label="Screen Y"
+					label="Capture Screen Y"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -468,7 +468,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="screenwidth"
-					label="Screen Width"
+					label="Capture Screen Width"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -514,7 +514,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="screenheight"
-					label="Screen Height"
+					label="Capture Screen Height"
 					minValue={0}
 					onChange={(val: string) => {
 						const num = parseInt(val);
@@ -564,7 +564,7 @@ export default function ElementValues(args: {
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="inputs"
-					label="Inputs"
+					label="Bindings"
 					onChange={(val: string) => {
 						args.updateElement({
 							data: {

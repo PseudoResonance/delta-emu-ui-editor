@@ -26,6 +26,7 @@ import {
 import update, { Spec } from "immutability-helper";
 import * as CONSTANT from "@/utils/constants";
 import ValueInput from "@/components/inputs/valueinput";
+import INPUT_PRESETS from "@/data/consoleInfo";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -935,6 +936,7 @@ export default function Home() {
 				debug: "debug" in json ? (json.debug as boolean) : false,
 				representations: {},
 			};
+			const gameTypeIdentifier = newInfoFile.gameTypeIdentifier;
 			if ("representations" in json) {
 				const recurse = (
 					data: Record<string, object>,
@@ -953,6 +955,7 @@ export default function Home() {
 								mappingSize: Record<string, string>;
 								extendedEdges?: Record<string, string>;
 							},
+							gameTypeIdentifier,
 						);
 						if (parsed) newInfoFile[newInfoFileKey] = parsed;
 					} else {
@@ -1003,12 +1006,15 @@ export default function Home() {
 		}
 	};
 
-	const parseRepresentation = (json: {
-		items: Record<string, unknown>[];
-		assets: Record<string, string>;
-		mappingSize: Record<string, string>;
-		extendedEdges?: Record<string, string>;
-	}) => {
+	const parseRepresentation = (
+		json: {
+			items: Record<string, unknown>[];
+			assets: Record<string, string>;
+			mappingSize: Record<string, string>;
+			extendedEdges?: Record<string, string>;
+		},
+		gameTypeIdentifier: string,
+	) => {
 		try {
 			const representationObj: Mutable<Representation> = {
 				elements: [],
@@ -1142,6 +1148,18 @@ export default function Home() {
 				json.gameScreenFrame &&
 				typeof json.gameScreenFrame === "object"
 			) {
+				const screenInputDefault = {
+					x: 0,
+					y: 0,
+					width: 0,
+					height: 0,
+				};
+				if (gameTypeIdentifier in INPUT_PRESETS) {
+					screenInputDefault.width =
+						INPUT_PRESETS[gameTypeIdentifier].inputScreen.width;
+					screenInputDefault.height =
+						INPUT_PRESETS[gameTypeIdentifier].inputScreen.height;
+				}
 				newElements.push({
 					type: EmulatorElementType.Screen,
 					data: {
@@ -1160,24 +1178,7 @@ export default function Home() {
 							height: 0,
 							hidden: false,
 						},
-						screen: {
-							x: 0,
-							y: 0,
-							width:
-								"width" in json.gameScreenFrame
-									? parseInt(
-											json.gameScreenFrame
-												.width as string,
-										)
-									: 0,
-							height:
-								"height" in json.gameScreenFrame
-									? parseInt(
-											json.gameScreenFrame
-												.height as string,
-										)
-									: 0,
-						},
+						screen: screenInputDefault,
 					},
 					x:
 						"x" in json.gameScreenFrame

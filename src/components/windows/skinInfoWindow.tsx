@@ -15,7 +15,7 @@ export default function SkinInfoWindow(args: {
 		<div>
 			<ValueInput
 				context={"-1"}
-				label="Name"
+				label="Skin Name"
 				onChange={(val: string) => {
 					args.setInfoFile({ name: { $set: val } });
 				}}
@@ -23,7 +23,7 @@ export default function SkinInfoWindow(args: {
 			/>
 			<ValueInput
 				context={"-1"}
-				label="ID"
+				label="Skin ID"
 				onChange={(val: string) => {
 					args.setInfoFile({ identifier: { $set: val } });
 				}}
@@ -36,7 +36,7 @@ export default function SkinInfoWindow(args: {
 			/>
 			<ValueInput
 				context={"-1"}
-				label="Game Type ID"
+				label="Emulator Type ID"
 				onChange={(val: string) => {
 					args.setInfoFile({ gameTypeIdentifier: { $set: val } });
 				}}
@@ -49,7 +49,7 @@ export default function SkinInfoWindow(args: {
 			/>
 
 			<CheckboxInput
-				label="Debug"
+				label="Show Debug"
 				onChange={(val: boolean) => {
 					args.setInfoFile({ debug: { $set: val } });
 				}}
