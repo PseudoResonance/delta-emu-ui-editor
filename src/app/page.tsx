@@ -227,6 +227,7 @@ export default function Home() {
 					name: "",
 					width: 0,
 					height: 0,
+					hidden: false,
 				},
 				screen: {
 					x: 0,
@@ -1030,6 +1031,7 @@ export default function Home() {
 						name: "",
 						width: 0,
 						height: 0,
+						hidden: false,
 					},
 					screen: {
 						x: 0,
@@ -1156,6 +1158,7 @@ export default function Home() {
 							name: "",
 							width: 0,
 							height: 0,
+							hidden: false,
 						},
 						screen: {
 							x: 0,
@@ -1221,6 +1224,7 @@ export default function Home() {
 								name: "",
 								width: 0,
 								height: 0,
+								hidden: false,
 							},
 							screen: {
 								x:
@@ -1518,7 +1522,6 @@ export default function Home() {
 					currentRepresentation={currentRepresentation}
 					deleteNode={deleteNode}
 					infoFile={infoFile}
-					pressedKeys={pressedKeys}
 					setInfoFile={updateSkinState}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
@@ -1560,7 +1563,6 @@ export default function Home() {
 					hoverIndex={hoverIndex}
 					infoFile={infoFile}
 					layoutData={currentLayout}
-					pressedKeys={pressedKeys}
 					removeElement={removeElement}
 					scale={scale}
 					setAssets={setAssets}
@@ -1575,6 +1577,14 @@ export default function Home() {
 					setScale={setScale}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
+					updateAllElements={(
+						elements: Spec<EmulatorElement[], never>,
+					) => {
+						updateRepresentationState(
+							{ elements: elements },
+							currentRepresentation,
+						);
+					}}
 					updateElement={updateElement}
 				/>
 			</main>

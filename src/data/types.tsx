@@ -27,6 +27,7 @@ interface EmulatorElementThumbstick extends EmulatorElementBase {
 			readonly name: string;
 			readonly width: number;
 			readonly height: number;
+			readonly hidden: boolean;
 		};
 	};
 	readonly paddingTop: number;

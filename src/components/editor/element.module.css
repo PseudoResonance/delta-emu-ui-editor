@@ -10,7 +10,7 @@
 }
 
 .element.hidden {
-	display: none;
+	visibility: hidden;
 }
 
 .element:hover,
@@ -90,6 +90,14 @@
 
 .padStickOverlay > div {
 	border: calc(var(--element-border-width) / 2) solid var(--pad-stick-overlay);
+}
+
+.thumbstickImage:not(.hidden) {
+	visibility: initial;
+}
+
+.thumbstickImage.hidden {
+	visibility: hidden;
 }
 
 .thumbstickImage,

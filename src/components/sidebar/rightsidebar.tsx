@@ -1,10 +1,6 @@
 "use client";
 import styles from "./sidebar.module.css";
-import visibilityStyles from "./visibility.module.css";
-import ElementValues from "./elementvalues";
 import React, { Dispatch, SetStateAction } from "react";
-import ValueInput from "../inputs/valueinput";
-import Button from "../inputs/button";
 import {
 	Asset,
 	ContextMenu,
@@ -13,11 +9,10 @@ import {
 	InfoFile,
 	ScaleData,
 } from "@/data/types";
-import TreeElement from "./treeElement";
 import { Spec } from "immutability-helper";
-import CanvasValues from "./canvasvalues";
-import { getElementLabel } from "../editor/element";
-import * as Constants from "@/utils/constants";
+import ElementListWindow from "../windows/elementListWindow";
+import ZoomWindow from "../windows/zoomWindow";
+import ElementValueWindow from "../windows/elementValueWindow";
 
 export default function RightSidebar(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -25,7 +20,6 @@ export default function RightSidebar(args: {
 	assets: Record<string, Asset> | null;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	addAsset: (path: string, asset: Asset) => void;
-	pressedKeys: string[];
 	elements: EmulatorElement[];
 	addElement: () => void;
 	addElementData: (data: EmulatorElement) => void;
@@ -33,6 +27,7 @@ export default function RightSidebar(args: {
 	removeElement: (key: number) => void;
 	layoutData: EmulatorLayout | null;
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
+	updateAllElements: (elements: Spec<EmulatorElement[], never>) => void;
 	editingElement: number;
 	setEditingElement: (val: number) => void;
 	scale: ScaleData;
@@ -50,241 +45,48 @@ export default function RightSidebar(args: {
 	return (
 		<div className={styles.sidebar}>
 			<div>
-				<ValueInput
-					context={args.currentRepresentation}
-					label="Zoom"
-					maxValue={Constants.ZOOM_MAX * 100.0}
-					minValue={Constants.ZOOM_MIN * 100.0}
-					onChange={(val: string) => {
-						const newScale = Number(val) / 100.0;
-						const centerX = -args.scale.xOffset;
-						const centerY = -args.scale.yOffset;
-						args.setScale((oldScale) => {
-							return {
-								scale: newScale,
-								xOffset:
-									oldScale.xOffset -
-									centerX * (newScale / oldScale.scale) +
-									centerX,
-								yOffset:
-									oldScale.yOffset -
-									centerY * (newScale / oldScale.scale) +
-									centerY,
-							};
-						});
-					}}
-					type="number"
-					value={(args.scale.scale * 100).toFixed(0)}
+				<ZoomWindow
+					currentRepresentation={args.currentRepresentation}
+					scale={args.scale}
+					setScale={args.setScale}
 				/>
-				{args.layoutData && (
-					<>
-						<Button
-							label="Add Element"
-							onClick={() => {
-								args.addElement();
-							}}
-						/>
-						<div style={{ padding: "3px 5px" }}>
-							<TreeElement
-								label="Canvas"
-								onClick={() => {
-									args.setEditingElement(-1);
-								}}
-								onContextMenu={(e) => {
-									e.preventDefault();
-									args.showContextMenu(
-										[
-											{
-												label: "Add Element",
-												onClick: () => {
-													args.addElement();
-												},
-											},
-										],
-										e.pageX,
-										e.pageY,
-									);
-								}}
-								showActive={args.editingElement === -1}
-							>
-								{args.elements.map(
-									(val: EmulatorElement, i: number) => {
-										const label = getElementLabel(
-											val,
-											true,
-										);
-										return (
-											<TreeElement
-												key={i}
-												label={
-													<div
-														style={{
-															display: "flex",
-															justifyContent:
-																"space-between",
-															alignItems:
-																"stretch",
-															position:
-																"relative",
-														}}
-													>
-														<p
-															style={{
-																margin: 0,
-															}}
-														>
-															{label}
-														</p>
-														<div
-															className={`${visibilityStyles.visibilityToggle}${args.elements[i].hidden ? " " + visibilityStyles.hidden : ""}`}
-															onClick={() => {
-																args.updateElement(
-																	i,
-																	{
-																		hidden: {
-																			$set: !args
-																				.elements[
-																				i
-																			]
-																				.hidden,
-																		},
-																	},
-																);
-															}}
-															style={{
-																height: "var(--tree-text-line-height)",
-																width: "var(--tree-text-line-height)",
-															}}
-														></div>
-													</div>
-												}
-												onClick={() => {
-													args.setEditingElement(i);
-												}}
-												onContextMenu={(e) => {
-													e.preventDefault();
-													args.showContextMenu(
-														[
-															{
-																label: "Duplicate",
-																onClick: () => {
-																	args.addElementData(
-																		structuredClone(
-																			args
-																				.elements[
-																				i
-																			],
-																		),
-																	);
-																},
-															},
-															{
-																label: "Delete",
-																onClick: () => {
-																	args.showPopup(
-																		<>
-																			<h2>
-																				Warning
-																			</h2>
-																			<p>
-																				Confirm
-																				deleting
-																				&quot;
-																				{getElementLabel(
-																					val,
-																					true,
-																				)}
-																				&quot;
-																			</p>
-																		</>,
-																		() => {},
-																		() => {
-																			if (
-																				args.editingElement >=
-																				i
-																			)
-																				args.setEditingElement(
-																					args.editingElement -
-																						1,
-																				);
-																			args.removeElement(
-																				i,
-																			);
-																		},
-																	);
-																},
-															},
-														],
-														e.pageX,
-														e.pageY,
-													);
-												}}
-												onPointerEnter={() => {
-													args.setHoverIndex(i);
-												}}
-												onPointerLeave={() => {
-													args.setHoverIndex(-1);
-												}}
-												showActive={
-													args.editingElement === i
-												}
-											>
-												<></>
-											</TreeElement>
-										);
-									},
-								)}
-							</TreeElement>
-						</div>
-					</>
-				)}
+				<ElementListWindow
+					addElement={args.addElement}
+					addElementData={args.addElementData}
+					editingElement={args.editingElement}
+					elements={args.elements}
+					hoverIndex={args.hoverIndex}
+					layoutData={args.layoutData}
+					removeElement={args.removeElement}
+					setEditingElement={args.setEditingElement}
+					setHoverIndex={args.setHoverIndex}
+					showContextMenu={args.showContextMenu}
+					showPopup={args.showPopup}
+					updateAllElements={args.updateAllElements}
+					updateElement={args.updateElement}
+				/>
 			</div>
 			<hr />
 			<div>
-				{args.layoutData &&
-					(args.editingElement >= 0 ? (
-						<ElementValues
-							addAsset={args.addAsset}
-							assets={args.assets}
-							currentRepresentation={args.currentRepresentation}
-							deleteThis={() => {
-								args.setEditingElement(args.editingElement - 1);
-								args.removeElement(args.editingElement);
-							}}
-							duplicateThis={() => {
-								args.addElementData(
-									structuredClone(
-										args.elements[args.editingElement],
-									),
-								);
-							}}
-							elementData={args.elements[args.editingElement]}
-							elementIndex={args.editingElement}
-							infoFile={args.infoFile}
-							layoutData={args.layoutData}
-							parentHeight={args.layoutData.canvas.height}
-							parentWidth={args.layoutData.canvas.width}
-							setAssets={args.setAssets}
-							showPopup={args.showPopup}
-							updateElement={(
-								data: Spec<EmulatorElement, never>,
-							) => {
-								args.updateElement(args.editingElement, data);
-							}}
-						/>
-					) : (
-						<CanvasValues
-							addAsset={args.addAsset}
-							assets={args.assets}
-							currentRepresentation={args.currentRepresentation}
-							getCurrentBackgroundAssetName={
-								args.getCurrentBackgroundAssetName
-							}
-							layoutData={args.layoutData}
-							setAssets={args.setAssets}
-							setLayoutData={args.setLayoutData}
-						/>
-					))}
+				<ElementValueWindow
+					addAsset={args.addAsset}
+					addElementData={args.addElementData}
+					assets={args.assets}
+					currentRepresentation={args.currentRepresentation}
+					editingElement={args.editingElement}
+					elements={args.elements}
+					getCurrentBackgroundAssetName={
+						args.getCurrentBackgroundAssetName
+					}
+					infoFile={args.infoFile}
+					layoutData={args.layoutData}
+					removeElement={args.removeElement}
+					setAssets={args.setAssets}
+					setEditingElement={args.setEditingElement}
+					setLayoutData={args.setLayoutData}
+					showPopup={args.showPopup}
+					updateElement={args.updateElement}
+				/>
 			</div>
 		</div>
 	);

@@ -177,7 +177,7 @@ export default function MainEditor(args: {
 		pointerCache.push(e.nativeEvent);
 		if (pointerCache.length === 1) {
 			let moveHandler: (e: PointerEvent) => void;
-			if (e.ctrlKey) {
+			if (e.ctrlKey || (e.button === 1 && e.pointerType === "mouse")) {
 				e.preventDefault();
 				const xStartMouse = e.clientX;
 				const yStartMouse = e.clientY;

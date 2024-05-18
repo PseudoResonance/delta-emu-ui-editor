@@ -650,7 +650,7 @@ export default function EmulatorElementComponent(args: {
 								bgUrl.length > 0
 									? ""
 									: " " + styles.thumbstickImageEmpty
-							}`}
+							}${args.elementData.data.thumbstick.hidden ? " " + styles.hidden : ""}`}
 						>
 							<div
 								style={{
