@@ -32,7 +32,7 @@
 	}
 
 	.sidebarLeft.hideNarrow {
-		transform: translateX(-100vw) !important;
+		transform: translateX(-100svw) !important;
 	}
 
 	.sidebarLeft.showNarrow {
@@ -44,6 +44,6 @@
 	}
 
 	.sidebarRight.showNarrow {
-		transform: translateX(-100vw) !important;
+		transform: translateX(-100svw) !important;
 	}
 }

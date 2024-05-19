@@ -57,7 +57,6 @@ export default function MenuBar(args: {
 				style={{
 					flexGrow: 1,
 					flexShrink: 1,
-					overflowX: "scroll",
 				}}
 			>
 				<MenuToggle

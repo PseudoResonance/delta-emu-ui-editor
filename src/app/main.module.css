@@ -7,15 +7,15 @@
 	flex-wrap: nowrap;
 	align-items: stretch;
 	height: 100svh;
-	width: 100vw;
+	width: 100svw;
 	margin: 0;
 	gap: var(--border-width);
 	grid-template-rows: var(--menu-height) calc(
-			100vh - var(--menu-height) - var(--border-width)
+			100svh - var(--menu-height) - var(--border-width)
 		);
 	grid-template-columns:
 		var(--sidebar-width) calc(
-			100vw - (2 * (var(--sidebar-width) + var(--border-width)))
+			100svw - (2 * (var(--sidebar-width) + var(--border-width)))
 		)
 		var(--sidebar-width);
 	position: relative;
@@ -27,7 +27,7 @@
 	position: absolute;
 	left: 0;
 	top: 0;
-	width: 100vw;
+	width: 100svw;
 	height: 100svh;
 	overflow: hidden;
 	pointer-events: none;
@@ -35,12 +35,12 @@
 
 @media screen and (max-width: 8in) {
 	.main > * {
-		width: 100vw;
-		overflow: hidden;
+		width: 100svw;
 	}
 
 	.main > :not(:first-child) {
-		transform: translateX(-100vw);
+		transform: translateX(-100svw);
 		height: calc(100svh - var(--menu-height) - var(--border-width));
+		overflow: hidden;
 	}
 }

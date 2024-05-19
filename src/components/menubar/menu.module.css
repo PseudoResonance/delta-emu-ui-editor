@@ -1,16 +1,14 @@
 .menubar {
 	grid-column: 1 / span 3;
-	width: 100%;
+	width: 100svw;
 	flex-shrink: 0;
 	margin: 0;
 	background-color: var(--background-menu-rgb);
 	display: flex;
-	overflow: initial !important;
 }
 
 .menubar > div {
 	display: flex;
-	overflow: initial !important;
 }
 
 .menucategory {
