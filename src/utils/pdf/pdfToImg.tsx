@@ -1,4 +1,5 @@
 "use client";
+import { AssetType } from "@/data/types";
 import { pdfjs } from "react-pdf";
 
 const readFileData = (file: File) => {
@@ -15,7 +16,12 @@ const readFileData = (file: File) => {
 	});
 };
 
-const convertPdfToImage = async (file: File) => {
+const convertPdfToImage: (file: File) => Promise<{
+	type: AssetType;
+	url: string;
+	height: number;
+	width: number;
+}> = async (file: File) => {
 	pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 		"pdfjs-dist/build/pdf.worker.min.js",
 		import.meta.url,
@@ -36,6 +42,7 @@ const convertPdfToImage = async (file: File) => {
 				background: "rgba(0,0,0,0)",
 			}).promise;
 			return {
+				type: AssetType.PDF,
 				url: canvas.toDataURL(),
 				height: viewport.height,
 				width: viewport.width,

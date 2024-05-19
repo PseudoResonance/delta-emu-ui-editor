@@ -136,6 +136,7 @@ export interface InfoFile {
 
 export interface Asset {
 	readonly file: File;
+	type: AssetType | null;
 	url: string | null;
 	width: number;
 	height: number;
