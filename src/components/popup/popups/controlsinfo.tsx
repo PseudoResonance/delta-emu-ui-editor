@@ -28,10 +28,14 @@ export default function ControlsInfo() {
 		<>
 			<h2>Controls</h2>
 			<hr />
-			{Object.keys(CONTROLS_DATA).map((val) => (
+			{Object.keys(CONTROLS_DATA).map((val, i) => (
 				<>
-					<ControlEntry action={val} controls={CONTROLS_DATA[val]} />
-					<hr />
+					<ControlEntry
+						action={val}
+						controls={CONTROLS_DATA[val]}
+						key={i}
+					/>
+					<hr key={`hr${i}`} />
 				</>
 			))}
 		</>
@@ -43,12 +47,14 @@ const ControlEntry = (args: { action: string; controls: string[][] }) => {
 		<div className={styles.controlEntry}>
 			<p>{args.action}</p>
 			<div className={styles.controls}>
-				{args.controls.map((keys) => (
-					<div>
+				{args.controls.map((keys, i) => (
+					<div key={i}>
 						{keys.map((key, i) => (
 							<>
-								<p className={styles.key}>{key}</p>
-								{i + 1 < keys.length && <p>+</p>}
+								<p className={styles.key} key={i}>
+									{key}
+								</p>
+								{i + 1 < keys.length && <p key={`p${i}`}>+</p>}
 							</>
 						))}
 					</div>

@@ -6,7 +6,7 @@
 	display: grid;
 	flex-wrap: nowrap;
 	align-items: stretch;
-	height: 100vh;
+	height: 100svh;
 	width: 100vw;
 	margin: 0;
 	gap: var(--border-width);
@@ -18,6 +18,8 @@
 			100vw - (2 * (var(--sidebar-width) + var(--border-width)))
 		)
 		var(--sidebar-width);
+	position: relative;
+	overflow: hidden;
 }
 
 .overlay {
@@ -26,7 +28,19 @@
 	left: 0;
 	top: 0;
 	width: 100vw;
-	height: 100vh;
+	height: 100svh;
 	overflow: hidden;
 	pointer-events: none;
+}
+
+@media screen and (max-width: 8in) {
+	.main > * {
+		width: 100vw;
+		overflow: hidden;
+	}
+
+	.main > :not(:first-child) {
+		transform: translateX(-100vw);
+		height: calc(100svh - var(--menu-height) - var(--border-width));
+	}
 }

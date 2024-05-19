@@ -1,5 +1,6 @@
 "use client";
 import styles from "./input.module.css";
+import icons from "@/utils/icons.module.css";
 import checkboxStyles from "./checkbox.module.css";
 import React, { useEffect, useState } from "react";
 
@@ -28,7 +29,7 @@ export default function CheckboxInput(args: {
 		>
 			<div className={`${styles.inputInner} ${checkboxStyles.container}`}>
 				<div
-					className={`${checkboxStyles.checkbox}${state ? " " + checkboxStyles.checked : ""}`}
+					className={`${icons.icon} ${state ? icons.checkboxChecked : icons.checkboxUnchecked}`}
 					style={{
 						height: "var(--icon-size)",
 						width: "var(--icon-size)",

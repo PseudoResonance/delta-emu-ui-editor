@@ -73,7 +73,7 @@ export default function EmulatorElementComponent(args: {
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
 	const moveHelper = (e: React.PointerEvent, inner: boolean) => {
-		if (!e.ctrlKey) {
+		if (!e.ctrlKey && (e.pointerType !== "mouse" || e.button === 0)) {
 			args.onClick();
 			e.preventDefault();
 			setIsActive(true);
@@ -195,7 +195,7 @@ export default function EmulatorElementComponent(args: {
 		inner: boolean,
 	) => {
 		if (yScale != 0 || xScale != 0) {
-			if (!e.ctrlKey) {
+			if (!e.ctrlKey && (e.pointerType !== "mouse" || e.button === 0)) {
 				if (ref.current) {
 					let padding = !inner;
 					if (e.shiftKey) padding = true;

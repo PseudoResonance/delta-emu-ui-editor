@@ -23,9 +23,9 @@
 .buttonTop, .buttonBottom {
 	flex-grow: 1;
 	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
 }
 
 .buttonAligner, .buttonAlignerSquare {
@@ -35,13 +35,4 @@
 
 .buttonAligner > div, .buttonAlignerSquare > div {
 	width: 100%;
-}
-
-.buttonAligner {
-	flex-grow: 1;
-}
-
-.buttonAlignerSquare > div {
-	aspect-ratio: 1/1;
-	flex-grow: 0;
 }

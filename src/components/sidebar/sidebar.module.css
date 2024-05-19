@@ -25,3 +25,25 @@
 	flex-shrink: 0;
 	flex-grow: 0;
 }
+
+@media screen and (max-width: 8in) {
+	.sidebar {
+		transition: all 0.2s ease-in-out;
+	}
+
+	.sidebarLeft.hideNarrow {
+		transform: translateX(-100vw) !important;
+	}
+
+	.sidebarLeft.showNarrow {
+		transform: translateX(0) !important;
+	}
+
+	.sidebarRight.hideNarrow {
+		transform: translateX(0) !important;
+	}
+
+	.sidebarRight.showNarrow {
+		transform: translateX(-100vw) !important;
+	}
+}

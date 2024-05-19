@@ -19,9 +19,12 @@ export default function Sidebar(args: {
 	showContextMenu: ContextMenu;
 	deleteNode: (key: string) => void;
 	createNode: (key: string, isLayout: boolean) => void;
+	hiddenNarrow: boolean;
 }) {
 	return (
-		<div className={styles.sidebar}>
+		<div
+			className={`${styles.sidebar} ${styles.sidebarLeft} ${args.hiddenNarrow ? styles.hideNarrow : styles.showNarrow}`}
+		>
 			<div>
 				<SkinInfoWindow
 					infoFile={args.infoFile}

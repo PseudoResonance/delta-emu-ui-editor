@@ -119,6 +119,13 @@ const getFirstRepresentation = (newInfoFile: InfoFile) => {
 };
 
 export default function Home() {
+	const [sidebarVisibility, setSidebarVisibility] = useState<{
+		left: boolean;
+		right: boolean;
+	}>({
+		left: true,
+		right: true,
+	});
 	const [assets, setAssets] = useState<Record<string, Asset> | null>(null);
 	const [popups, setPopups] = useState<
 		{
@@ -1506,8 +1513,10 @@ export default function Home() {
 					scale={scale}
 					setAssets={setAssets}
 					setScale={setScale}
+					setSidebarVisibility={setSidebarVisibility}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}
+					sidebarVisibility={sidebarVisibility}
 					undo={() => {
 						if (historyInfo.writing) {
 							revertHistory(historyInfo.currentState);
@@ -1522,6 +1531,7 @@ export default function Home() {
 					createNode={createNode}
 					currentRepresentation={currentRepresentation}
 					deleteNode={deleteNode}
+					hiddenNarrow={sidebarVisibility.left}
 					infoFile={infoFile}
 					setInfoFile={updateSkinState}
 					showContextMenu={showContextMenu}
@@ -1561,6 +1571,7 @@ export default function Home() {
 					getCurrentBackgroundAssetName={
 						getCurrentBackgroundAssetName
 					}
+					hiddenNarrow={sidebarVisibility.right}
 					hoverIndex={hoverIndex}
 					infoFile={infoFile}
 					layoutData={currentLayout}

@@ -303,21 +303,17 @@ export default function CanvasValues(args: {
 				</div>
 				<div className={lockRatioStyle.buttonContainer}>
 					<div className={lockRatioStyle.buttonTop}>
-						<div className={lockRatioStyle.buttonAlignerSquare}>
-							<div />
-							<div />
-						</div>
-						<div className={lockRatioStyle.buttonAligner}>
-							<div
-								style={{
-									borderTop:
-										"var(--tree-line-width) var(--tree-line-rgb) solid",
-									borderRight:
-										"var(--tree-line-width) var(--tree-line-rgb) solid",
-								}}
-							/>
-							<div />
-						</div>
+						<div />
+						<div />
+						<div
+							style={{
+								borderTop:
+									"var(--tree-line-width) var(--tree-line-rgb) solid",
+								borderRight:
+									"var(--tree-line-width) var(--tree-line-rgb) solid",
+							}}
+						/>
+						<div />
 					</div>
 					<IconCheckboxInput
 						icon={
@@ -342,21 +338,17 @@ export default function CanvasValues(args: {
 						}
 					/>
 					<div className={lockRatioStyle.buttonBottom}>
-						<div className={lockRatioStyle.buttonAligner}>
-							<div
-								style={{
-									borderBottom:
-										"var(--tree-line-width) var(--tree-line-rgb) solid",
-									borderRight:
-										"var(--tree-line-width) var(--tree-line-rgb) solid",
-								}}
-							/>
-							<div />
-						</div>
-						<div className={lockRatioStyle.buttonAlignerSquare}>
-							<div />
-							<div />
-						</div>
+						<div
+							style={{
+								borderBottom:
+									"var(--tree-line-width) var(--tree-line-rgb) solid",
+								borderRight:
+									"var(--tree-line-width) var(--tree-line-rgb) solid",
+							}}
+						/>
+						<div />
+						<div />
+						<div />
 					</div>
 				</div>
 			</div>

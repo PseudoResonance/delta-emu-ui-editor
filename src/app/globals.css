@@ -103,13 +103,21 @@
 	}
 }
 
+html {
+	overflow: hidden;
+	width: 100%;
+}
+
 body {
 	color: var(--foreground-rgb);
 	background: var(--separator-rgb);
 	scrollbar-width: thin;
+	position: fixed;
+	height: 100svh;
 }
 
-::-webkit-scrollbar {width: var(--scrollbar-width);
+::-webkit-scrollbar {
+	width: var(--scrollbar-width);
 	position: absolute;
 	display: block;
 	right: 0;
@@ -125,4 +133,10 @@ body {
 ::-webkit-scrollbar-thumb {
 	width: var(--scrollbar-width);
 	background: transparent;
+}
+
+@media screen and (max-width: 8in) {
+	:root {
+		--sidebar-width: 100vw;
+	}
 }

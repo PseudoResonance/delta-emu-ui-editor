@@ -1,6 +1,12 @@
 "use client";
 import styles from "./menu.module.css";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, {
+	Dispatch,
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 
 export default function MenuCategory(args: {
 	label: string;
@@ -9,11 +15,33 @@ export default function MenuCategory(args: {
 	setIsActive: Dispatch<SetStateAction<boolean>>;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const onClick = (e: MouseEvent) => {
+			if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
+				setIsActive((val) => {
+					if (val) {
+						args.setIsActive(false);
+						return false;
+					}
+					return val;
+				});
+			}
+		};
+		document.addEventListener("click", onClick);
+
+		return () => {
+			document.removeEventListener("click", onClick);
+		};
+	}, []);
+
 	return (
 		<div
 			className={`${styles.menucategory}${
 				isActive ? " " + styles.active : ""
 			}`}
+			ref={ref}
 		>
 			<button
 				className={styles.label}

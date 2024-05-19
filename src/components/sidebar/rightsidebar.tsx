@@ -41,9 +41,12 @@ export default function RightSidebar(args: {
 	) => void;
 	showContextMenu: ContextMenu;
 	currentRepresentation: string;
+	hiddenNarrow: boolean;
 }) {
 	return (
-		<div className={styles.sidebar}>
+		<div
+			className={`${styles.sidebar} ${styles.sidebarRight} ${args.hiddenNarrow ? styles.hideNarrow : styles.showNarrow}`}
+		>
 			<div>
 				<ZoomWindow
 					currentRepresentation={args.currentRepresentation}

@@ -1,5 +1,5 @@
 "use client";
-import visibilityStyles from "./visibility.module.css";
+import icons from "@/utils/icons.module.css";
 import {
 	ContextMenu,
 	EmulatorElement,
@@ -65,7 +65,7 @@ export default function ElementListWindow(args: {
 										Canvas
 									</p>
 									<div
-										className={`${visibilityStyles.visibilityToggle}${allHidden ? " " + visibilityStyles.hidden : ""}`}
+										className={`${icons.icon} ${allHidden ? icons.visibilityHidden : icons.visibilityShown}`}
 										onClick={() => {
 											const data: {
 												[index: number]: Spec<
@@ -133,7 +133,7 @@ export default function ElementListWindow(args: {
 														{label}
 													</p>
 													<div
-														className={`${visibilityStyles.visibilityToggle}${args.elements[i].hidden ? " " + visibilityStyles.hidden : ""}`}
+														className={`${icons.icon} ${args.elements[i].hidden ? icons.visibilityHidden : icons.visibilityShown}`}
 														onClick={() => {
 															args.updateElement(
 																i,
@@ -249,7 +249,7 @@ export default function ElementListWindow(args: {
 																Icon
 															</p>
 															<div
-																className={`${visibilityStyles.visibilityToggle}${args.elements[i].data.thumbstick.hidden ? " " + visibilityStyles.hidden : ""}`}
+																className={`${icons.icon} ${args.elements[i].data.thumbstick.hidden ? icons.visibilityHidden : icons.visibilityShown}`}
 																onClick={() => {
 																	args.updateElement(
 																		i,
