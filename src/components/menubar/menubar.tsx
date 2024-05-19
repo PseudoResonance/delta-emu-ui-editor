@@ -194,6 +194,7 @@ export default function MenuBar(args: {
 								);
 								tree["info.json"] = {
 									file: file,
+									type: null,
 									url: null,
 									width: -1,
 									height: -1,

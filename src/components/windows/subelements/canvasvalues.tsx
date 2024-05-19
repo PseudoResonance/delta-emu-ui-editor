@@ -96,6 +96,7 @@ export default function CanvasValues(args: {
 						onChange={(val: File) => {
 							args.addAsset(val.name, {
 								file: val,
+								type: null,
 								url: null,
 								width: -1,
 								height: -1,
@@ -133,6 +134,7 @@ export default function CanvasValues(args: {
 						onChange={(val: File) => {
 							args.addAsset(val.name, {
 								file: val,
+								type: null,
 								url: null,
 								width: -1,
 								height: -1,
@@ -170,6 +172,7 @@ export default function CanvasValues(args: {
 						onChange={(val: File) => {
 							args.addAsset(val.name, {
 								file: val,
+								type: null,
 								url: null,
 								width: -1,
 								height: -1,
@@ -211,6 +214,7 @@ export default function CanvasValues(args: {
 						onChange={(val: File) => {
 							args.addAsset(val.name, {
 								file: val,
+								type: null,
 								url: null,
 								width: -1,
 								height: -1,

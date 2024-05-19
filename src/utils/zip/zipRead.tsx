@@ -43,6 +43,7 @@ const readZip = async (file: File) => {
 											[blob],
 											path[path.length - 1],
 										),
+										type: null,
 										url: null,
 										width: -1,
 										height: -1,
