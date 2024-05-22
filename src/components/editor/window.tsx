@@ -19,6 +19,7 @@ export default function EmulatorWindow(args: {
 	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 	editingElement: number;
 	setEditingElement: (val: number) => void;
+	setHoverIndex: Dispatch<SetStateAction<number>>;
 	style: object;
 	scale: number;
 	width: number;
@@ -116,6 +117,8 @@ export default function EmulatorWindow(args: {
 									args.setEditingElement(
 										args.editingElement - 1,
 									);
+								if (args.hoverIndex >= i)
+									args.setHoverIndex(-1);
 								args.removeElement(i);
 							}}
 							duplicateThis={() => {
@@ -129,6 +132,7 @@ export default function EmulatorWindow(args: {
 							key={i}
 							onClick={() => {
 								args.setEditingElement(i);
+								args.setHoverIndex(i);
 							}}
 							parentHeight={args.height}
 							parentWidth={args.width}

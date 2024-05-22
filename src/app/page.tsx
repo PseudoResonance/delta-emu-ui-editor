@@ -584,6 +584,7 @@ export default function Home() {
 		const checkAssets = newAssets ? newAssets : assets;
 		if (data) {
 			setEditingElementInternal(-1);
+			setHoverIndex(-1);
 			setFocusState({
 				target: FocusTarget.REPRESENTATION,
 				elements: [],
@@ -1554,6 +1555,7 @@ export default function Home() {
 					scale={scale}
 					setAssets={setAssets}
 					setEditingElement={setEditingElement}
+					setHoverIndex={setHoverIndex}
 					setScale={setScale}
 					showContextMenu={showContextMenu}
 					showPopup={showPopup}

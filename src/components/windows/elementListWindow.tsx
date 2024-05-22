@@ -220,7 +220,9 @@ export default function ElementListWindow(args: {
 												args.setHoverIndex(i);
 											}}
 											onPointerLeave={() => {
-												args.setHoverIndex(-1);
+												args.setHoverIndex(
+													args.editingElement,
+												);
 											}}
 											showActive={
 												args.editingElement === i
@@ -347,7 +349,9 @@ export default function ElementListWindow(args: {
 														args.setHoverIndex(i);
 													}}
 													onPointerLeave={() => {
-														args.setHoverIndex(-1);
+														args.setHoverIndex(
+															args.editingElement,
+														);
 													}}
 													showActive={
 														args.editingElement ===

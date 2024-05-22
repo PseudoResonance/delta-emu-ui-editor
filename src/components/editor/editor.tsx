@@ -31,6 +31,7 @@ export default function MainEditor(args: {
 	scale: ScaleData;
 	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;
+	setHoverIndex: Dispatch<SetStateAction<number>>;
 	showPopup: (
 		popup: React.JSX.Element,
 		onClose: () => void,
@@ -407,6 +408,7 @@ export default function MainEditor(args: {
 					scale={args.scale.scale}
 					setAssets={args.setAssets}
 					setEditingElement={args.setEditingElement}
+					setHoverIndex={args.setHoverIndex}
 					showContextMenu={args.showContextMenu}
 					showPopup={args.showPopup}
 					style={{
