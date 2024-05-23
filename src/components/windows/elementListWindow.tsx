@@ -91,6 +91,7 @@ export default function ElementListWindow(args: {
 							}
 							onClick={() => {
 								args.setEditingElement(-1);
+								args.setHoverIndex(-1);
 							}}
 							onContextMenu={(e) => {
 								e.preventDefault();
@@ -157,6 +158,7 @@ export default function ElementListWindow(args: {
 											}
 											onClick={() => {
 												args.setEditingElement(i);
+												args.setHoverIndex(i);
 											}}
 											onContextMenu={(e) => {
 												e.preventDefault();
@@ -204,6 +206,9 @@ export default function ElementListWindow(args: {
 																				args.editingElement -
 																					1,
 																			);
+																		args.setHoverIndex(
+																			-1,
+																		);
 																		args.removeElement(
 																			i,
 																		);
@@ -284,6 +289,7 @@ export default function ElementListWindow(args: {
 														args.setEditingElement(
 															i,
 														);
+														args.setHoverIndex(i);
 													}}
 													onContextMenu={(e) => {
 														e.preventDefault();
@@ -333,6 +339,9 @@ export default function ElementListWindow(args: {
 																							args.editingElement -
 																								1,
 																						);
+																					args.setHoverIndex(
+																						-1,
+																					);
 																					args.removeElement(
 																						i,
 																					);
