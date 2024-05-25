@@ -1,38 +1,17 @@
 "use client";
 import styles from "./controls.module.css";
-
-const CONTROLS_DATA: Record<string, string[][]> = {
-	Copy: [["Ctrl", "C"]],
-	Paste: [["Ctrl", "V"]],
-	Undo: [
-		["Ctrl", "Z"],
-		["Ctrl", "Shift", "Y"],
-	],
-	Redo: [
-		["Ctrl", "Y"],
-		["Ctrl", "Shift", "Z"],
-	],
-	Zoom: [["Scroll Editor"]],
-	Pan: [
-		["Ctrl", "Drag"],
-		["Middle Mouse", "Drag"],
-	],
-	"Resize Padding": [["Shift", "Drag Edge"]],
-	"Nudge Element": [["Arrow Key"]],
-	"Fast Nudge Element": [["Shift", "Arrow Key"]],
-	"Delete Element": [["Backspace"], ["Delete"]],
-};
+import * as CONSTANT from "@/utils/constants";
 
 export default function ControlsInfo() {
 	return (
 		<>
 			<h2>Controls</h2>
 			<hr />
-			{Object.keys(CONTROLS_DATA).map((val, i) => (
+			{Object.keys(CONSTANT.CONTROLS).map((val, i) => (
 				<>
 					<ControlEntry
 						action={val}
-						controls={CONTROLS_DATA[val]}
+						controls={CONSTANT.CONTROLS[val]}
 						key={i}
 					/>
 					<hr key={`hr${i}`} />

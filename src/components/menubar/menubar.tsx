@@ -25,6 +25,7 @@ import AboutInfo from "../popup/popups/aboutinfo";
 import JSONParseError from "../popup/popups/jsonparseerror";
 import ControlsInfo from "../popup/popups/controlsinfo";
 import MenuToggle from "./menutoggle";
+import SponsorInfo from "../popup/popups/sponsorinfo";
 
 export default function MenuBar(args: {
 	pressedKeys: string[];
@@ -380,6 +381,13 @@ export default function MenuBar(args: {
 							label="Controls"
 							onClick={() => {
 								args.showPopup(<ControlsInfo />, () => {});
+							}}
+						/>,
+						<MenuButton
+							key="donate"
+							label="Donate"
+							onClick={() => {
+								args.showPopup(<SponsorInfo />, () => {});
 							}}
 						/>,
 						<MenuButton

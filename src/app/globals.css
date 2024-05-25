@@ -16,6 +16,8 @@
 	--tree-nest-depth: 20px;
 	--scrollbar-width: 5px;
 
+	--link-rgb: rgb(19, 19, 255);
+	--link-rgb-hover: rgb(0, 0, 141);
 	--foreground-rgb: rgba(0, 0, 0, 1);
 	--foreground-rgb-disabled: rgb(122, 122, 122);
 	--secondary-rgb: rgba(230, 230, 230, 1);
@@ -59,6 +61,8 @@
 
 @media (prefers-color-scheme: dark) {
 	:root {
+		--link-rgb: rgb(118, 118, 255);
+		--link-rgb-hover: rgb(67, 67, 197);
 		--foreground-rgb: rgba(200, 200, 200, 1);
 		--foreground-rgb-disabled: rgb(87, 87, 87);
 		--secondary-rgb: rgba(20, 20, 20, 1);
@@ -131,6 +135,16 @@ body {
 ::-webkit-scrollbar-thumb {
 	width: var(--scrollbar-width);
 	background: transparent;
+}
+
+a:link,
+a:visited {
+	color: var(--link-rgb);
+}
+
+a:hover,
+a:active {
+	color: var(--link-rgb-hover);
 }
 
 @media screen and (max-width: 8in) {

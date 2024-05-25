@@ -4,12 +4,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import styles from "./main.module.css";
 import NoSSR from "@/utils/nossr";
+import * as CONSTANT from "@/utils/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "Delta Emulator UI Designer",
-	description: "Visual UI designer for Delta Emulator",
+	title: CONSTANT.NAME,
+	description: CONSTANT.DESCRIPTION,
 };
 
 export default function RootLayout({
