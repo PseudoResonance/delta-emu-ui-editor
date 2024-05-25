@@ -15,6 +15,8 @@ import { getReactProps } from "@/utils/reactInternals";
 import { getElementLabel } from "./element";
 import * as CONSTANT from "@/utils/constants";
 
+const TOUCH_ZOOM_SCALE = 0.0035;
+
 export default function MainEditor(args: {
 	getCurrentBackgroundAssetName: () => string;
 	focusState: FocusState;
@@ -42,7 +44,7 @@ export default function MainEditor(args: {
 	const ref = useRef<HTMLDivElement>(null);
 	const focused = useRef<boolean>(false);
 
-	const pointerCache: PointerEvent[] = [];
+	const pointerCache = useRef<PointerEvent[]>([]);
 
 	useEffect(() => {
 		const onScroll = (e: Event) => {
@@ -175,120 +177,149 @@ export default function MainEditor(args: {
 	}, [args.elements, args.editingElement]);
 
 	const pointerDown = (e: React.PointerEvent) => {
-		pointerCache.push(e.nativeEvent);
-		if (pointerCache.length === 1) {
-			let moveHandler: (e: PointerEvent) => void;
-			if (e.ctrlKey || (e.button === 1 && e.pointerType === "mouse")) {
+		pointerCache.current.push(e.nativeEvent);
+		let moveHandler: ((e: PointerEvent) => void) | null = null;
+		if (
+			(pointerCache.current.length === 1 &&
+				e.ctrlKey &&
+				(e.pointerType !== "mouse" || e.button === 0)) ||
+			(e.button === 1 && e.pointerType === "mouse") ||
+			(e.pointerType === "pen" && e.pressure === 0)
+		) {
+			e.preventDefault();
+			e.stopPropagation();
+			const xStartMouse = e.clientX;
+			const yStartMouse = e.clientY;
+			const xStart = args.scale.xOffset;
+			const yStart = args.scale.yOffset;
+			moveHandler = (e: PointerEvent) => {
+				const i = pointerCache.current.findIndex(
+					(ev) => ev.pointerId === e.pointerId,
+				);
+				pointerCache.current[i] = e;
 				e.preventDefault();
-				const xStartMouse = e.clientX;
-				const yStartMouse = e.clientY;
-				const xStart = args.scale.xOffset;
-				const yStart = args.scale.yOffset;
-				moveHandler = (e: PointerEvent) => {
-					const i = pointerCache.findIndex(
-						(ev) => ev.pointerId === e.pointerId,
-					);
-					pointerCache[i] = e;
-					e.preventDefault();
-					const newY = yStart + (e.clientY - yStartMouse);
-					const newX = xStart + (e.clientX - xStartMouse);
-					args.setScale({
-						scale: args.scale.scale,
-						xOffset: newX,
-						yOffset: newY,
-					});
-				};
-			} else {
-				let previousDiff = -1;
-				let previousX: number | null = null;
-				let previousY: number | null = null;
-				moveHandler = (e: PointerEvent) => {
-					const i = pointerCache.findIndex(
-						(ev) => ev.pointerId === e.pointerId,
-					);
-					pointerCache[i] = e;
-					e.preventDefault();
-					if (pointerCache.length === 2) {
-						const pointerDiff = Math.sqrt(
-							(pointerCache[0].clientX -
-								pointerCache[1].clientX) **
-								2 +
-								(pointerCache[0].clientY -
-									pointerCache[1].clientY) **
-									2,
-						);
-						if (previousDiff > 0 && ref.current) {
-							const delta = pointerDiff - previousDiff;
-							const mouseX =
-								(pointerCache[0].clientX +
-									pointerCache[1].clientX) /
-								2;
-							const mouseY =
-								(pointerCache[0].clientY +
-									pointerCache[1].clientY) /
-								2;
-							let xDiff = 0;
-							let yDiff = 0;
-							if (previousX !== null && previousY !== null) {
-								xDiff = mouseX - previousX;
-								yDiff = mouseY - previousY;
-							}
-							previousX = mouseX;
-							previousY = mouseY;
-							const bounds = ref.current.getBoundingClientRect();
-							const zoomX =
-								mouseX -
-								bounds.x -
-								bounds.width / 2 -
-								args.scale.xOffset;
-							const zoomY =
-								mouseY -
-								bounds.y -
-								bounds.height / 2 -
-								args.scale.yOffset;
-							args.setScale((oldScale) => {
-								const newScale = Math.min(
-									Math.max(
-										oldScale.scale * (1 + delta / 300),
-										CONSTANT.ZOOM_MIN,
-									),
-									CONSTANT.ZOOM_MAX,
-								);
-								return {
-									scale: newScale,
-									xOffset:
-										oldScale.xOffset -
-										zoomX * (newScale / oldScale.scale) +
-										zoomX +
-										xDiff,
-									yOffset:
-										oldScale.yOffset -
-										zoomY * (newScale / oldScale.scale) +
-										zoomY +
-										yDiff,
-								};
-							});
-						}
-						previousDiff = pointerDiff;
-					}
-				};
-			}
-			const stopHandler = () => {
-				document.removeEventListener("pointerup", stopHandler);
-				if (moveHandler)
-					document.removeEventListener("pointermove", moveHandler);
+				e.stopPropagation();
+				const newY = yStart + (e.clientY - yStartMouse);
+				const newX = xStart + (e.clientX - xStartMouse);
+				args.setScale({
+					scale: args.scale.scale,
+					xOffset: newX,
+					yOffset: newY,
+				});
 			};
-			document.addEventListener("pointerup", stopHandler);
-			if (moveHandler)
-				document.addEventListener("pointermove", moveHandler);
+		} else if (
+			pointerCache.current.length >= 2 &&
+			e.pointerType === "touch"
+		) {
+			e.preventDefault();
+			e.stopPropagation();
+			let prevPointerDistance = -1;
+			let previousX: number | null = null;
+			let previousY: number | null = null;
+			moveHandler = (e: PointerEvent) => {
+				const i = pointerCache.current.findIndex(
+					(ev) => ev.pointerId === e.pointerId,
+				);
+				pointerCache.current[i] = e;
+				e.preventDefault();
+				e.stopPropagation();
+				if (pointerCache.current.length === 2) {
+					const pointerDistance = Math.sqrt(
+						(pointerCache.current[0].clientX -
+							pointerCache.current[1].clientX) **
+							2 +
+							(pointerCache.current[0].clientY -
+								pointerCache.current[1].clientY) **
+								2,
+					);
+					if (prevPointerDistance > 0 && ref.current) {
+						const delta = pointerDistance - prevPointerDistance;
+						const mouseX =
+							(pointerCache.current[0].clientX +
+								pointerCache.current[1].clientX) /
+							2;
+						const mouseY =
+							(pointerCache.current[0].clientY +
+								pointerCache.current[1].clientY) /
+							2;
+						let xDiff = 0;
+						let yDiff = 0;
+						if (previousX !== null && previousY !== null) {
+							xDiff = mouseX - previousX;
+							yDiff = mouseY - previousY;
+						}
+						previousX = mouseX;
+						previousY = mouseY;
+						const bounds = ref.current.getBoundingClientRect();
+						const zoomX =
+							mouseX -
+							bounds.x -
+							bounds.width / 2 -
+							args.scale.xOffset;
+						const zoomY =
+							mouseY -
+							bounds.y -
+							bounds.height / 2 -
+							args.scale.yOffset;
+						args.setScale((oldScale) => {
+							const newScale = Math.min(
+								Math.max(
+									oldScale.scale *
+										(1 + delta * TOUCH_ZOOM_SCALE),
+									CONSTANT.ZOOM_MIN,
+								),
+								CONSTANT.ZOOM_MAX,
+							);
+							return {
+								scale: newScale,
+								xOffset:
+									oldScale.xOffset -
+									zoomX * (newScale / oldScale.scale) +
+									zoomX +
+									xDiff,
+								yOffset:
+									oldScale.yOffset -
+									zoomY * (newScale / oldScale.scale) +
+									zoomY +
+									yDiff,
+							};
+						});
+					}
+					prevPointerDistance = pointerDistance;
+				} else {
+					prevPointerDistance = -1;
+				}
+			};
+		}
+		if (moveHandler) {
+			const stopHandler: () => void = () => {
+				e.preventDefault();
+				e.stopPropagation();
+				if (pointerCache.current.length < 1) {
+					document.removeEventListener("pointerup", stopHandler, {
+						capture: true,
+					});
+					document.removeEventListener("pointermove", moveHandler, {
+						capture: true,
+					});
+				}
+			};
+			document.addEventListener("pointerup", stopHandler, {
+				capture: true,
+				passive: false,
+			});
+			document.addEventListener("pointermove", moveHandler, {
+				capture: true,
+				passive: false,
+			});
 		}
 	};
 
 	const pointerUp = (e: React.PointerEvent) => {
-		const i = pointerCache.findIndex(
+		const i = pointerCache.current.findIndex(
 			(ev) => ev.pointerId === e.nativeEvent.pointerId,
 		);
-		pointerCache.splice(i, 1);
+		pointerCache.current.splice(i, 1);
 	};
 
 	return (
@@ -344,8 +375,8 @@ export default function MainEditor(args: {
 					);
 				}
 			}}
-			onPointerDown={pointerDown}
-			onPointerUp={pointerUp}
+			onPointerDownCapture={pointerDown}
+			onPointerUpCapture={pointerUp}
 			onWheel={(e) => {
 				if (ref.current && args.layoutData) {
 					let newScale = 0;

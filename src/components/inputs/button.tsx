@@ -7,13 +7,13 @@ export default function Button(args: {
 	label: string | React.JSX.Element;
 }) {
 	return (
-		<div
+		<button
 			className={`${styles.input} ${styles.button}`}
 			onClick={() => {
 				args.onClick();
 			}}
 		>
-			<div className={styles.inputInner}>{args.label}</div>
-		</div>
+			<span className={styles.inputInner}>{args.label}</span>
+		</button>
 	);
 }

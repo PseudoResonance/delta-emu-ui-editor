@@ -1492,7 +1492,14 @@ export default function Home() {
 
 	return (
 		<>
-			<main className={styles.main}>
+			<main
+				className={styles.main}
+				inert={
+					popups.length > 0 || contextMenu.data
+						? ("" as unknown as boolean)
+						: undefined
+				}
+			>
 				<MenuBar
 					assets={assets}
 					canRedo={historyInfo.currentState < history.length}

@@ -8,6 +8,7 @@ export default function IconCheckboxInput(args: {
 	value: boolean;
 	onChange: (val: boolean) => void;
 }) {
+	const id = (Math.random() + 1).toString(36).substring(2);
 	const [state, setState] = useState<boolean>(false);
 	const onChange = () => {
 		const val = !state;
@@ -20,15 +21,39 @@ export default function IconCheckboxInput(args: {
 		}
 	}, [args.value]);
 	return (
-		<div
+		<form
 			className={`${styles.input} ${checkboxStyles.iconState} ${styles.button}${
 				state ? " " + checkboxStyles.checked : ""
 			}`}
-			onClick={onChange}
 		>
-			<div className={`${styles.inputInner} ${checkboxStyles.container}`}>
+			<span
+				style={{
+					overflow: "hidden",
+					width: 0,
+					height: 0,
+					padding: 0,
+					margin: -1,
+					position: "fixed",
+				}}
+			>
+				<input
+					checked={state}
+					id={id}
+					onChange={() => {
+						onChange();
+					}}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") onChange();
+					}}
+					type="checkbox"
+				/>
+			</span>
+			<label
+				className={`${styles.inputInner} ${checkboxStyles.container}`}
+				htmlFor={id}
+			>
 				{args.icon}
-			</div>
-		</div>
+			</label>
+		</form>
 	);
 }

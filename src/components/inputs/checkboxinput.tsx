@@ -9,6 +9,7 @@ export default function CheckboxInput(args: {
 	value: boolean;
 	onChange: (val: boolean) => void;
 }) {
+	const id = (Math.random() + 1).toString(36).substring(2);
 	const [state, setState] = useState<boolean>(false);
 	const onChange = () => {
 		const val = !state;
@@ -21,22 +22,46 @@ export default function CheckboxInput(args: {
 		}
 	}, [args.value]);
 	return (
-		<div
+		<form
 			className={`${styles.input} ${styles.button}${
 				state ? " " + styles.checked : ""
 			}`}
-			onClick={onChange}
 		>
-			<div className={`${styles.inputInner} ${checkboxStyles.container}`}>
-				<div
+			<span
+				style={{
+					overflow: "hidden",
+					width: 0,
+					height: 0,
+					padding: 0,
+					margin: -1,
+					position: "fixed",
+				}}
+			>
+				<input
+					checked={state}
+					id={id}
+					onChange={() => {
+						onChange();
+					}}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") onChange();
+					}}
+					type="checkbox"
+				/>
+			</span>
+			<label
+				className={`${styles.inputInner} ${checkboxStyles.container}`}
+				htmlFor={id}
+			>
+				<span
 					className={`${icons.icon} ${state ? icons.checkboxChecked : icons.checkboxUnchecked}`}
 					style={{
 						height: "var(--icon-size)",
 						width: "var(--icon-size)",
 					}}
 				/>
-				<p>{args.label}</p>
-			</div>
-		</div>
+				<span>{args.label}</span>
+			</label>
+		</form>
 	);
 }

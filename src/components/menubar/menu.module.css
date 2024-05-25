@@ -27,7 +27,8 @@
 	color: inherit;
 }
 
-.menucategory:hover {
+.menucategory:hover,
+.menucategory:focus-within {
 	background-color: var(--background-menu-rgb-hover);
 }
 
@@ -49,7 +50,8 @@
 	white-space: nowrap;
 }
 
-.active .menucategory:hover .menudropdown {
+.active .menucategory:hover .menudropdown,
+.active .menucategory:focus-within .menudropdown {
 	display: flex;
 }
 
@@ -93,7 +95,8 @@
 	border-radius: var(--menu-border-radius);
 }
 
-.menubutton:not(.disabled):hover {
+.menubutton:not(.disabled):hover,
+.menubutton:not(.disabled):focus {
 	background-color: var(--background-menu-dropdown-rgb-hover);
 }
 

@@ -8,14 +8,15 @@
 	gap: 10px;
 }
 
-.container p {
-	margin: 0;
-}
-
-.iconState > div {
+.iconState > label {
 	background-color: transparent !important;
 }
 
-.iconState.checked > div {
+.iconState:hover > label,
+.iconState:focus-within > label {
 	background-color: var(--button-rgb) !important;
+}
+
+.iconState.checked > label {
+	background-color: var(--button-rgb-hover) !important;
 }

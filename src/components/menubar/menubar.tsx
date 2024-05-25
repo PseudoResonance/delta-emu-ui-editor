@@ -2,7 +2,14 @@
 import styles from "./menu.module.css";
 import icons from "@/utils/icons.module.css";
 import MenuCategory from "./menucategory";
-import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import React, {
+	ChangeEvent,
+	Dispatch,
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import MenuButton from "./menubutton";
 import writeZip from "@/utils/zip/zipWrite";
 import {
@@ -47,11 +54,26 @@ export default function MenuBar(args: {
 	>;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const onClick = (e: MouseEvent) => {
+			if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
+				setIsActive(false);
+			}
+		};
+		document.addEventListener("click", onClick);
+
+		return () => {
+			document.removeEventListener("click", onClick);
+		};
+	}, []);
 	return (
 		<div
 			className={`${styles.menubar}${
 				isActive ? " " + styles.active : ""
 			}`}
+			ref={ref}
 		>
 			<div
 				style={{

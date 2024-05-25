@@ -16,7 +16,7 @@ export default function DropdownInput(args: {
 	}
 	return (
 		<div className={styles.input}>
-			<p className={styles.label}>{args.label}</p>
+			<label className={styles.label}>{args.label}</label>
 
 			<div
 				className={`${styles.inputInner} ${styles.dropdown}${

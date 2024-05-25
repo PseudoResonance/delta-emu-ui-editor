@@ -17,7 +17,7 @@ export default function FileInput(args: {
 	};
 	return (
 		<div className={styles.input}>
-			<p className={styles.label}>{args.label}</p>
+			<label className={styles.label}>{args.label}</label>
 			<label className={styles.inputInner} htmlFor={id}>
 				Choose File
 			</label>

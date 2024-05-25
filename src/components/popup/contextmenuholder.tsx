@@ -20,9 +20,14 @@ export default function ContextMenuHolder(args: {
 				}
 			}
 		};
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === "Escape") args.clear();
+		};
 		document.addEventListener("pointerdown", onClick);
+		window.addEventListener("keydown", onKey);
 		return () => {
 			document.removeEventListener("pointerdown", onClick);
+			window.removeEventListener("keydown", onKey);
 		};
 	}, []);
 	return (

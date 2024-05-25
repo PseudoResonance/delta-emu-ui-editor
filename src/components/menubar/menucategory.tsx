@@ -1,12 +1,6 @@
 "use client";
 import styles from "./menu.module.css";
-import React, {
-	Dispatch,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 export default function MenuCategory(args: {
 	label: string;
@@ -14,50 +8,19 @@ export default function MenuCategory(args: {
 	isActive: boolean;
 	setIsActive: Dispatch<SetStateAction<boolean>>;
 }) {
-	const [isActive, setIsActive] = useState<boolean>(false);
-	const ref = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const onClick = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as HTMLElement)) {
-				setIsActive((val) => {
-					if (val) {
-						args.setIsActive(false);
-						return false;
-					}
-					return val;
-				});
-			}
-		};
-		document.addEventListener("click", onClick);
-
-		return () => {
-			document.removeEventListener("click", onClick);
-		};
-	}, []);
-
 	return (
-		<div
-			className={`${styles.menucategory}${
-				isActive ? " " + styles.active : ""
-			}`}
-			ref={ref}
-		>
+		<div className={`${styles.menucategory}`}>
 			<button
 				className={styles.label}
-				onBlur={(e) => {
-					if (
-						!e.currentTarget?.parentElement?.contains(
-							e.relatedTarget,
-						)
-					) {
-						setIsActive(false);
-						args.setIsActive(false);
-					}
-				}}
-				onFocus={() => {
-					setIsActive(true);
+				onClick={() => {
 					args.setIsActive(true);
+				}}
+				onKeyDown={(e) => {
+					if (e.key === "Enter") args.setIsActive(true);
+				}}
+				onPointerOut={() => {
+					if (args.isActive && document.activeElement)
+						(document.activeElement as HTMLElement).blur();
 				}}
 			>
 				{args.label}

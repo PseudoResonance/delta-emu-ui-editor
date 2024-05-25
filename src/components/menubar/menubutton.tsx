@@ -15,6 +15,7 @@ export default function MenuButton(args: {
 				if (!args.disabled) args.onClick();
 			}}
 			style={args.style}
+			tabIndex={args.disabled ? -1 : 0}
 		>
 			{args.label}
 		</button>

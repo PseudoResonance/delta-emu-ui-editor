@@ -39,6 +39,7 @@ export default function ValueInput(args: {
 	debounce?: number;
 	suggestionsId?: string;
 }) {
+	const id = (Math.random() + 1).toString(36).substring(2);
 	const wheelLock = useRef<unknown>(null);
 	const value = useRef<string>("");
 	const debounceTimeout: NodeJS.Timeout[] = [];
@@ -301,11 +302,14 @@ export default function ValueInput(args: {
 	}
 	return (
 		<div className={styles.input}>
-			<p className={styles.label}>{args.label}</p>
+			<label className={styles.label} htmlFor={id}>
+				{args.label}
+			</label>
 
 			<input
 				className={styles.inputInner}
 				defaultValue={args.value}
+				id={id}
 				inputMode={inputmode}
 				onChange={onChange}
 				onKeyDown={onKeyDown}
