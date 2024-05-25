@@ -7,13 +7,22 @@ export default function AboutInfo() {
 			<h2>About {CONSTANT.NAME}</h2>
 
 			<p>
-				Created By{" "}
+				Created by{" "}
 				<a
 					href="https://github.com/PseudoResonance/"
 					rel="noreferrer noopener"
 					target="_blank"
 				>
 					PseudoResonance
+				</a>
+				<br />
+				Source code available at{" "}
+				<a
+					href="https://github.com/PseudoResonance/delta-emu-ui-editor"
+					rel="noreferrer noopener"
+					target="_blank"
+				>
+					GitHub
 				</a>
 				<br />
 				PDF importing with{" "}

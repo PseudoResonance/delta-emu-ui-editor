@@ -4,8 +4,11 @@ import * as CONSTANT from "@/utils/constants";
 export default function SponsorInfo() {
 	return (
 		<>
-			<h2>Sponsor the development of {CONSTANT.NAME}</h2>
-
+			<h2>Sponsor {CONSTANT.NAME}</h2>
+			<p>
+				Please considering sponsoring this project's development if it
+				was helpful to you!
+			</p>
 			<p>
 				{CONSTANT.SPONSOR_URLS.map((val, i, arr) => (
 					<>
