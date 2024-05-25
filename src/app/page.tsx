@@ -1502,6 +1502,22 @@ export default function Home() {
 					canUndo={
 						historyInfo.currentState > 1 || historyInfo.writing
 					}
+					clearUI={() => {
+						setInfoFile(defaultInfoFile);
+						const newRepresentation =
+							getFirstRepresentation(defaultInfoFile);
+						if (newRepresentation.length > 0)
+							applyRepresentation(
+								newRepresentation,
+								defaultInfoFile,
+							);
+						else clearUI();
+						historyInfo.writing = false;
+						historyInfo.currentState = 0;
+						historyInfo.processing = false;
+						historyInfo.isHistoryEdit = false;
+						setHistory([]);
+					}}
 					elements={currentElements}
 					getReferencedAssets={getReferencedAssets}
 					infoFile={infoFile}

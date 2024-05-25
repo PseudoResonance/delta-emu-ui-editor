@@ -29,6 +29,7 @@ import SponsorInfo from "../popup/popups/sponsorinfo";
 
 export default function MenuBar(args: {
 	pressedKeys: string[];
+	clearUI: () => void;
 	elements: EmulatorElement[];
 	layoutData: EmulatorLayout | null;
 	infoFile: InfoFile;
@@ -107,6 +108,26 @@ export default function MenuBar(args: {
 					label="File"
 					setIsActive={setIsActive}
 					subElements={[
+						<MenuButton
+							key="newskin"
+							label="New Skin"
+							onClick={() => {
+								args.showPopup(
+									<>
+										<h1>Warning</h1>
+
+										<p>
+											The current skin will be lost! Are
+											you sure you want to continue?
+										</p>
+									</>,
+									() => {},
+									() => {
+										args.clearUI();
+									},
+								);
+							}}
+						/>,
 						<MenuButton
 							key="loadskin"
 							label="Load Deltaskin"
