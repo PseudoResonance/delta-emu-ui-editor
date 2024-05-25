@@ -32,3 +32,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 -   The previous skin's asset may override the current skin if it is still being rendered when a new skin is loaded.
 -   Some input fields reformat the contents while still typing.
+-   Global padding does not work yet. Only element-level padding will be exported correctly.
