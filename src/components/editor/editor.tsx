@@ -153,6 +153,9 @@ export default function MainEditor(args: {
 				}
 			}
 		};
+		const onClear = () => {
+			pointerCache.current.splice(0);
+		};
 		const onPointerDown = (e: PointerEvent) => {
 			if (
 				ref.current &&
@@ -167,10 +170,12 @@ export default function MainEditor(args: {
 		if (ref.current) {
 			window.addEventListener("keydown", onKeyDown);
 			window.addEventListener("pointerdown", onPointerDown);
+			window.addEventListener("blur", onClear);
 			return () => {
 				if (ref.current) {
 					window.removeEventListener("keydown", onKeyDown);
 					window.removeEventListener("pointerdown", onPointerDown);
+					window.addEventListener("blur", onClear);
 				}
 			};
 		}
@@ -179,6 +184,19 @@ export default function MainEditor(args: {
 	const pointerDown = (e: React.PointerEvent) => {
 		pointerCache.current.push(e.nativeEvent);
 		let moveHandler: ((e: PointerEvent) => void) | null = null;
+		const stopHandler: () => void = () => {
+			e.preventDefault();
+			e.stopPropagation();
+			if (pointerCache.current.length === 0) {
+				document.removeEventListener("pointerup", stopHandler, {
+					capture: true,
+				});
+				if (moveHandler)
+					document.removeEventListener("pointermove", moveHandler, {
+						capture: true,
+					});
+			}
+		};
 		if (
 			(pointerCache.current.length === 1 &&
 				e.ctrlKey &&
@@ -193,6 +211,20 @@ export default function MainEditor(args: {
 			const xStart = args.scale.xOffset;
 			const yStart = args.scale.yOffset;
 			moveHandler = (e: PointerEvent) => {
+				if (pointerCache.current.length === 0) {
+					document.removeEventListener("pointerup", stopHandler, {
+						capture: true,
+					});
+					if (moveHandler)
+						document.removeEventListener(
+							"pointermove",
+							moveHandler,
+							{
+								capture: true,
+							},
+						);
+					return false;
+				}
 				const i = pointerCache.current.findIndex(
 					(ev) => ev.pointerId === e.pointerId,
 				);
@@ -217,6 +249,20 @@ export default function MainEditor(args: {
 			let previousX: number | null = null;
 			let previousY: number | null = null;
 			moveHandler = (e: PointerEvent) => {
+				if (pointerCache.current.length === 0) {
+					document.removeEventListener("pointerup", stopHandler, {
+						capture: true,
+					});
+					if (moveHandler)
+						document.removeEventListener(
+							"pointermove",
+							moveHandler,
+							{
+								capture: true,
+							},
+						);
+					return false;
+				}
 				const i = pointerCache.current.findIndex(
 					(ev) => ev.pointerId === e.pointerId,
 				);
@@ -292,18 +338,6 @@ export default function MainEditor(args: {
 			};
 		}
 		if (moveHandler) {
-			const stopHandler: () => void = () => {
-				e.preventDefault();
-				e.stopPropagation();
-				if (pointerCache.current.length < 1) {
-					document.removeEventListener("pointerup", stopHandler, {
-						capture: true,
-					});
-					document.removeEventListener("pointermove", moveHandler, {
-						capture: true,
-					});
-				}
-			};
 			document.addEventListener("pointerup", stopHandler, {
 				capture: true,
 				passive: false,
@@ -325,6 +359,33 @@ export default function MainEditor(args: {
 	return (
 		<div
 			className={styles.editor}
+			onClick={(e) => {
+				const hasOnClick: (elem: HTMLElement) => boolean = (
+					elem: HTMLElement,
+				) => {
+					if (elem === e.currentTarget) {
+						return false;
+					} else {
+						const props = getReactProps(elem);
+						if (
+							props &&
+							(props.onClick ||
+								props.onClickCapture ||
+								props.onPointerDown ||
+								props.onPointerDownCapture)
+						) {
+							return true;
+						} else if (elem.parentElement) {
+							return hasOnClick(elem.parentElement);
+						}
+						return false;
+					}
+				};
+				if (!hasOnClick(e.target as HTMLElement)) {
+					args.setEditingElement(-1);
+					args.setHoverIndex(-1);
+				}
+			}}
 			onContextMenu={(e) => {
 				const hasOnContextMenu: (elem: HTMLElement) => boolean = (
 					elem: HTMLElement,

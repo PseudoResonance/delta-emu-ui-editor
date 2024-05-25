@@ -44,11 +44,10 @@
 	--tree-line-rgb: rgb(110, 110, 110);
 	--scrollbar-rgb: rgb(121, 121, 121);
 
-	--element-hover-border-width: 3px;
 	--window-border: rgba(0, 0, 255, 1);
-	--window-border-padding: rgb(231, 81, 231);
 	--element-border: rgba(255, 0, 0, 1);
 	--element-border-padding: rgb(0, 158, 0);
+	--element-border-default-padding: rgb(231, 81, 231);
 	--thumbstick-image: rgba(0, 255, 255, 1);
 	--thumbstick-image-opacity: 20%;
 	--pad-stick-overlay: rgb(85, 85, 85);
@@ -88,11 +87,10 @@
 		--tree-line-rgb: var(--foreground-rgb);
 		--scrollbar-rgb: var(--foreground-rgb);
 
-		--element-hover-border-width: 3px;
 		--window-border: rgba(0, 0, 255, 1);
-		--window-border-padding: rgba(128, 0, 128, 1);
 		--element-border: rgba(255, 0, 0, 1);
 		--element-border-padding: rgba(0, 128, 0, 1);
+		--element-border-default-padding: rgba(128, 0, 128, 1);
 		--thumbstick-image: rgba(0, 255, 255, 1);
 		--thumbstick-image-opacity: 20%;
 		--pad-stick-overlay: rgba(128, 128, 128, 1);

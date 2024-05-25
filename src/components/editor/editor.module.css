@@ -11,12 +11,6 @@
 
 .window {
 	position: relative;
-	border: var(--window-border-padding) var(--element-border-width) solid;
-	display: block;
-}
-
-.windowInner {
-	position: relative;
 	border: var(--window-border) var(--element-border-width) solid;
 	display: block;
 }

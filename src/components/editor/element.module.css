@@ -48,24 +48,18 @@
 	pointer-events: none;
 }
 
-.element:hover::after,
-.element.active::after,
-.element.hover::after {
-	content: "";
-	display: block;
-	width: calc(
-		100% - var(--element-hover-border-width) -
-			var(--element-hover-border-width)
-	);
-	height: calc(
-		100% - var(--element-hover-border-width) -
-			var(--element-hover-border-width)
-	);
-	border: var(--element-hover-border-width) var(--select-rgb) dashed;
+.element.hover,
+.element.active,
+.element:hover,
+.element.hover .inner,
+.element.active .inner,
+.element:hover .inner {
+	border: var(--select-rgb) var(--element-border-width) dashed;
 }
 
-.element.active::after {
-	border: var(--element-hover-border-width) var(--select-rgb-active) dashed;
+.element.active,
+.element.active .inner {
+	border: var(--select-rgb-active) var(--element-border-width) dashed;
 }
 
 .element .inputsDescription {
@@ -119,10 +113,18 @@
 }
 
 .expandGrid {
-	width: calc(100% + var(--resize-handle-width) + 2 * var(--element-border-width));
-	height: calc(100% + var(--resize-handle-width) + 2 * var(--element-border-width));
-	top: calc((var(--resize-handle-width) / 2 + var(--element-border-width)) * -1);
-	left: calc((var(--resize-handle-width) / 2 + var(--element-border-width)) * -1);
+	width: calc(
+		100% + var(--resize-handle-width) + 2 * var(--element-border-width)
+	);
+	height: calc(
+		100% + var(--resize-handle-width) + 2 * var(--element-border-width)
+	);
+	top: calc(
+		(var(--resize-handle-width) / 2 + var(--element-border-width)) * -1
+	);
+	left: calc(
+		(var(--resize-handle-width) / 2 + var(--element-border-width)) * -1
+	);
 	display: grid;
 	grid-template-columns: var(--resize-handle-width) 1fr var(
 			--resize-handle-width

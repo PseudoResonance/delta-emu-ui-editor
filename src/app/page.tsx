@@ -355,15 +355,11 @@ export default function Home() {
 							infoFile,
 							currentRepresentation,
 						);
-						if (representation && focusState.elements.length > 0) {
+						if (representation && hoverIndex > -1) {
 							e.clipboardData.setData(
 								CONSTANT.CLIPBOARD_ELEMENT,
 								JSON.stringify(
-									representation.elements[
-										focusState.elements[
-											focusState.elements.length - 1
-										]
-									],
+									representation.elements[hoverIndex],
 								),
 							);
 							e.preventDefault();

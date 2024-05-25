@@ -6,7 +6,7 @@ import {
 	EmulatorElementType,
 } from "@/data/types";
 import styles from "./element.module.css";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import * as CONSTANT from "@/utils/constants";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
@@ -29,6 +29,7 @@ export default function EmulatorElementComponent(args: {
 	};
 	onClick: () => void;
 	updateElement: (data: Spec<EmulatorElement, never>) => void;
+	setHoverIndex: Dispatch<SetStateAction<number>>;
 	isHover: boolean;
 	scale: number;
 	showPopup: (
@@ -41,7 +42,6 @@ export default function EmulatorElementComponent(args: {
 	deleteThis: () => void;
 	zIndex: number | null;
 }) {
-	const ref = useRef<HTMLDivElement>(null);
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const label = getElementLabel(args.elementData);
 	const bgAsset =
@@ -73,7 +73,7 @@ export default function EmulatorElementComponent(args: {
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
 	const moveHelper = (e: React.PointerEvent, inner: boolean) => {
-		if (!e.ctrlKey && (e.pointerType !== "mouse" || e.button === 0)) {
+		if (e.pointerType !== "mouse" || e.button === 0) {
 			args.onClick();
 			e.preventDefault();
 			setIsActive(true);
@@ -195,225 +195,210 @@ export default function EmulatorElementComponent(args: {
 		inner: boolean,
 	) => {
 		if (yScale != 0 || xScale != 0) {
-			if (!e.ctrlKey && (e.pointerType !== "mouse" || e.button === 0)) {
-				if (ref.current) {
-					let padding = !inner;
-					if (e.shiftKey) padding = true;
-					args.onClick();
+			if (e.pointerType !== "mouse" || e.button === 0) {
+				let padding = !inner;
+				if (e.shiftKey) padding = true;
+				args.onClick();
+				e.preventDefault();
+				setIsActive(true);
+				const xStartMouse = e.clientX;
+				const yStartMouse = e.clientY;
+				let paddingTop = -1;
+				let paddingBottom = -1;
+				let paddingLeft = -1;
+				let paddingRight = -1;
+				let y = -1;
+				let x = -1;
+				let width = -1;
+				let height = -1;
+				const paddingTopStart =
+					padding && inner ? 0 : args.elementData.paddingTop;
+				const paddingBottomStart =
+					padding && inner ? 0 : args.elementData.paddingBottom;
+				const paddingLeftStart =
+					padding && inner ? 0 : args.elementData.paddingLeft;
+				const paddingRightStart =
+					padding && inner ? 0 : args.elementData.paddingRight;
+				const yStart = args.elementData.y;
+				const xStart = args.elementData.x;
+				const widthStart = args.elementData.width;
+				const heightStart = args.elementData.height;
+				const moveHandler = (e: PointerEvent) => {
 					e.preventDefault();
-					setIsActive(true);
-					const xStartMouse = e.clientX;
-					const yStartMouse = e.clientY;
-					let paddingTop = -1;
-					let paddingBottom = -1;
-					let paddingLeft = -1;
-					let paddingRight = -1;
-					let y = -1;
-					let x = -1;
-					let width = -1;
-					let height = -1;
-					const paddingTopStart =
-						padding && inner ? 0 : args.elementData.paddingTop;
-					const paddingBottomStart =
-						padding && inner ? 0 : args.elementData.paddingBottom;
-					const paddingLeftStart =
-						padding && inner ? 0 : args.elementData.paddingLeft;
-					const paddingRightStart =
-						padding && inner ? 0 : args.elementData.paddingRight;
-					const yStart = args.elementData.y;
-					const xStart = args.elementData.x;
-					const widthStart = args.elementData.width;
-					const heightStart = args.elementData.height;
-					const moveHandler = (e: PointerEvent) => {
-						e.preventDefault();
-						if (yScale != 0) {
-							const diffY =
-								((e.clientY - yStartMouse) / args.scale) *
-								yScale;
-							if (yScale < 0) {
-								if (padding) {
-									if (paddingTopStart + diffY < 0)
+					if (yScale != 0) {
+						const diffY =
+							((e.clientY - yStartMouse) / args.scale) * yScale;
+						if (yScale < 0) {
+							if (padding) {
+								if (paddingTopStart + diffY < 0) paddingTop = 0;
+								else if (paddingTopStart + diffY > yStart)
+									paddingTop = yStart;
+								else paddingTop = paddingTopStart + diffY;
+							} else {
+								if (yStart - diffY <= 0) {
+									y = 0;
+									height = heightStart + yStart;
+								} else if (heightStart + diffY <= 0) {
+									y = yStart + heightStart;
+									height = 0;
+								} else {
+									y = yStart - diffY;
+									height = heightStart + diffY;
+								}
+								if (paddingTopStart > 0) {
+									paddingTop =
+										paddingTopStart +
+										(heightStart - height);
+									if (paddingTop <= 0) {
 										paddingTop = 0;
-									else if (paddingTopStart + diffY > yStart)
-										paddingTop = yStart;
-									else paddingTop = paddingTopStart + diffY;
-								} else {
-									if (yStart - diffY <= 0) {
-										y = 0;
-										height = heightStart + yStart;
-									} else if (heightStart + diffY <= 0) {
-										y = yStart + heightStart;
-										height = 0;
-									} else {
-										y = yStart - diffY;
-										height = heightStart + diffY;
-									}
-									if (paddingTopStart > 0) {
-										paddingTop =
-											paddingTopStart +
-											(heightStart - height);
-										if (paddingTop <= 0) {
-											paddingTop = 0;
-										}
 									}
 								}
+							}
+						} else {
+							if (padding) {
+								if (paddingBottomStart + diffY < 0)
+									paddingBottom = 0;
+								else if (
+									paddingBottomStart + diffY >
+									args.parentHeight - yStart - heightStart
+								)
+									paddingBottom =
+										args.parentHeight -
+										yStart -
+										heightStart;
+								else paddingBottom = paddingBottomStart + diffY;
 							} else {
-								if (padding) {
-									if (paddingBottomStart + diffY < 0)
+								if (heightStart + diffY < 0) height = 0;
+								else if (
+									heightStart + diffY + yStart >=
+									args.parentHeight
+								) {
+									height = args.parentHeight - yStart;
+								} else {
+									height = heightStart + diffY;
+								}
+								if (paddingBottomStart > 0) {
+									paddingBottom =
+										paddingBottomStart +
+										(heightStart - height);
+									if (paddingBottom <= 0) {
 										paddingBottom = 0;
-									else if (
-										paddingBottomStart + diffY >
-										args.parentHeight - yStart - heightStart
-									)
-										paddingBottom =
-											args.parentHeight -
-											yStart -
-											heightStart;
-									else
-										paddingBottom =
-											paddingBottomStart + diffY;
-								} else {
-									if (heightStart + diffY < 0) height = 0;
-									else if (
-										heightStart + diffY + yStart >=
-										args.parentHeight
-									) {
-										height = args.parentHeight - yStart;
-									} else {
-										height = heightStart + diffY;
-									}
-									if (paddingBottomStart > 0) {
-										paddingBottom =
-											paddingBottomStart +
-											(heightStart - height);
-										if (paddingBottom <= 0) {
-											paddingBottom = 0;
-										}
 									}
 								}
 							}
 						}
-						if (xScale != 0) {
-							const diffX =
-								((e.clientX - xStartMouse) / args.scale) *
-								xScale;
-							if (xScale < 0) {
-								if (padding) {
-									if (paddingLeftStart + diffX < 0)
-										paddingLeft = 0;
-									else if (paddingLeftStart + diffX > xStart)
-										paddingLeft = xStart;
-									else paddingLeft = paddingLeftStart + diffX;
-								} else {
-									if (xStart - diffX <= 0) {
-										x = 0;
-										width = widthStart + xStart;
-									} else if (widthStart + diffX <= 0) {
-										x = xStart + widthStart;
-										width = 0;
-									} else {
-										x = xStart - diffX;
-										width = widthStart + diffX;
-									}
-									if (paddingLeftStart > 0) {
-										paddingLeft =
-											paddingLeftStart +
-											(widthStart - width);
-										if (paddingLeft <= 0) {
-											paddingLeft = 0;
-										}
-									}
-								}
+					}
+					if (xScale != 0) {
+						const diffX =
+							((e.clientX - xStartMouse) / args.scale) * xScale;
+						if (xScale < 0) {
+							if (padding) {
+								if (paddingLeftStart + diffX < 0)
+									paddingLeft = 0;
+								else if (paddingLeftStart + diffX > xStart)
+									paddingLeft = xStart;
+								else paddingLeft = paddingLeftStart + diffX;
 							} else {
-								if (padding) {
-									if (paddingRightStart + diffX < 0)
-										paddingRight = 0;
-									else if (
-										paddingRightStart + diffX >
-										args.parentWidth - xStart - widthStart
-									)
-										paddingRight =
-											args.parentWidth -
-											xStart -
-											widthStart;
-									else
-										paddingRight =
-											paddingRightStart + diffX;
+								if (xStart - diffX <= 0) {
+									x = 0;
+									width = widthStart + xStart;
+								} else if (widthStart + diffX <= 0) {
+									x = xStart + widthStart;
+									width = 0;
 								} else {
-									if (widthStart + diffX < 0) width = 0;
-									else if (
-										widthStart + diffX + xStart >=
-										args.parentWidth
-									) {
-										width = args.parentWidth - xStart;
-									} else {
-										width = widthStart + diffX;
+									x = xStart - diffX;
+									width = widthStart + diffX;
+								}
+								if (paddingLeftStart > 0) {
+									paddingLeft =
+										paddingLeftStart + (widthStart - width);
+									if (paddingLeft <= 0) {
+										paddingLeft = 0;
 									}
-									if (paddingRightStart > 0) {
-										paddingRight =
-											paddingRightStart +
-											(widthStart - width);
-										if (paddingRight <= 0) {
-											paddingRight = 0;
-										}
+								}
+							}
+						} else {
+							if (padding) {
+								if (paddingRightStart + diffX < 0)
+									paddingRight = 0;
+								else if (
+									paddingRightStart + diffX >
+									args.parentWidth - xStart - widthStart
+								)
+									paddingRight =
+										args.parentWidth - xStart - widthStart;
+								else paddingRight = paddingRightStart + diffX;
+							} else {
+								if (widthStart + diffX < 0) width = 0;
+								else if (
+									widthStart + diffX + xStart >=
+									args.parentWidth
+								) {
+									width = args.parentWidth - xStart;
+								} else {
+									width = widthStart + diffX;
+								}
+								if (paddingRightStart > 0) {
+									paddingRight =
+										paddingRightStart +
+										(widthStart - width);
+									if (paddingRight <= 0) {
+										paddingRight = 0;
 									}
 								}
 							}
 						}
-						args.updateElement({
-							...(paddingTop >= 0 && {
-								paddingTop: {
-									$set: Math.round(paddingTop),
-								},
-							}),
-							...(paddingBottom >= 0 && {
-								paddingBottom: {
-									$set: Math.round(paddingBottom),
-								},
-							}),
-							...(paddingLeft >= 0 && {
-								paddingLeft: {
-									$set: Math.round(paddingLeft),
-								},
-							}),
-							...(paddingRight >= 0 && {
-								paddingRight: {
-									$set: Math.round(paddingRight),
-								},
-							}),
-							...(x >= 0 && {
-								x: {
-									$set: Math.round(x),
-								},
-							}),
-							...(y >= 0 && {
-								y: {
-									$set: Math.round(y),
-								},
-							}),
-							...(width >= 0 && {
-								width: {
-									$set: Math.round(width),
-								},
-							}),
-							...(height >= 0 && {
-								height: {
-									$set: Math.round(height),
-								},
-							}),
-						});
-					};
-					const stopHandler = () => {
-						document.removeEventListener("pointerup", stopHandler);
-						document.removeEventListener(
-							"pointermove",
-							moveHandler,
-						);
-						setIsActive(false);
-					};
-					document.addEventListener("pointerup", stopHandler);
-					document.addEventListener("pointermove", moveHandler);
-				}
+					}
+					args.updateElement({
+						...(paddingTop >= 0 && {
+							paddingTop: {
+								$set: Math.round(paddingTop),
+							},
+						}),
+						...(paddingBottom >= 0 && {
+							paddingBottom: {
+								$set: Math.round(paddingBottom),
+							},
+						}),
+						...(paddingLeft >= 0 && {
+							paddingLeft: {
+								$set: Math.round(paddingLeft),
+							},
+						}),
+						...(paddingRight >= 0 && {
+							paddingRight: {
+								$set: Math.round(paddingRight),
+							},
+						}),
+						...(x >= 0 && {
+							x: {
+								$set: Math.round(x),
+							},
+						}),
+						...(y >= 0 && {
+							y: {
+								$set: Math.round(y),
+							},
+						}),
+						...(width >= 0 && {
+							width: {
+								$set: Math.round(width),
+							},
+						}),
+						...(height >= 0 && {
+							height: {
+								$set: Math.round(height),
+							},
+						}),
+					});
+				};
+				const stopHandler = () => {
+					document.removeEventListener("pointerup", stopHandler);
+					document.removeEventListener("pointermove", moveHandler);
+					setIsActive(false);
+				};
+				document.addEventListener("pointerup", stopHandler);
+				document.addEventListener("pointermove", moveHandler);
 			}
 		}
 	};
@@ -468,7 +453,6 @@ export default function EmulatorElementComponent(args: {
 					e.pageY,
 				);
 			}}
-			ref={ref}
 			style={{
 				width: Math.max(
 					0,

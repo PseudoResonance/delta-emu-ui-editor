@@ -80,80 +80,62 @@ export default function EmulatorWindow(args: {
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				}}
 			>
-				<div
-					className={styles.windowInner}
-					style={{
-						width:
-							args.width * args.scale -
-							2 * CONSTANT.ELEMENT_BORDER_WIDTH,
-						height:
-							args.height * args.scale -
-							2 * CONSTANT.ELEMENT_BORDER_WIDTH,
-						marginTop: -CONSTANT.ELEMENT_BORDER_WIDTH,
-						marginLeft: -CONSTANT.ELEMENT_BORDER_WIDTH,
-					}}
-				>
-					{
-						// eslint-disable-next-line @next/next/no-img-element
-						<img
-							className={styles.backgroundImage}
-							src={bgUrl}
-							style={{
-								display: bgUrl.length > 0 ? "inherit" : "none",
-								width: args.width * args.scale,
-								height: args.height * args.scale,
-								top: -CONSTANT.ELEMENT_BORDER_WIDTH,
-								left: -CONSTANT.ELEMENT_BORDER_WIDTH,
-							}}
-						/>
-					}
+				{
+					// eslint-disable-next-line @next/next/no-img-element
+					<img
+						className={styles.backgroundImage}
+						src={bgUrl}
+						style={{
+							display: bgUrl.length > 0 ? "inherit" : "none",
+							width: args.width * args.scale,
+							height: args.height * args.scale,
+							top: -CONSTANT.ELEMENT_BORDER_WIDTH,
+							left: -CONSTANT.ELEMENT_BORDER_WIDTH,
+						}}
+					/>
+				}
 
-					{args.elements.map((val: EmulatorElement, i: number) => (
-						<EmulatorElementComponent
-							assets={args.assets}
-							defaultPadding={args.defaultPadding}
-							deleteThis={() => {
-								if (args.editingElement >= i)
-									args.setEditingElement(
-										args.editingElement - 1,
-									);
-								if (args.hoverIndex >= i)
-									args.setHoverIndex(-1);
-								args.removeElement(i);
-							}}
-							duplicateThis={() => {
-								args.addElementData(
-									structuredClone(args.elements[i]),
-								);
-							}}
-							elementData={val}
-							isBackground={bgUrl.length > 0}
-							isHover={i === args.hoverIndex}
-							key={i}
-							onClick={() => {
-								args.setEditingElement(i);
-								args.setHoverIndex(i);
-							}}
-							parentHeight={args.height}
-							parentWidth={args.width}
-							pressedKeys={args.pressedKeys}
-							scale={args.scale}
-							setAssets={args.setAssets}
-							showContextMenu={args.showContextMenu}
-							showPopup={args.showPopup}
-							updateElement={(
-								data: Spec<EmulatorElement, never>,
-							) => {
-								args.updateElement(i, data);
-							}}
-							zIndex={
-								args.focusState.elements.includes(i)
-									? args.focusState.elements.indexOf(i)
-									: null
-							}
-						/>
-					))}
-				</div>
+				{args.elements.map((val: EmulatorElement, i: number) => (
+					<EmulatorElementComponent
+						assets={args.assets}
+						defaultPadding={args.defaultPadding}
+						deleteThis={() => {
+							if (args.editingElement >= i)
+								args.setEditingElement(args.editingElement - 1);
+							if (args.hoverIndex >= i) args.setHoverIndex(-1);
+							args.removeElement(i);
+						}}
+						duplicateThis={() => {
+							args.addElementData(
+								structuredClone(args.elements[i]),
+							);
+						}}
+						elementData={val}
+						isBackground={bgUrl.length > 0}
+						isHover={i === args.hoverIndex}
+						key={i}
+						onClick={() => {
+							args.setEditingElement(i);
+							args.setHoverIndex(i);
+						}}
+						parentHeight={args.height}
+						parentWidth={args.width}
+						pressedKeys={args.pressedKeys}
+						scale={args.scale}
+						setAssets={args.setAssets}
+						setHoverIndex={args.setHoverIndex}
+						showContextMenu={args.showContextMenu}
+						showPopup={args.showPopup}
+						updateElement={(data: Spec<EmulatorElement, never>) => {
+							args.updateElement(i, data);
+						}}
+						zIndex={
+							args.focusState.elements.includes(i)
+								? args.focusState.elements.indexOf(i)
+								: null
+						}
+					/>
+				))}
 			</div>
 		</div>
 	);
