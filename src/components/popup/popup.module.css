@@ -1,6 +1,6 @@
 .popupHolder {
-	width: 100vw;
-	height: 100vh;
+	width: 100svw;
+	height: 100svh;
 	z-index: 1000000;
 	position: absolute;
 	display: flex;
@@ -23,7 +23,7 @@
 	padding: 10px;
 	border: var(--border-width) var(--border-rgb) solid;
 	border-radius: var(--border-radius);
-	max-height: 90vh;
+	max-height: 90svh;
 	overflow-x: scroll;
 }
 
