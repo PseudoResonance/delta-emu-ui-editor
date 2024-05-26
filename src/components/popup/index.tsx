@@ -1,9 +1,9 @@
 "use client";
 import React, { Dispatch, SetStateAction } from "react";
-import styles from "./popup.module.css";
+import styles from "./index.module.css";
 import Popup from "./popup";
 
-export default function PopupHolder(args: {
+export default function PopupWrapper(args: {
 	elements: {
 		data: React.JSX.Element;
 		onClose: () => void;

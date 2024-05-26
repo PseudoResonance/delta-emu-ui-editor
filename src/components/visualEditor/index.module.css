@@ -1,0 +1,10 @@
+.editor {
+	flex-grow: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	background-color: var(--background-rgb);
+	overflow: hidden;
+	touch-action: none;
+}

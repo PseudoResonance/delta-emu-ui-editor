@@ -12,13 +12,13 @@ import React, {
 } from "react";
 import MenuButton from "./menubutton";
 import writeZip from "@/utils/zip/zipWrite";
-import { Asset, InfoFile, ScaleData } from "@/data/types";
+import { Asset, InfoFile, ScaleData, ShowPopupFunc } from "@/data/types";
 import zipRead from "@/utils/zip/zipRead";
-import AboutInfo from "../popup/popups/aboutinfo";
-import JSONParseError from "../popup/popups/jsonparseerror";
-import ControlsInfo from "../popup/popups/controlsinfo";
+import AboutInfo from "../commonPopups/aboutinfo";
+import JSONParseError from "../commonPopups/jsonparseerror";
+import ControlsInfo from "../commonPopups/controlsinfo";
 import MenuToggle from "./menutoggle";
-import SponsorInfo from "../popup/popups/sponsorinfo";
+import SponsorInfo from "../commonPopups/sponsorinfo";
 
 export default function MenuBar(args: {
 	clearUI: () => void;
@@ -29,11 +29,7 @@ export default function MenuBar(args: {
 	undo: () => void;
 	canRedo: boolean;
 	redo: () => void;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
+	showPopup: ShowPopupFunc;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	getReferencedAssets: (infoFile: InfoFile) => Record<string, Asset>;
 	setSidebarVisibility: Dispatch<

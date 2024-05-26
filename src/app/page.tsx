@@ -1,13 +1,12 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import MenuBar from "@/components/menubar/menubar";
-import Sidebar, { SidebarPosition } from "@/components/sidebar/sidebar";
-import MainEditor from "@/components/editor/editor";
+import Sidebar, { SidebarPosition } from "@/components/sidebar";
+import VisualEditor from "@/components/visualEditor";
 import styles from "@/app/main.module.css";
-import PopupHolder from "@/components/popup/popupholder";
-import ContextMenuHolder from "@/components/popup/contextmenuholder";
+import PopupWrapper from "@/components/popup";
 import { loadAsset } from "@/utils/readImage";
-import { ContextMenuEntry } from "@/components/popup/contextmenu";
+import * as ContextMenu from "@/components/contextMenu";
 import {
 	Asset,
 	AssetType,
@@ -21,9 +20,11 @@ import {
 	Mutable,
 	Representation,
 	ScaleData,
+	ShowContextMenuFunc,
+	ShowPopupFunc,
 } from "@/data/types";
 import update, { Spec } from "immutability-helper";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 import ValueInput from "@/components/inputs/valueinput";
 import INPUT_PRESETS from "@/data/consoleInfo";
 import SkinInfoWindow from "@/components/windows/skinInfoWindow";
@@ -31,6 +32,7 @@ import RepresentationTreeWindow from "@/components/windows/representationTreeWin
 import ZoomWindow from "@/components/windows/zoomWindow";
 import ElementListWindow from "@/components/windows/elementListWindow";
 import ElementValueWindow from "@/components/windows/elementValueWindow";
+import JSONParseError from "@/components/commonPopups/jsonparseerror";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -139,7 +141,7 @@ export default function Home() {
 		}[]
 	>([]);
 	const [contextMenu, setContextMenu] = useState<{
-		data: ContextMenuEntry[] | null;
+		data: ContextMenu.Entry[] | null;
 		x: number;
 		y: number;
 	}>({
@@ -1003,14 +1005,7 @@ export default function Home() {
 			setHistory([]);
 		} catch (e) {
 			console.error("Error parsing JSON!", e);
-			showPopup(
-				<>
-					<h1>Error</h1>
-
-					<p>Unable to parse JSON!</p>
-				</>,
-				() => {},
-			);
+			showPopup(<JSONParseError />, () => {});
 		}
 	};
 
@@ -1354,14 +1349,7 @@ export default function Home() {
 			return representationObj;
 		} catch (e) {
 			console.error("Error parsing JSON representation!", e);
-			showPopup(
-				<>
-					<h1>Error</h1>
-
-					<p>Unable to parse JSON!</p>
-				</>,
-				() => {},
-			);
+			showPopup(<JSONParseError />, () => {});
 		}
 		return null;
 	};
@@ -1425,11 +1413,7 @@ export default function Home() {
 		}
 	};
 
-	const showPopup: (
-		data: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void = (
+	const showPopup: ShowPopupFunc = (
 		data: React.JSX.Element,
 		onClose: () => void,
 		onAccept?: () => void,
@@ -1444,11 +1428,11 @@ export default function Home() {
 		]);
 	};
 
-	const showContextMenu: (
-		data: ContextMenuEntry[],
+	const showContextMenu: ShowContextMenuFunc = (
+		data: ContextMenu.Entry[],
 		x: number,
 		y: number,
-	) => void = (data: ContextMenuEntry[], x: number, y: number) => {
+	) => {
 		setContextMenu({
 			data: data,
 			x: x,
@@ -1559,7 +1543,7 @@ export default function Home() {
 					/>
 				</Sidebar>
 
-				<MainEditor
+				<VisualEditor
 					addElementData={addElementData}
 					assets={assets}
 					editingElement={editingElement}
@@ -1647,9 +1631,9 @@ export default function Home() {
 			</main>
 
 			<div className={styles.overlay}>
-				<PopupHolder elements={popups} setPopups={setPopups} />
+				<PopupWrapper elements={popups} setPopups={setPopups} />
 
-				<ContextMenuHolder
+				<ContextMenu.Wrapper
 					clear={() => {
 						setContextMenu({
 							data: null,

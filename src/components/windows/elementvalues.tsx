@@ -1,23 +1,24 @@
 "use client";
 import style from "./elementvalues.module.css";
 import icons from "@/utils/icons.module.css";
-import ValueInput from "../../inputs/valueinput";
+import ValueInput from "../inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
-import Button from "../../inputs/button";
-import DropdownInput from "../../inputs/dropdowninput";
-import FileInput from "../../inputs/fileinput";
+import Button from "../inputs/button";
+import DropdownInput from "../inputs/dropdowninput";
+import FileInput from "../inputs/fileinput";
 import {
 	Asset,
 	EmulatorElement,
 	EmulatorElementType,
 	EmulatorLayout,
 	InfoFile,
+	ShowPopupFunc,
 } from "@/data/types";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
-import Suggestions from "../../inputs/inputSuggestions";
+import Suggestions from "../inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
-import { getElementLabel } from "../../editor/element";
+import { getElementLabel } from "../visualEditor/element";
 
 export default function ElementValues(args: {
 	assets: Record<string, Asset> | null;
@@ -32,11 +33,7 @@ export default function ElementValues(args: {
 	parentHeight: number;
 	infoFile: InfoFile;
 	layoutData: EmulatorLayout;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
+	showPopup: ShowPopupFunc;
 	currentRepresentation: string;
 }) {
 	const loadAssetHelper = (fileName: string) => {

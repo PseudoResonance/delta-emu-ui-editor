@@ -4,7 +4,7 @@
 	align-items: center;
 }
 
-.controlEntry  > p:first-child {
+.controlEntry > p:first-child {
 	font-weight: bold;
 	position: relative;
 	margin-right: 20px;
@@ -17,12 +17,13 @@
 	gap: 10px;
 }
 
-.controls > div {
+.controls .keyWrapper {
 	display: flex;
-	gap: 5px;align-items: center;
+	gap: 5px;
+	align-items: center;
 }
 
-.controlEntry  p {
+.controlEntry p {
 	margin: 0;
 }
 

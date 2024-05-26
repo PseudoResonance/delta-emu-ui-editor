@@ -2,7 +2,7 @@
 
 import { ScaleData } from "@/data/types";
 import ValueInput from "../inputs/valueinput";
-import * as Constants from "@/utils/constants";
+import * as Constants from "@/data/constants";
 import { Dispatch, SetStateAction } from "react";
 
 export default function ZoomWindow(args: {

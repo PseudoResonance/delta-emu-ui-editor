@@ -1,6 +1,7 @@
 "use client";
+import React from "react";
 import styles from "./controls.module.css";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 
 export default function ControlsInfo() {
 	return (
@@ -8,14 +9,13 @@ export default function ControlsInfo() {
 			<h2>Controls</h2>
 			<hr />
 			{Object.keys(CONSTANT.CONTROLS).map((val, i) => (
-				<>
+				<div key={i}>
 					<ControlEntry
 						action={val}
 						controls={CONSTANT.CONTROLS[val]}
-						key={i}
 					/>
-					<hr key={`hr${i}`} />
-				</>
+					<hr />
+				</div>
 			))}
 		</>
 	);
@@ -27,15 +27,23 @@ const ControlEntry = (args: { action: string; controls: string[][] }) => {
 			<p>{args.action}</p>
 			<div className={styles.controls}>
 				{args.controls.map((keys, i) => (
-					<div key={i}>
-						{keys.map((key, i) => (
-							<>
-								<p className={styles.key} key={i}>
-									{key}
-								</p>
-								{i + 1 < keys.length && <p key={`p${i}`}>+</p>}
-							</>
-						))}
+					<div className={styles.keyWrapper} key={i}>
+						{keys.reduce<React.JSX.Element[]>(
+							(prev, key, i, arr) => (
+								prev.push(
+									...[
+										<p className={styles.key} key={i}>
+											{key}
+										</p>,
+										...(i + 1 < arr.length
+											? [<p key={`p${i}`}>+</p>]
+											: []),
+									],
+								),
+								prev
+							),
+							[],
+						)}
 					</div>
 				))}
 			</div>

@@ -1,9 +1,15 @@
 "use client";
 import React, { Dispatch, SetStateAction } from "react";
-import EmulatorElementComponent from "./element";
-import styles from "./editor.module.css";
-import { Asset, ContextMenu, EmulatorElement, FocusState } from "@/data/types";
-import * as CONSTANT from "@/utils/constants";
+import EmulatorElementComponent from "../element";
+import styles from "./index.module.css";
+import {
+	Asset,
+	EmulatorElement,
+	FocusState,
+	ShowContextMenuFunc,
+	ShowPopupFunc,
+} from "@/data/types";
+import * as CONSTANT from "@/data/constants";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
@@ -31,12 +37,8 @@ export default function EmulatorWindow(args: {
 		left: number;
 		right: number;
 	};
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
-	showContextMenu: ContextMenu;
+	showPopup: ShowPopupFunc;
+	showContextMenu: ShowContextMenuFunc;
 	isEditing: boolean[];
 	setIsEditing: (val: boolean) => void;
 }) {

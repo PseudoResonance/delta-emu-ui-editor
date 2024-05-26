@@ -1,5 +1,5 @@
 "use client";
-import styles from "./tree.module.css";
+import styles from "./index.module.css";
 import React, { MouseEvent, PointerEvent } from "react";
 
 interface BaseArgs {
@@ -28,7 +28,7 @@ interface ChildrenFunction extends BaseArgs {
 
 type Args = ChildrenDefined | ChildrenFunction;
 
-export default function TreeElement(args: Args) {
+export default function TreeItem(args: Args) {
 	const actionHandlers: Record<string, object> = {};
 	if (typeof args.onClick === "function")
 		actionHandlers.onClick = args.onClick;

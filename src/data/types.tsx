@@ -1,3 +1,5 @@
+import * as ContextMenu from "@/components/contextMenu";
+
 export enum EmulatorElementType {
 	Thumbstick = "Thumbstick",
 	Dpad = "Dpad",
@@ -149,6 +151,17 @@ export interface HistoryEvent {
 	readonly focusState: FocusState;
 }
 
+type ImmutableObject<T> = {
+	readonly [K in keyof T]: Immutable<T[K]>;
+};
+
+export type Immutable<T> = {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	readonly [K in keyof T]: T[K] extends Function
+		? T[K]
+		: ImmutableObject<T[K]>;
+};
+
 type MutableObject<T> = {
 	-readonly [K in keyof T]: Mutable<T[K]>;
 };
@@ -160,11 +173,14 @@ export type Mutable<T> = {
 		: MutableObject<T[K]>;
 };
 
-export type ContextMenu = (
-	data: {
-		label: string;
-		onClick: () => void;
-	}[],
+export type ShowPopupFunc = (
+	popup: React.JSX.Element,
+	onClose: () => void,
+	onAccept?: () => void,
+) => void;
+
+export type ShowContextMenuFunc = (
+	data: ContextMenu.Entry[],
 	x: number,
 	y: number,
 ) => void;

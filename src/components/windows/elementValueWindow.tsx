@@ -1,9 +1,15 @@
 "use client";
 
 import { Spec } from "immutability-helper";
-import CanvasValues from "./subelements/canvasvalues";
-import ElementValues from "./subelements/elementvalues";
-import { Asset, EmulatorElement, EmulatorLayout, InfoFile } from "@/data/types";
+import CanvasValues from "./canvasValues";
+import ElementValues from "./elementvalues";
+import {
+	Asset,
+	EmulatorElement,
+	EmulatorLayout,
+	InfoFile,
+	ShowPopupFunc,
+} from "@/data/types";
 import { Dispatch, SetStateAction } from "react";
 
 export default function ElementValueWindow(args: {
@@ -20,11 +26,7 @@ export default function ElementValueWindow(args: {
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 	editingElement: number;
 	setEditingElement: (val: number) => void;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
+	showPopup: ShowPopupFunc;
 	currentRepresentation: string;
 }) {
 	return (

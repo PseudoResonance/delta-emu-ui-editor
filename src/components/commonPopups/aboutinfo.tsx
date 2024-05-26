@@ -1,5 +1,5 @@
 "use client";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 
 export default function AboutInfo() {
 	return (

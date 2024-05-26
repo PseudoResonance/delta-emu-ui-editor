@@ -1,13 +1,14 @@
 "use client";
 import {
 	Asset,
-	ContextMenu,
 	EmulatorElement,
 	EmulatorElementType,
+	ShowContextMenuFunc,
+	ShowPopupFunc,
 } from "@/data/types";
-import styles from "./element.module.css";
+import styles from "./index.module.css";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 import { loadAsset } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
@@ -32,12 +33,8 @@ export default function EmulatorElementComponent(args: {
 	setHoverIndex: Dispatch<SetStateAction<number>>;
 	isHover: boolean;
 	scale: number;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
-	showContextMenu: ContextMenu;
+	showPopup: ShowPopupFunc;
+	showContextMenu: ShowContextMenuFunc;
 	duplicateThis: () => void;
 	deleteThis: () => void;
 	zIndex: number | null;

@@ -1,5 +1,5 @@
 "use client";
-import styles from "./contextmenu.module.css";
+import styles from "./index.module.css";
 
 export interface ContextMenuEntry {
 	label: string;

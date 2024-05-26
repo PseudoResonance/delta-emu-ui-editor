@@ -1,5 +1,5 @@
 "use client";
-import styles from "./popup.module.css";
+import styles from "./index.module.css";
 
 export default function Popup(args: {
 	children?: React.JSX.Element | React.JSX.Element[];

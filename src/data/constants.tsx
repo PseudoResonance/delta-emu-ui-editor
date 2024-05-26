@@ -34,3 +34,4 @@ export const ELEMENT_BORDER_WIDTH = 2;
 export const RESIZE_HANDLE_WIDTH = 15;
 export const ZOOM_MAX = 100;
 export const ZOOM_MIN = 0.01;
+export const TOUCH_ZOOM_SCALE = 0.0035;

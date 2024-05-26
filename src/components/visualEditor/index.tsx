@@ -7,24 +7,23 @@ import {
 	useMemo,
 	useRef,
 } from "react";
-import EmulatorWindow from "./window";
-import styles from "./editor.module.css";
+import EmulatorWindow from "./display";
+import styles from "./index.module.css";
 import {
 	Asset,
-	ContextMenu,
+	ShowContextMenuFunc,
 	EmulatorElement,
 	EmulatorLayout,
 	FocusState,
 	ScaleData,
+	ShowPopupFunc,
 } from "@/data/types";
 import { Spec } from "immutability-helper";
 import { getReactProps } from "@/utils/reactInternals";
 import { getElementLabel } from "./element";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 
-const TOUCH_ZOOM_SCALE = 0.0035;
-
-export default function MainEditor(args: {
+export default function VisualEditor(args: {
 	getCurrentBackgroundAssetName: () => string;
 	focusState: FocusState;
 	assets: Record<string, Asset> | null;
@@ -41,12 +40,8 @@ export default function MainEditor(args: {
 	setScale: Dispatch<SetStateAction<ScaleData>>;
 	hoverIndex: number;
 	setHoverIndex: Dispatch<SetStateAction<number>>;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
-	showContextMenu: ContextMenu;
+	showPopup: ShowPopupFunc;
+	showContextMenu: ShowContextMenuFunc;
 }) {
 	const panZoom = useCallback(
 		(
@@ -349,7 +344,7 @@ export default function MainEditor(args: {
 							clientX,
 							clientY,
 							(pointerDistance - prevPointerDistance) *
-								TOUCH_ZOOM_SCALE,
+								CONSTANT.TOUCH_ZOOM_SCALE,
 							clientX - previousX,
 							clientY - previousY,
 						);

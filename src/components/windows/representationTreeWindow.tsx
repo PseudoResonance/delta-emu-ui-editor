@@ -2,19 +2,15 @@
 
 import ValueInput from "../inputs/valueinput";
 import CheckboxInput from "../inputs/checkboxinput";
-import { ContextMenu, InfoFile } from "@/data/types";
-import TreeElement from "../sidebar/treeElement";
+import { InfoFile, ShowContextMenuFunc, ShowPopupFunc } from "@/data/types";
+import TreeItem from "../objectTree";
 
 export default function RepresentationTreeWindow(args: {
 	infoFile: InfoFile;
 	applyRepresentation: (key: string) => void;
 	currentRepresentation: string;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
-	showContextMenu: ContextMenu;
+	showPopup: ShowPopupFunc;
+	showContextMenu: ShowContextMenuFunc;
 	deleteNode: (key: string) => void;
 	createNode: (key: string, isLayout: boolean) => void;
 }) {
@@ -27,7 +23,7 @@ export default function RepresentationTreeWindow(args: {
 			return Object.keys(e)
 				.sort()
 				.map((key: string, i: number) => (
-					<TreeElement
+					<TreeItem
 						data={e[key] as Record<string, unknown>}
 						depth={depth + 1}
 						getChildren={getChildren}
@@ -148,7 +144,7 @@ export default function RepresentationTreeWindow(args: {
 	};
 	return (
 		<div style={{ padding: "3px 5px" }}>
-			<TreeElement
+			<TreeItem
 				data={args.infoFile.representations}
 				depth={0}
 				getChildren={getChildren}

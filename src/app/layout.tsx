@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import styles from "./main.module.css";
 import NoSSR from "@/utils/nossr";
-import * as CONSTANT from "@/utils/constants";
+import * as CONSTANT from "@/data/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 

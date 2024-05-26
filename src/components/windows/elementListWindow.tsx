@@ -1,13 +1,14 @@
 "use client";
 import icons from "@/utils/icons.module.css";
 import {
-	ContextMenu,
+	ShowContextMenuFunc,
 	EmulatorElement,
 	EmulatorElementType,
 	EmulatorLayout,
+	ShowPopupFunc,
 } from "@/data/types";
-import { getElementLabel } from "../editor/element";
-import TreeElement from "../sidebar/treeElement";
+import { getElementLabel } from "../visualEditor/element";
+import TreeItem from "../objectTree";
 import Button from "../inputs/button";
 import { Dispatch, SetStateAction } from "react";
 import { Spec } from "immutability-helper";
@@ -24,12 +25,8 @@ export default function ElementListWindow(args: {
 	updateAllElements: (elements: Spec<EmulatorElement[], never>) => void;
 	hoverIndex: number;
 	setHoverIndex: Dispatch<SetStateAction<number>>;
-	showPopup: (
-		popup: React.JSX.Element,
-		onClose: () => void,
-		onAccept?: () => void,
-	) => void;
-	showContextMenu: ContextMenu;
+	showPopup: ShowPopupFunc;
+	showContextMenu: ShowContextMenuFunc;
 }) {
 	const allHidden = args.elements.reduce<boolean>(
 		(prev, cur) => prev && cur.hidden,
@@ -47,7 +44,7 @@ export default function ElementListWindow(args: {
 						}}
 					/>
 					<div style={{ padding: "3px 5px" }}>
-						<TreeElement
+						<TreeItem
 							label={
 								<div
 									style={{
@@ -114,7 +111,7 @@ export default function ElementListWindow(args: {
 								(val: EmulatorElement, i: number) => {
 									const label = getElementLabel(val, true);
 									return (
-										<TreeElement
+										<TreeItem
 											key={i}
 											label={
 												<div
@@ -235,7 +232,7 @@ export default function ElementListWindow(args: {
 										>
 											{val.type ===
 											EmulatorElementType.Thumbstick ? (
-												<TreeElement
+												<TreeItem
 													label={
 														<div
 															style={{
@@ -368,15 +365,15 @@ export default function ElementListWindow(args: {
 													}
 												>
 													<></>
-												</TreeElement>
+												</TreeItem>
 											) : (
 												<></>
 											)}
-										</TreeElement>
+										</TreeItem>
 									);
 								},
 							)}
-						</TreeElement>
+						</TreeItem>
 					</div>
 				</>
 			)}

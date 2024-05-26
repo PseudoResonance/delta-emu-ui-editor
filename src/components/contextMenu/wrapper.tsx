@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import styles from "./contextmenu.module.css";
+import styles from "./index.module.css";
 import ContextMenu, { ContextMenuEntry } from "./contextmenu";
 
-export default function ContextMenuHolder(args: {
+export default function ContextMenuWrapper(args: {
 	clear: () => void;
 	menu: {
 		data: ContextMenuEntry[] | null;
