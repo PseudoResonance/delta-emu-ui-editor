@@ -237,6 +237,18 @@ export default function Home() {
 	};
 
 	useEffect(() => {
+		const onChange = () => {
+			setPreferences((oldPreferences) => {
+				return { ...oldPreferences, ...Preferences.load() };
+			});
+		};
+		window.addEventListener("storage", onChange);
+		return () => {
+			window.removeEventListener("storage", onChange);
+		};
+	}, []);
+
+	useEffect(() => {
 		Preferences.save(preferences);
 	}, [preferences]);
 
