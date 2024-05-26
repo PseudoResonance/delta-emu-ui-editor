@@ -12,14 +12,7 @@ import React, {
 } from "react";
 import MenuButton from "./menubutton";
 import writeZip from "@/utils/zip/zipWrite";
-import {
-	Asset,
-	ContextMenu,
-	EmulatorElement,
-	EmulatorLayout,
-	InfoFile,
-	ScaleData,
-} from "@/data/types";
+import { Asset, InfoFile, ScaleData } from "@/data/types";
 import zipRead from "@/utils/zip/zipRead";
 import AboutInfo from "../popup/popups/aboutinfo";
 import JSONParseError from "../popup/popups/jsonparseerror";
@@ -28,12 +21,7 @@ import MenuToggle from "./menutoggle";
 import SponsorInfo from "../popup/popups/sponsorinfo";
 
 export default function MenuBar(args: {
-	pressedKeys: string[];
 	clearUI: () => void;
-	elements: EmulatorElement[];
-	layoutData: EmulatorLayout | null;
-	infoFile: InfoFile;
-	scale: ScaleData;
 	setScale: Dispatch<SetStateAction<ScaleData>>;
 	saveJSON: () => { json: string; infoFile: InfoFile };
 	parseJSON: (json: Record<string, unknown>) => void;
@@ -46,11 +34,8 @@ export default function MenuBar(args: {
 		onClose: () => void,
 		onAccept?: () => void,
 	) => void;
-	showContextMenu: ContextMenu;
-	assets: Record<string, Asset> | null;
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	getReferencedAssets: (infoFile: InfoFile) => Record<string, Asset>;
-	sidebarVisibility: { left: boolean; right: boolean };
 	setSidebarVisibility: Dispatch<
 		SetStateAction<{ left: boolean; right: boolean }>
 	>;

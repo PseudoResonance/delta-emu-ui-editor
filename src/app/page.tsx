@@ -1,10 +1,9 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
 import MenuBar from "@/components/menubar/menubar";
-import Sidebar from "@/components/sidebar/sidebar";
+import Sidebar, { SidebarPosition } from "@/components/sidebar/sidebar";
 import MainEditor from "@/components/editor/editor";
 import styles from "@/app/main.module.css";
-import RightSidebar from "@/components/sidebar/rightsidebar";
 import PopupHolder from "@/components/popup/popupholder";
 import ContextMenuHolder from "@/components/popup/contextmenuholder";
 import { loadAsset } from "@/utils/readImage";
@@ -27,6 +26,11 @@ import update, { Spec } from "immutability-helper";
 import * as CONSTANT from "@/utils/constants";
 import ValueInput from "@/components/inputs/valueinput";
 import INPUT_PRESETS from "@/data/consoleInfo";
+import SkinInfoWindow from "@/components/windows/skinInfoWindow";
+import RepresentationTreeWindow from "@/components/windows/representationTreeWindow";
+import ZoomWindow from "@/components/windows/zoomWindow";
+import ElementListWindow from "@/components/windows/elementListWindow";
+import ElementValueWindow from "@/components/windows/elementValueWindow";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -1486,6 +1490,19 @@ export default function Home() {
 		? representation.layout
 		: null;
 
+	const newProject = useCallback(() => {
+		setInfoFile(defaultInfoFile);
+		const newRepresentation = getFirstRepresentation(defaultInfoFile);
+		if (newRepresentation.length > 0)
+			applyRepresentation(newRepresentation, defaultInfoFile);
+		else clearUI();
+		historyInfo.writing = false;
+		historyInfo.currentState = 0;
+		historyInfo.processing = false;
+		historyInfo.isHistoryEdit = false;
+		setHistory([]);
+	}, []);
+
 	return (
 		<>
 			<main
@@ -1497,46 +1514,23 @@ export default function Home() {
 				}
 			>
 				<MenuBar
-					assets={assets}
 					canRedo={historyInfo.currentState < history.length}
 					canUndo={
 						historyInfo.currentState > 1 || historyInfo.writing
 					}
-					clearUI={() => {
-						setInfoFile(defaultInfoFile);
-						const newRepresentation =
-							getFirstRepresentation(defaultInfoFile);
-						if (newRepresentation.length > 0)
-							applyRepresentation(
-								newRepresentation,
-								defaultInfoFile,
-							);
-						else clearUI();
-						historyInfo.writing = false;
-						historyInfo.currentState = 0;
-						historyInfo.processing = false;
-						historyInfo.isHistoryEdit = false;
-						setHistory([]);
-					}}
-					elements={currentElements}
+					clearUI={newProject}
 					getReferencedAssets={getReferencedAssets}
-					infoFile={infoFile}
-					layoutData={currentLayout}
 					parseJSON={parseJSON}
-					pressedKeys={pressedKeys}
 					redo={() => {
 						if (historyInfo.currentState < history.length) {
 							revertHistory(historyInfo.currentState + 1);
 						}
 					}}
 					saveJSON={saveJSON}
-					scale={scale}
 					setAssets={setAssets}
 					setScale={setScale}
 					setSidebarVisibility={setSidebarVisibility}
-					showContextMenu={showContextMenu}
 					showPopup={showPopup}
-					sidebarVisibility={sidebarVisibility}
 					undo={() => {
 						if (historyInfo.writing) {
 							revertHistory(historyInfo.currentState);
@@ -1547,16 +1541,23 @@ export default function Home() {
 				/>
 
 				<Sidebar
-					applyRepresentation={applyRepresentation}
-					createNode={createNode}
-					currentRepresentation={currentRepresentation}
-					deleteNode={deleteNode}
 					hiddenNarrow={sidebarVisibility.left}
-					infoFile={infoFile}
-					setInfoFile={updateSkinState}
-					showContextMenu={showContextMenu}
-					showPopup={showPopup}
-				/>
+					position={SidebarPosition.LEFT}
+				>
+					<SkinInfoWindow
+						infoFile={infoFile}
+						setInfoFile={updateSkinState}
+					/>
+					<RepresentationTreeWindow
+						applyRepresentation={applyRepresentation}
+						createNode={createNode}
+						currentRepresentation={currentRepresentation}
+						deleteNode={deleteNode}
+						infoFile={infoFile}
+						showContextMenu={showContextMenu}
+						showPopup={showPopup}
+					/>
+				</Sidebar>
 
 				<MainEditor
 					addElementData={addElementData}
@@ -1581,45 +1582,68 @@ export default function Home() {
 					updateElement={updateElement}
 				/>
 
-				<RightSidebar
-					addAsset={addAsset}
-					addElement={addElement}
-					addElementData={addElementData}
-					assets={assets}
-					currentRepresentation={currentRepresentation}
-					editingElement={editingElement}
-					elements={currentElements}
-					getCurrentBackgroundAssetName={
-						getCurrentBackgroundAssetName
-					}
+				<Sidebar
 					hiddenNarrow={sidebarVisibility.right}
-					hoverIndex={hoverIndex}
-					infoFile={infoFile}
-					layoutData={currentLayout}
-					removeElement={removeElement}
-					scale={scale}
-					setAssets={setAssets}
-					setEditingElement={setEditingElement}
-					setHoverIndex={setHoverIndex}
-					setLayoutData={(layout: Spec<EmulatorLayout, never>) => {
-						updateRepresentationState(
-							{ layout: layout },
-							currentRepresentation,
-						);
-					}}
-					setScale={setScale}
-					showContextMenu={showContextMenu}
-					showPopup={showPopup}
-					updateAllElements={(
-						elements: Spec<EmulatorElement[], never>,
-					) => {
-						updateRepresentationState(
-							{ elements: elements },
-							currentRepresentation,
-						);
-					}}
-					updateElement={updateElement}
-				/>
+					position={SidebarPosition.RIGHT}
+				>
+					<div>
+						<ZoomWindow
+							currentRepresentation={currentRepresentation}
+							scale={scale}
+							setScale={setScale}
+						/>
+						<ElementListWindow
+							addElement={addElement}
+							addElementData={addElementData}
+							editingElement={editingElement}
+							elements={currentElements}
+							hoverIndex={hoverIndex}
+							layoutData={currentLayout}
+							removeElement={removeElement}
+							setEditingElement={setEditingElement}
+							setHoverIndex={setHoverIndex}
+							showContextMenu={showContextMenu}
+							showPopup={showPopup}
+							updateAllElements={(
+								elements: Spec<EmulatorElement[], never>,
+							) => {
+								updateRepresentationState(
+									{ elements: elements },
+									currentRepresentation,
+								);
+							}}
+							updateElement={updateElement}
+						/>
+					</div>
+					<div>
+						<ElementValueWindow
+							addAsset={addAsset}
+							addElementData={addElementData}
+							assets={assets}
+							currentRepresentation={currentRepresentation}
+							editingElement={editingElement}
+							elements={currentElements}
+							getCurrentBackgroundAssetName={
+								getCurrentBackgroundAssetName
+							}
+							infoFile={infoFile}
+							layoutData={currentLayout}
+							removeElement={removeElement}
+							setAssets={setAssets}
+							setEditingElement={setEditingElement}
+							setLayoutData={(
+								layout: Spec<EmulatorLayout, never>,
+							) => {
+								updateRepresentationState(
+									{ layout: layout },
+									currentRepresentation,
+								);
+							}}
+							showPopup={showPopup}
+							updateElement={updateElement}
+						/>
+					</div>
+				</Sidebar>
 			</main>
 
 			<div className={styles.overlay}>

@@ -12,8 +12,6 @@ An instance is available for use [here](https://pseudo.tokyo/deltaemu).
 
 ## Getting Started
 
-First, copy PDF.js from `node_modules/pdfjs-dist/build/pdf.worker.min.js` to `public/pdf.worker.min.js`
-
 To run the development server:
 
 ```bash
@@ -34,3 +32,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 -   Some input fields reformat the contents while still typing.
 -   Global padding does not work yet. Only element-level padding will be exported correctly.
 -   Background may not render exactly as in the app yet, but should be acceptable if using a resizable background, or correctly sized PNGs.
+-   Colorblindness config options are not yet available.
