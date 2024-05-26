@@ -10,7 +10,7 @@ import {
 	ShowPopupFunc,
 } from "@/data/types";
 import * as CONSTANT from "@/data/constants";
-import { loadAsset } from "@/utils/readImage";
+import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
 export default function EmulatorWindow(args: {
@@ -48,18 +48,7 @@ export default function EmulatorWindow(args: {
 			? args.assets[targetAssetName]
 			: null;
 	if (bgAsset) {
-		loadAsset(bgAsset, () => {
-			if (args.assets && targetAssetName in args.assets) {
-				const newAssets = Object.assign({}, args.assets);
-				newAssets[targetAssetName].attemptLoad = true;
-				args.setAssets(newAssets);
-			}
-		}).then((res) => {
-			if (res) {
-				const newAssets = Object.assign({}, args.assets);
-				args.setAssets(newAssets);
-			}
-		});
+		loadAssetHelper(targetAssetName, args.assets, args.setAssets);
 	}
 	const bgUrl =
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";

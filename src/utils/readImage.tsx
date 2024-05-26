@@ -1,5 +1,6 @@
 import { Asset, AssetType } from "@/data/types";
 import convertPdfToImage from "@/utils/pdf/pdfToImg";
+import { Dispatch, SetStateAction } from "react";
 
 export const readImage = (file: File) => {
 	return new Promise<{
@@ -58,5 +59,36 @@ export const loadAsset = async (asset: Asset, tryCallback: () => void) => {
 		console.error("Unable to load asset!", e);
 		asset.type = null;
 		return false;
+	}
+};
+
+export const loadAssetHelper = (
+	fileName: string,
+	assets: Record<string, Asset> | null,
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>,
+) => {
+	if (assets && fileName in assets) {
+		loadAsset(assets[fileName], () => {
+			if (assets && fileName in assets) {
+				setAssets((oldAssets) => {
+					if (
+						oldAssets &&
+						assets &&
+						fileName in oldAssets &&
+						fileName in assets &&
+						oldAssets[fileName] === assets[fileName]
+					) {
+						const newAssets = Object.assign({}, oldAssets);
+						newAssets[fileName].attemptLoad = true;
+						return newAssets;
+					}
+					return oldAssets;
+				});
+			}
+		}).then((res) => {
+			if (res) {
+				setAssets((oldAssets) => Object.assign({}, oldAssets));
+			}
+		});
 	}
 };

@@ -9,7 +9,7 @@ import {
 import styles from "./index.module.css";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import * as CONSTANT from "@/data/constants";
-import { loadAsset } from "@/utils/readImage";
+import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
 const PADDING_EXPANDS_WITH_BOX_MOVE = false;
@@ -50,23 +50,11 @@ export default function EmulatorElementComponent(args: {
 			? args.assets[args.elementData.data.thumbstick.name]
 			: null;
 	if (bgAsset) {
-		loadAsset(bgAsset, () => {
-			if (
-				args.elementData.type === EmulatorElementType.Thumbstick &&
-				args.assets &&
-				args.elementData.data.thumbstick.name in args.assets
-			) {
-				const newAssets = Object.assign({}, args.assets);
-				newAssets[args.elementData.data.thumbstick.name].attemptLoad =
-					true;
-				args.setAssets(newAssets);
-			}
-		}).then((res) => {
-			if (res) {
-				const newAssets = Object.assign({}, args.assets);
-				args.setAssets(newAssets);
-			}
-		});
+		loadAssetHelper(
+			args.elementData.data.thumbstick.name,
+			args.assets,
+			args.setAssets,
+		);
 	}
 	const bgUrl =
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";

@@ -7,7 +7,7 @@ import Sidebar, { SidebarPosition } from "@/components/sidebar";
 import VisualEditor from "@/components/visualEditor";
 import styles from "@/app/main.module.css";
 import PopupWrapper from "@/components/popup";
-import { loadAsset } from "@/utils/readImage";
+import { loadAssetHelper } from "@/utils/readImage";
 import * as ContextMenu from "@/components/contextMenu";
 import {
 	Asset,
@@ -586,20 +586,14 @@ export default function Home() {
 		updateSkinState({ representations: data });
 	};
 
-	const applyRepresentation: (
+	const applyRepresentation: (key: string, newInfoFile?: InfoFile) => void = (
 		key: string,
 		newInfoFile?: InfoFile,
-		newAssets?: Record<string, Asset> | null,
-	) => void = (
-		key: string,
-		newInfoFile?: InfoFile,
-		newAssets?: Record<string, Asset> | null,
 	) => {
 		const data = getRepresentation(
 			newInfoFile ? newInfoFile : infoFile,
 			key,
 		);
-		const checkAssets = newAssets ? newAssets : assets;
 		if (data) {
 			setEditingElementInternal(-1);
 			setHoverIndex(-1);
@@ -609,42 +603,28 @@ export default function Home() {
 				representation: key,
 			});
 			setCurrentRepresentation(key);
-			if (checkAssets) {
+			if (assets) {
 				const layoutAssets = data.layout.assets;
 				let file = "";
-				const loadAssetHelper = (fileName: string) => {
-					loadAsset(checkAssets[fileName], () => {
-						if (checkAssets && fileName in checkAssets) {
-							const newAssets = Object.assign({}, checkAssets);
-							newAssets[fileName].attemptLoad = true;
-							setAssets(newAssets);
-						}
-					}).then((res) => {
-						if (res) {
-							const newAssets = Object.assign({}, checkAssets);
-							setAssets(newAssets);
-						}
-					});
-				};
 				switch (layoutAssets.type) {
 					case AssetType.PDF:
 						file = layoutAssets.resizable;
-						if (file in checkAssets!) {
-							loadAssetHelper(file);
+						if (file in assets!) {
+							loadAssetHelper(file, assets, setAssets);
 						}
 						break;
 					case AssetType.PNG:
 						file = layoutAssets.large;
-						if (file in checkAssets!) {
-							loadAssetHelper(file);
+						if (file in assets!) {
+							loadAssetHelper(file, assets, setAssets);
 						}
 						file = layoutAssets.medium;
-						if (file in checkAssets!) {
-							loadAssetHelper(file);
+						if (file in assets!) {
+							loadAssetHelper(file, assets, setAssets);
 						}
 						file = layoutAssets.small;
-						if (file in checkAssets!) {
-							loadAssetHelper(file);
+						if (file in assets!) {
+							loadAssetHelper(file, assets, setAssets);
 						}
 						break;
 				}
@@ -652,8 +632,8 @@ export default function Home() {
 					switch (val.type) {
 						case EmulatorElementType.Thumbstick:
 							file = val.data.thumbstick.name;
-							if (file in checkAssets!) {
-								loadAssetHelper(file);
+							if (file in assets!) {
+								loadAssetHelper(file, assets, setAssets);
 							}
 							break;
 						default:
@@ -668,9 +648,11 @@ export default function Home() {
 		path: string,
 		asset: Asset,
 	) => {
-		const newTree = Object.assign({}, assets);
-		newTree[path] = asset;
-		setAssets(newTree);
+		setAssets((oldAssets) => {
+			const newAssets = Object.assign({}, oldAssets);
+			newAssets[path] = asset;
+			return newAssets;
+		});
 	};
 
 	const getReferencedAssets: (infoFile: InfoFile) => Record<string, Asset> = (

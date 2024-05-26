@@ -14,7 +14,7 @@ import {
 	InfoFile,
 	ShowPopupFunc,
 } from "@/data/types";
-import { loadAsset } from "@/utils/readImage";
+import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 import Suggestions from "../inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
@@ -36,22 +36,6 @@ export default function ElementValues(args: {
 	showPopup: ShowPopupFunc;
 	currentRepresentation: string;
 }) {
-	const loadAssetHelper = (fileName: string) => {
-		if (args.assets && fileName in args.assets) {
-			loadAsset(args.assets[fileName], () => {
-				if (args.assets && fileName in args.assets) {
-					const newAssets = Object.assign({}, args.assets);
-					newAssets[fileName].attemptLoad = true;
-					args.setAssets(newAssets);
-				}
-			}).then((res) => {
-				if (res) {
-					const newAssets = Object.assign({}, args.assets);
-					args.setAssets(newAssets);
-				}
-			});
-		}
-	};
 	const INPUT_PRESET =
 		args.infoFile.gameTypeIdentifier in INPUT_PRESETS
 			? INPUT_PRESETS[args.infoFile.gameTypeIdentifier]
@@ -83,7 +67,7 @@ export default function ElementValues(args: {
 						args.updateElement({
 							data: { thumbstick: { name: { $set: val } } },
 						});
-						loadAssetHelper(val);
+						loadAssetHelper(val, args.assets, args.setAssets);
 					}}
 					suggestionsId="assets"
 					value={args.elementData.data.thumbstick.name}

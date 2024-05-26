@@ -7,7 +7,7 @@ import Button from "@/components/inputs/button";
 import DropdownInput from "@/components/inputs/dropdowninput";
 import FileInput from "@/components/inputs/fileinput";
 import { Asset, AssetType, EmulatorLayout } from "@/data/types";
-import { loadAsset } from "@/utils/readImage";
+import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 import CheckboxInput from "@/components/inputs/checkboxinput";
 import Suggestions from "@/components/inputs/inputSuggestions";
@@ -22,22 +22,6 @@ export default function CanvasValues(args: {
 	layoutData: EmulatorLayout;
 	currentRepresentation: string;
 }) {
-	const loadAssetHelper = (fileName: string) => {
-		if (args.assets && fileName in args.assets) {
-			loadAsset(args.assets[fileName], () => {
-				if (args.assets && fileName in args.assets) {
-					const newAssets = Object.assign({}, args.assets);
-					newAssets[fileName].attemptLoad = true;
-					args.setAssets(newAssets);
-				}
-			}).then((res) => {
-				if (res) {
-					const newAssets = Object.assign({}, args.assets);
-					args.setAssets(newAssets);
-				}
-			});
-		}
-	};
 	return (
 		<>
 			<DropdownInput
@@ -84,7 +68,7 @@ export default function CanvasValues(args: {
 									},
 								},
 							});
-							loadAssetHelper(val);
+							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
 						suggestionsId="assets"
 						value={args.layoutData.assets.small}
@@ -122,7 +106,7 @@ export default function CanvasValues(args: {
 									},
 								},
 							});
-							loadAssetHelper(val);
+							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
 						suggestionsId="assets"
 						value={args.layoutData.assets.medium}
@@ -160,7 +144,7 @@ export default function CanvasValues(args: {
 									},
 								},
 							});
-							loadAssetHelper(val);
+							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
 						suggestionsId="assets"
 						value={args.layoutData.assets.large}
@@ -201,7 +185,7 @@ export default function CanvasValues(args: {
 									},
 								},
 							});
-							loadAssetHelper(val);
+							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
 						suggestionsId="assets"
 						value={args.layoutData.assets.resizable}
