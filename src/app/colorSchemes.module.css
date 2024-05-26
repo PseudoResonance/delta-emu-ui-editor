@@ -1,0 +1,26 @@
+.deuteranomaly {
+	--window-border: rgba(0, 0, 255, 1);
+	--element-border: rgb(255, 208, 0);
+	--element-border-padding: rgb(229, 134, 255);
+	--element-border-default-padding: rgb(255, 255, 255);
+	--thumbstick-image: rgb(0, 0, 255);
+	--thumbstick-image-opacity: 30%;
+}
+
+.protanomaly {
+	--window-border: rgba(0, 0, 255, 1);
+	--element-border: rgb(255, 208, 0);
+	--element-border-padding: rgb(229, 134, 255);
+	--element-border-default-padding: rgb(255, 255, 255);
+	--thumbstick-image: rgb(0, 0, 255);
+	--thumbstick-image-opacity: 30%;
+}
+
+.tritanomaly {
+	--window-border: rgba(0, 0, 255, 1);
+	--element-border: rgba(255, 0, 0, 1);
+	--element-border-padding: rgba(0, 128, 0, 1);
+	--element-border-default-padding: rgba(128, 0, 128, 1);
+	--thumbstick-image: rgb(0, 255, 255);
+	--thumbstick-image-opacity: 30%;
+}

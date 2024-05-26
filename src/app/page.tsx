@@ -1,6 +1,8 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import MenuBar from "@/components/menubar/menubar";
+import themes from "./themes.module.css";
+import colorSchemes from "./colorSchemes.module.css";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import MenuBar from "@/components/menubar";
 import Sidebar, { SidebarPosition } from "@/components/sidebar";
 import VisualEditor from "@/components/visualEditor";
 import styles from "@/app/main.module.css";
@@ -33,6 +35,8 @@ import ZoomWindow from "@/components/windows/zoomWindow";
 import ElementListWindow from "@/components/windows/elementListWindow";
 import ElementValueWindow from "@/components/windows/elementValueWindow";
 import JSONParseError from "@/components/commonPopups/jsonparseerror";
+import * as Preferences from "@/preferences/preferences";
+import PreferencesWindow from "@/components/windows/preferences";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -132,6 +136,9 @@ export default function Home() {
 		left: true,
 		right: true,
 	});
+	const [preferences, setPreferences] = useState<Preferences.State>(
+		Preferences.load(),
+	);
 	const [assets, setAssets] = useState<Record<string, Asset> | null>(null);
 	const [popups, setPopups] = useState<
 		{
@@ -194,13 +201,18 @@ export default function Home() {
 	const [hoverIndex, setHoverIndex] = useState<number>(-1);
 	const [pressedKeys, setPressedKeys] = useState<string[]>([]);
 
+	const updatePreferences: (
+		stateUpdate: Spec<Preferences.State, never>,
+	) => void = (stateUpdate: Spec<Preferences.State, never>) => {
+		setPreferences((state: Preferences.State) =>
+			update(state, stateUpdate),
+		);
+	};
+
 	const updateSkinState: (stateUpdate: Spec<InfoFile, never>) => void = (
 		stateUpdate: Spec<InfoFile, never>,
 	) => {
-		setInfoFile((state: InfoFile) => {
-			const newState = update(state, stateUpdate);
-			return newState;
-		});
+		setInfoFile((state: InfoFile) => update(state, stateUpdate));
 	};
 
 	const updateRepresentationState: (
@@ -223,6 +235,10 @@ export default function Home() {
 		});
 		updateSkinState({ representations: data } as Spec<InfoFile, never>);
 	};
+
+	useEffect(() => {
+		Preferences.save(preferences);
+	}, [preferences]);
 
 	const addElement: () => void = () => {
 		addElementData({
@@ -1487,8 +1503,52 @@ export default function Home() {
 		setHistory([]);
 	}, []);
 
+	const extraClasses = useMemo(() => {
+		const ret = [];
+		switch (preferences.theme) {
+			case Preferences.Theme.DARK:
+				ret.push(themes.dark);
+				break;
+			case Preferences.Theme.LIGHT:
+				break;
+			case Preferences.Theme.DEFAULT:
+			default:
+				if (
+					window.matchMedia &&
+					window.matchMedia("(prefers-color-scheme: dark)").matches
+				)
+					ret.push(themes.dark);
+				break;
+		}
+		switch (preferences.colorScheme) {
+			case Preferences.ColorScheme.DEUTERANOMALY:
+				ret.push(colorSchemes.deuteranomaly);
+				break;
+			case Preferences.ColorScheme.PROTANOMALY:
+				ret.push(colorSchemes.protanomaly);
+				break;
+			case Preferences.ColorScheme.TRITANOMALY:
+				ret.push(colorSchemes.tritanomaly);
+				break;
+			case Preferences.ColorScheme.DEFAULT:
+			default:
+				break;
+		}
+		return ret.join(" ");
+	}, [preferences]);
+
+	const showPreferences = () => {
+		showPopup(
+			<PreferencesWindow
+				preferences={preferences}
+				setPreferences={updatePreferences}
+			/>,
+			() => {},
+		);
+	};
+
 	return (
-		<>
+		<div className={`${themes.root} ${extraClasses}`}>
 			<main
 				className={styles.main}
 				inert={
@@ -1515,6 +1575,7 @@ export default function Home() {
 					setScale={setScale}
 					setSidebarVisibility={setSidebarVisibility}
 					showPopup={showPopup}
+					showPreferences={showPreferences}
 					undo={() => {
 						if (historyInfo.writing) {
 							revertHistory(historyInfo.currentState);
@@ -1644,6 +1705,6 @@ export default function Home() {
 					menu={contextMenu}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }

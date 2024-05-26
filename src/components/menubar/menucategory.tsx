@@ -1,10 +1,10 @@
 "use client";
-import styles from "./menu.module.css";
+import styles from "./index.module.css";
 import React, { Dispatch, SetStateAction } from "react";
 
 export default function MenuCategory(args: {
 	label: string;
-	subElements: React.JSX.Element[];
+	children?: React.JSX.Element | React.JSX.Element[];
 	isActive: boolean;
 	setIsActive: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -26,7 +26,13 @@ export default function MenuCategory(args: {
 				{args.label}
 			</button>
 
-			<div className={styles.menudropdown}>{args.subElements}</div>
+			<div className={styles.menudropdown}>
+				{...args.children
+					? args.children instanceof Array
+						? args.children
+						: [args.children]
+					: []}
+			</div>
 		</div>
 	);
 }

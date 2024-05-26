@@ -1,47 +1,44 @@
 "use client";
-import { default as updateHelper, Spec } from "immutability-helper";
 
-export interface Preferences {
-	readonly theme: Theme | null;
+export interface State {
+	readonly theme: Theme;
 	readonly colorScheme: ColorScheme;
 }
 
 export enum Theme {
-	DARK = "dark",
-	LIGHT = "light",
+	DEFAULT = "DEFAULT",
+	LIGHT = "LIGHT",
+	DARK = "DARK",
 }
 
 export enum ColorScheme {
-	DEFAULT = "default",
+	DEFAULT = "DEFAULT",
+	DEUTERANOMALY = "DEUTERANOMALY",
+	PROTANOMALY = "PROTANOMALY",
+	TRITANOMALY = "TRITANOMALY",
 }
 
-const defaultPreferences: Preferences = {
-	theme: null,
+export const DEFAULT: State = {
+	theme: Theme.DEFAULT,
 	colorScheme: ColorScheme.DEFAULT,
 };
 
-let currentPreferences: Preferences = defaultPreferences;
-
-export const CURRENT: Preferences = currentPreferences;
-
-export const updatePreferences: (update: Spec<Preferences, never>) => void = (
-	update: Spec<Preferences, never>,
-) => {
-	currentPreferences = updateHelper(currentPreferences, update);
-	localStorage.setItem("preferences", JSON.stringify(currentPreferences));
+const save: (state: State) => void = (state: State) => {
+	localStorage.setItem("preferences", JSON.stringify(state));
 };
 
-export const readPreferences: () => void = () => {
+const load: () => State = () => {
 	const prefStr = localStorage.getItem("preferences");
 	if (prefStr !== null) {
 		try {
-			currentPreferences = JSON.parse(prefStr);
-			console.log(currentPreferences);
+			return { ...DEFAULT, ...JSON.parse(prefStr) };
 		} catch (e) {
 			console.error("Unable to read preferences!", e);
-			currentPreferences = structuredClone(defaultPreferences);
+			return DEFAULT;
 		}
 	} else {
-		currentPreferences = structuredClone(defaultPreferences);
+		return DEFAULT;
 	}
 };
+
+export { save, load };

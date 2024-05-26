@@ -1,0 +1,147 @@
+.root {
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	--border-width: 1px;
+	--border-radius: 3px;
+	--menu-height: 30px;
+	--sidebar-width: min(20em, 25%);
+	--menu-border-radius: 0px;
+	--dropdown-border-radius: 0px;
+	--popup-blur: 5px;
+	--tree-line-width: 2px;
+	--tree-padding-y: 3px;
+	--tree-text-line-height: 1.25em;
+	--icon-size: 1.25em;
+	--tree-nest-depth: 20px;
+	--scrollbar-width: 5px;
+
+	--link-rgb: rgb(19, 19, 255);
+	--link-rgb-hover: rgb(0, 0, 141);
+	--foreground-rgb: rgba(0, 0, 0, 1);
+	--foreground-rgb-disabled: rgb(122, 122, 122);
+	--secondary-rgb: rgba(230, 230, 230, 1);
+	--secondary-rgb-hover: rgba(190, 190, 190, 1);
+	--button-rgb: rgb(192, 192, 192);
+	--button-rgb-hover: rgba(0, 0, 0, 0.3);
+	--button-icon-rgb-active: rgba(0, 0, 0, 0.8);
+	--separator-rgb: rgb(167, 167, 167);
+	--border-rgb: rgb(194, 194, 194);
+	--select-rgb: rgb(100, 100, 100);
+	--select-rgb-active: rgba(0, 0, 0, 1);
+	--background-rgb: rgb(255, 255, 255);
+	--background-context-rgb: var(--background-menu-dropdown-rgb);
+	--background-context-rgb-hover: rgba(0, 0, 0, 0.15);
+	--background-menu-rgb: var(--secondary-rgb);
+	--background-menu-rgb-hover: rgba(0, 0, 0, 0.15);
+	--background-menu-dropdown-rgb: rgb(255, 255, 255);
+	--background-menu-dropdown-rgb-hover: rgba(0, 0, 0, 0.15);
+	--background-popup-rgb: var(--secondary-rgb);
+	--confirm-button: rgb(206, 0, 0);
+	--confirm-button-hover: rgba(255, 0, 0, 1);
+	--cancel-button: var(--button-rgb);
+	--cancel-button-hover: var(--button-rgb-hover);
+	--close-button: var(--button-rgb);
+	--close-button-hover: var(--button-rgb-hover);
+	--tree-line-rgb: rgb(110, 110, 110);
+	--scrollbar-rgb: rgb(121, 121, 121);
+
+	--window-border: rgba(0, 0, 255, 1);
+	--element-border: rgba(255, 0, 0, 1);
+	--element-border-padding: rgb(0, 158, 0);
+	--element-border-default-padding: rgb(231, 81, 231);
+	--thumbstick-image: rgba(0, 255, 255, 1);
+	--thumbstick-image-opacity: 20%;
+	--pad-stick-overlay: rgb(85, 85, 85);
+	--element-background-opacity: 15%;
+	--element-background-opacity-hover: 50%;
+	--element-description-rgb-emptyImage: rgb(0, 0, 0);
+	--element-description-rgb: rgb(255, 255, 255);
+}
+
+.dark {
+	--link-rgb: rgb(118, 118, 255);
+	--link-rgb-hover: rgb(67, 67, 197);
+	--foreground-rgb: rgba(200, 200, 200, 1);
+	--foreground-rgb-disabled: rgb(87, 87, 87);
+	--secondary-rgb: rgba(20, 20, 20, 1);
+	--secondary-rgb-hover: rgba(50, 50, 50, 1);
+	--button-rgb: rgba(40, 40, 40, 1);
+	--button-rgb-hover: rgba(255, 255, 255, 0.15);
+	--button-icon-rgb-active: rgba(0, 0, 0, 0.3);
+	--separator-rgb: rgb(65, 65, 65);
+	--border-rgb: rgb(99, 99, 99);
+	--select-rgb: rgba(150, 150, 150, 1);
+	--select-rgb-active: rgba(255, 255, 255, 1);
+	--background-rgb: rgba(40, 40, 40, 1);
+	--background-context-rgb: var(--background-menu-dropdown-rgb);
+	--background-context-rgb-hover: rgba(255, 255, 255, 0.15);
+	--background-menu-rgb: var(--secondary-rgb);
+	--background-menu-rgb-hover: rgba(255, 255, 255, 0.15);
+	--background-menu-dropdown-rgb: rgb(35, 35, 35);
+	--background-menu-dropdown-rgb-hover: rgba(255, 255, 255, 0.15);
+	--background-popup-rgb: var(--secondary-rgb);
+	--confirm-button: rgba(180, 0, 0, 1);
+	--confirm-button-hover: rgba(255, 0, 0, 1);
+	--cancel-button: var(--button-rgb);
+	--cancel-button-hover: var(--button-rgb-hover);
+	--close-button: var(--button-rgb);
+	--close-button-hover: var(--button-rgb-hover);
+	--tree-line-rgb: var(--foreground-rgb);
+	--scrollbar-rgb: var(--foreground-rgb);
+
+	--window-border: rgba(0, 0, 255, 1);
+	--element-border: rgba(255, 0, 0, 1);
+	--element-border-padding: rgba(0, 128, 0, 1);
+	--element-border-default-padding: rgba(128, 0, 128, 1);
+	--thumbstick-image: rgba(0, 255, 255, 1);
+	--thumbstick-image-opacity: 20%;
+	--pad-stick-overlay: rgba(128, 128, 128, 1);
+	--element-background-opacity: 15%;
+	--element-background-opacity-hover: 50%;
+	--element-description-rgb-emptyImage: rgba(255, 255, 255, 1);
+	--element-description-rgb: rgba(255, 255, 255, 1);
+}
+
+.root {
+	color: var(--foreground-rgb);
+	background: var(--separator-rgb);
+	scrollbar-width: thin;
+	position: fixed;
+	height: 100svh;
+}
+
+.root *::-webkit-scrollbar {
+	width: var(--scrollbar-width);
+	position: absolute;
+	display: block;
+	right: 0;
+	background: transparent;
+	overflow: overlay;
+}
+
+.root *:hover::-webkit-scrollbar-thumb {
+	width: var(--scrollbar-width);
+	background: var(--scrollbar-rgb);
+}
+
+.root *::-webkit-scrollbar-thumb {
+	width: var(--scrollbar-width);
+	background: transparent;
+}
+
+.root a:link,
+.root a:visited {
+	color: var(--link-rgb);
+}
+
+.root a:hover,
+.root a:active {
+	color: var(--link-rgb-hover);
+}
+
+@media screen and (max-width: 8in) {
+	.root {
+		--sidebar-width: 100svw;
+	}
+}
