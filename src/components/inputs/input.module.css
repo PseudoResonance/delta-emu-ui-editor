@@ -59,11 +59,11 @@
 	content: "";
 	top: 0.5em;
 	border: 6px solid transparent;
-	border-color: var(--border-rgb) transparent transparent transparent;
+	border-color: var(--foreground-rgb) transparent transparent transparent;
 }
 
 .dropdown.active::after {
-	border-color: transparent transparent var(--border-rgb) transparent;
+	border-color: transparent transparent var(--foreground-rgb) transparent;
 	top: 0;
 }
 
