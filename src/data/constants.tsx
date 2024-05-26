@@ -1,5 +1,5 @@
 export const NAME = "Delta Emulator UI Designer";
-export const DESCRIPTION = "Visual UI designer for Delta Emulator";
+export const DESCRIPTION = "Visual UI designer for Delta Emulator skins";
 export const SPONSOR_URLS: { name: string; url: string }[] = [
 	{ name: "GitHub", url: "https://github.com/sponsors/PseudoResonance" },
 	{ name: "Ko-fi", url: "https://ko-fi.com/pseudoresonance" },

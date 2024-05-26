@@ -1,6 +1,6 @@
 # Delta Emulator UI Designer
 
-This is a web-based editor/designer for [Delta](https://github.com/rileytestut/Delta) emulator, built with [Next.js](https://nextjs.org/). It is capable of directly loading/exporting .deltaskin files, as well as loading the info.json and assets separately which can be useful in developing and packaging a skin. Additionally, thank you to noah978 and others for documentation on the skin making process, available [here](https://noah978.gitbook.io/delta-docs/skins).
+This is a web-based editor/designer for [Delta](https://github.com/rileytestut/Delta) emulator skins, built with [Next.js](https://nextjs.org/). It is capable of directly loading/exporting .deltaskin files, as well as loading the info.json and assets separately which can be useful in developing and packaging a skin. Additionally, thank you to noah978 and others for documentation on the skin making process, available [here](https://noah978.gitbook.io/delta-docs/skins).
 
 An instance is available for use [here](https://pseudo.tokyo/deltaemu).
 
