@@ -41,6 +41,8 @@ export default function EmulatorElementComponent(args: {
 	duplicateThis: () => void;
 	deleteThis: () => void;
 	zIndex: number | null;
+	isEditing: boolean[];
+	setIsEditing: (val: boolean) => void;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const label = getElementLabel(args.elementData);
@@ -73,7 +75,10 @@ export default function EmulatorElementComponent(args: {
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
 	const moveHelper = (e: React.PointerEvent, inner: boolean) => {
-		if (e.pointerType !== "mouse" || e.button === 0) {
+		if (
+			!args.isEditing[0] &&
+			(e.pointerType !== "mouse" || e.button === 0)
+		) {
 			args.onClick();
 			e.preventDefault();
 			setIsActive(true);
@@ -90,93 +95,102 @@ export default function EmulatorElementComponent(args: {
 			let paddingLeft = -1;
 			let paddingRight = -1;
 			const moveHandler = (e: PointerEvent) => {
-				e.preventDefault();
-				if (!PADDING_EXPANDS_WITH_BOX_MOVE && inner) {
-					paddingTop =
-						paddingTopStart +
-						(e.clientY - yStartMouse) / args.scale;
-					paddingBottom =
-						paddingBottomStart -
-						(e.clientY - yStartMouse) / args.scale;
-					if (paddingTop < 0) {
-						paddingTop = 0;
-						paddingBottom = paddingBottomStart + paddingTopStart;
-					} else if (paddingBottom < 0) {
-						paddingBottom = 0;
-						paddingTop = paddingBottomStart + paddingTopStart;
+				if (!args.isEditing[0]) {
+					e.preventDefault();
+					if (!PADDING_EXPANDS_WITH_BOX_MOVE && inner) {
+						paddingTop =
+							paddingTopStart +
+							(e.clientY - yStartMouse) / args.scale;
+						paddingBottom =
+							paddingBottomStart -
+							(e.clientY - yStartMouse) / args.scale;
+						if (paddingTop < 0) {
+							paddingTop = 0;
+							paddingBottom =
+								paddingBottomStart + paddingTopStart;
+						} else if (paddingBottom < 0) {
+							paddingBottom = 0;
+							paddingTop = paddingBottomStart + paddingTopStart;
+						}
+						paddingLeft =
+							paddingLeftStart +
+							(e.clientX - xStartMouse) / args.scale;
+						paddingRight =
+							paddingRightStart -
+							(e.clientX - xStartMouse) / args.scale;
+						if (paddingLeft < 0) {
+							paddingLeft = 0;
+							paddingRight = paddingRightStart + paddingLeftStart;
+						} else if (paddingRight < 0) {
+							paddingRight = 0;
+							paddingLeft = paddingRightStart + paddingLeftStart;
+						}
 					}
-					paddingLeft =
-						paddingLeftStart +
-						(e.clientX - xStartMouse) / args.scale;
-					paddingRight =
-						paddingRightStart -
-						(e.clientX - xStartMouse) / args.scale;
-					if (paddingLeft < 0) {
-						paddingLeft = 0;
-						paddingRight = paddingRightStart + paddingLeftStart;
-					} else if (paddingRight < 0) {
-						paddingRight = 0;
-						paddingLeft = paddingRightStart + paddingLeftStart;
-					}
+					let newTop =
+						yStart + (e.clientY - yStartMouse) / args.scale;
+					newTop = Math.max(
+						newTop,
+						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+							? args.elementData.paddingTop
+							: 0,
+					);
+					newTop = Math.min(
+						newTop,
+						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+							? args.parentHeight -
+									(args.elementData.height +
+										args.elementData.paddingBottom)
+							: args.parentHeight - args.elementData.height,
+					);
+					let newLeft =
+						xStart + (e.clientX - xStartMouse) / args.scale;
+					newLeft = Math.max(
+						newLeft,
+						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+							? args.elementData.paddingLeft
+							: 0,
+					);
+					newLeft = Math.min(
+						newLeft,
+						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
+							? args.parentWidth -
+									(args.elementData.width +
+										args.elementData.paddingRight)
+							: args.parentWidth - args.elementData.width,
+					);
+					args.updateElement({
+						x: {
+							$set: Math.round(newLeft),
+						},
+						y: {
+							$set: Math.round(newTop),
+						},
+						...(paddingTop >= 0 && {
+							paddingTop: {
+								$set: Math.round(paddingTop),
+							},
+						}),
+						...(paddingBottom >= 0 && {
+							paddingBottom: {
+								$set: Math.round(paddingBottom),
+							},
+						}),
+						...(paddingLeft >= 0 && {
+							paddingLeft: {
+								$set: Math.round(paddingLeft),
+							},
+						}),
+						...(paddingRight >= 0 && {
+							paddingRight: {
+								$set: Math.round(paddingRight),
+							},
+						}),
+					});
+				} else {
+					document.removeEventListener("pointerup", stopHandler);
+					document.removeEventListener("pointermove", moveHandler);
+					setIsActive(false);
 				}
-				let newTop = yStart + (e.clientY - yStartMouse) / args.scale;
-				newTop = Math.max(
-					newTop,
-					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-						? args.elementData.paddingTop
-						: 0,
-				);
-				newTop = Math.min(
-					newTop,
-					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-						? args.parentHeight -
-								(args.elementData.height +
-									args.elementData.paddingBottom)
-						: args.parentHeight - args.elementData.height,
-				);
-				let newLeft = xStart + (e.clientX - xStartMouse) / args.scale;
-				newLeft = Math.max(
-					newLeft,
-					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-						? args.elementData.paddingLeft
-						: 0,
-				);
-				newLeft = Math.min(
-					newLeft,
-					PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-						? args.parentWidth -
-								(args.elementData.width +
-									args.elementData.paddingRight)
-						: args.parentWidth - args.elementData.width,
-				);
-				args.updateElement({
-					x: {
-						$set: Math.round(newLeft),
-					},
-					y: {
-						$set: Math.round(newTop),
-					},
-					...(paddingTop >= 0 && {
-						paddingTop: {
-							$set: Math.round(paddingTop),
-						},
-					}),
-					...(paddingBottom >= 0 && {
-						paddingBottom: {
-							$set: Math.round(paddingBottom),
-						},
-					}),
-					...(paddingLeft >= 0 && {
-						paddingLeft: {
-							$set: Math.round(paddingLeft),
-						},
-					}),
-					...(paddingRight >= 0 && {
-						paddingRight: {
-							$set: Math.round(paddingRight),
-						},
-					}),
-				});
 			};
 			const stopHandler = () => {
 				document.removeEventListener("pointerup", stopHandler);
@@ -194,7 +208,7 @@ export default function EmulatorElementComponent(args: {
 		xScale: number,
 		inner: boolean,
 	) => {
-		if (yScale != 0 || xScale != 0) {
+		if (!args.isEditing[0] && (yScale != 0 || xScale != 0)) {
 			if (e.pointerType !== "mouse" || e.button === 0) {
 				let padding = !inner;
 				if (e.shiftKey) padding = true;
@@ -224,173 +238,192 @@ export default function EmulatorElementComponent(args: {
 				const widthStart = args.elementData.width;
 				const heightStart = args.elementData.height;
 				const moveHandler = (e: PointerEvent) => {
-					e.preventDefault();
-					if (yScale != 0) {
-						const diffY =
-							((e.clientY - yStartMouse) / args.scale) * yScale;
-						if (yScale < 0) {
-							if (padding) {
-								if (paddingTopStart + diffY < 0) paddingTop = 0;
-								else if (paddingTopStart + diffY > yStart)
-									paddingTop = yStart;
-								else paddingTop = paddingTopStart + diffY;
-							} else {
-								if (yStart - diffY <= 0) {
-									y = 0;
-									height = heightStart + yStart;
-								} else if (heightStart + diffY <= 0) {
-									y = yStart + heightStart;
-									height = 0;
-								} else {
-									y = yStart - diffY;
-									height = heightStart + diffY;
-								}
-								if (paddingTopStart > 0) {
-									paddingTop =
-										paddingTopStart +
-										(heightStart - height);
-									if (paddingTop <= 0) {
+					if (!args.isEditing[0]) {
+						e.preventDefault();
+						if (yScale != 0) {
+							const diffY =
+								((e.clientY - yStartMouse) / args.scale) *
+								yScale;
+							if (yScale < 0) {
+								if (padding) {
+									if (paddingTopStart + diffY < 0)
 										paddingTop = 0;
+									else if (paddingTopStart + diffY > yStart)
+										paddingTop = yStart;
+									else paddingTop = paddingTopStart + diffY;
+								} else {
+									if (yStart - diffY <= 0) {
+										y = 0;
+										height = heightStart + yStart;
+									} else if (heightStart + diffY <= 0) {
+										y = yStart + heightStart;
+										height = 0;
+									} else {
+										y = yStart - diffY;
+										height = heightStart + diffY;
+									}
+									if (paddingTopStart > 0) {
+										paddingTop =
+											paddingTopStart +
+											(heightStart - height);
+										if (paddingTop <= 0) {
+											paddingTop = 0;
+										}
 									}
 								}
-							}
-						} else {
-							if (padding) {
-								if (paddingBottomStart + diffY < 0)
-									paddingBottom = 0;
-								else if (
-									paddingBottomStart + diffY >
-									args.parentHeight - yStart - heightStart
-								)
-									paddingBottom =
-										args.parentHeight -
-										yStart -
-										heightStart;
-								else paddingBottom = paddingBottomStart + diffY;
 							} else {
-								if (heightStart + diffY < 0) height = 0;
-								else if (
-									heightStart + diffY + yStart >=
-									args.parentHeight
-								) {
-									height = args.parentHeight - yStart;
-								} else {
-									height = heightStart + diffY;
-								}
-								if (paddingBottomStart > 0) {
-									paddingBottom =
-										paddingBottomStart +
-										(heightStart - height);
-									if (paddingBottom <= 0) {
+								if (padding) {
+									if (paddingBottomStart + diffY < 0)
 										paddingBottom = 0;
+									else if (
+										paddingBottomStart + diffY >
+										args.parentHeight - yStart - heightStart
+									)
+										paddingBottom =
+											args.parentHeight -
+											yStart -
+											heightStart;
+									else
+										paddingBottom =
+											paddingBottomStart + diffY;
+								} else {
+									if (heightStart + diffY < 0) height = 0;
+									else if (
+										heightStart + diffY + yStart >=
+										args.parentHeight
+									) {
+										height = args.parentHeight - yStart;
+									} else {
+										height = heightStart + diffY;
+									}
+									if (paddingBottomStart > 0) {
+										paddingBottom =
+											paddingBottomStart +
+											(heightStart - height);
+										if (paddingBottom <= 0) {
+											paddingBottom = 0;
+										}
 									}
 								}
 							}
 						}
-					}
-					if (xScale != 0) {
-						const diffX =
-							((e.clientX - xStartMouse) / args.scale) * xScale;
-						if (xScale < 0) {
-							if (padding) {
-								if (paddingLeftStart + diffX < 0)
-									paddingLeft = 0;
-								else if (paddingLeftStart + diffX > xStart)
-									paddingLeft = xStart;
-								else paddingLeft = paddingLeftStart + diffX;
-							} else {
-								if (xStart - diffX <= 0) {
-									x = 0;
-									width = widthStart + xStart;
-								} else if (widthStart + diffX <= 0) {
-									x = xStart + widthStart;
-									width = 0;
-								} else {
-									x = xStart - diffX;
-									width = widthStart + diffX;
-								}
-								if (paddingLeftStart > 0) {
-									paddingLeft =
-										paddingLeftStart + (widthStart - width);
-									if (paddingLeft <= 0) {
+						if (xScale != 0) {
+							const diffX =
+								((e.clientX - xStartMouse) / args.scale) *
+								xScale;
+							if (xScale < 0) {
+								if (padding) {
+									if (paddingLeftStart + diffX < 0)
 										paddingLeft = 0;
+									else if (paddingLeftStart + diffX > xStart)
+										paddingLeft = xStart;
+									else paddingLeft = paddingLeftStart + diffX;
+								} else {
+									if (xStart - diffX <= 0) {
+										x = 0;
+										width = widthStart + xStart;
+									} else if (widthStart + diffX <= 0) {
+										x = xStart + widthStart;
+										width = 0;
+									} else {
+										x = xStart - diffX;
+										width = widthStart + diffX;
+									}
+									if (paddingLeftStart > 0) {
+										paddingLeft =
+											paddingLeftStart +
+											(widthStart - width);
+										if (paddingLeft <= 0) {
+											paddingLeft = 0;
+										}
 									}
 								}
-							}
-						} else {
-							if (padding) {
-								if (paddingRightStart + diffX < 0)
-									paddingRight = 0;
-								else if (
-									paddingRightStart + diffX >
-									args.parentWidth - xStart - widthStart
-								)
-									paddingRight =
-										args.parentWidth - xStart - widthStart;
-								else paddingRight = paddingRightStart + diffX;
 							} else {
-								if (widthStart + diffX < 0) width = 0;
-								else if (
-									widthStart + diffX + xStart >=
-									args.parentWidth
-								) {
-									width = args.parentWidth - xStart;
-								} else {
-									width = widthStart + diffX;
-								}
-								if (paddingRightStart > 0) {
-									paddingRight =
-										paddingRightStart +
-										(widthStart - width);
-									if (paddingRight <= 0) {
+								if (padding) {
+									if (paddingRightStart + diffX < 0)
 										paddingRight = 0;
+									else if (
+										paddingRightStart + diffX >
+										args.parentWidth - xStart - widthStart
+									)
+										paddingRight =
+											args.parentWidth -
+											xStart -
+											widthStart;
+									else
+										paddingRight =
+											paddingRightStart + diffX;
+								} else {
+									if (widthStart + diffX < 0) width = 0;
+									else if (
+										widthStart + diffX + xStart >=
+										args.parentWidth
+									) {
+										width = args.parentWidth - xStart;
+									} else {
+										width = widthStart + diffX;
+									}
+									if (paddingRightStart > 0) {
+										paddingRight =
+											paddingRightStart +
+											(widthStart - width);
+										if (paddingRight <= 0) {
+											paddingRight = 0;
+										}
 									}
 								}
 							}
 						}
+						args.updateElement({
+							...(paddingTop >= 0 && {
+								paddingTop: {
+									$set: Math.round(paddingTop),
+								},
+							}),
+							...(paddingBottom >= 0 && {
+								paddingBottom: {
+									$set: Math.round(paddingBottom),
+								},
+							}),
+							...(paddingLeft >= 0 && {
+								paddingLeft: {
+									$set: Math.round(paddingLeft),
+								},
+							}),
+							...(paddingRight >= 0 && {
+								paddingRight: {
+									$set: Math.round(paddingRight),
+								},
+							}),
+							...(x >= 0 && {
+								x: {
+									$set: Math.round(x),
+								},
+							}),
+							...(y >= 0 && {
+								y: {
+									$set: Math.round(y),
+								},
+							}),
+							...(width >= 0 && {
+								width: {
+									$set: Math.round(width),
+								},
+							}),
+							...(height >= 0 && {
+								height: {
+									$set: Math.round(height),
+								},
+							}),
+						});
+					} else {
+						document.removeEventListener("pointerup", stopHandler);
+						document.removeEventListener(
+							"pointermove",
+							moveHandler,
+						);
+						setIsActive(false);
 					}
-					args.updateElement({
-						...(paddingTop >= 0 && {
-							paddingTop: {
-								$set: Math.round(paddingTop),
-							},
-						}),
-						...(paddingBottom >= 0 && {
-							paddingBottom: {
-								$set: Math.round(paddingBottom),
-							},
-						}),
-						...(paddingLeft >= 0 && {
-							paddingLeft: {
-								$set: Math.round(paddingLeft),
-							},
-						}),
-						...(paddingRight >= 0 && {
-							paddingRight: {
-								$set: Math.round(paddingRight),
-							},
-						}),
-						...(x >= 0 && {
-							x: {
-								$set: Math.round(x),
-							},
-						}),
-						...(y >= 0 && {
-							y: {
-								$set: Math.round(y),
-							},
-						}),
-						...(width >= 0 && {
-							width: {
-								$set: Math.round(width),
-							},
-						}),
-						...(height >= 0 && {
-							height: {
-								$set: Math.round(height),
-							},
-						}),
-					});
 				};
 				const stopHandler = () => {
 					document.removeEventListener("pointerup", stopHandler);

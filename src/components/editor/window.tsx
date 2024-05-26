@@ -37,6 +37,8 @@ export default function EmulatorWindow(args: {
 		onAccept?: () => void,
 	) => void;
 	showContextMenu: ContextMenu;
+	isEditing: boolean[];
+	setIsEditing: (val: boolean) => void;
 }) {
 	const targetAssetName = args.getCurrentBackgroundAssetName();
 	const bgAsset =
@@ -112,6 +114,7 @@ export default function EmulatorWindow(args: {
 						}}
 						elementData={val}
 						isBackground={bgUrl.length > 0}
+						isEditing={args.isEditing}
 						isHover={i === args.hoverIndex}
 						key={i}
 						onClick={() => {
@@ -124,6 +127,7 @@ export default function EmulatorWindow(args: {
 						scale={args.scale}
 						setAssets={args.setAssets}
 						setHoverIndex={args.setHoverIndex}
+						setIsEditing={args.setIsEditing}
 						showContextMenu={args.showContextMenu}
 						showPopup={args.showPopup}
 						updateElement={(data: Spec<EmulatorElement, never>) => {

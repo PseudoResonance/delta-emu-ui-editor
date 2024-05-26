@@ -1,5 +1,12 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+} from "react";
 import EmulatorWindow from "./window";
 import styles from "./editor.module.css";
 import {
@@ -41,10 +48,51 @@ export default function MainEditor(args: {
 	) => void;
 	showContextMenu: ContextMenu;
 }) {
+	const panZoom = useCallback(
+		(
+			bounds: DOMRect,
+			xPos: number,
+			yPos: number,
+			deltaZoom: number,
+			deltaX: number = 0,
+			deltaY: number = 0,
+		) => {
+			args.setScale((oldScale) => {
+				const newScale = Math.min(
+					Math.max(
+						oldScale.scale * (1 + deltaZoom),
+						CONSTANT.ZOOM_MIN,
+					),
+					CONSTANT.ZOOM_MAX,
+				);
+				const mouseX =
+					xPos - bounds.x - bounds.width / 2 - oldScale.xOffset;
+				const mouseY =
+					yPos - bounds.y - bounds.height / 2 - oldScale.yOffset;
+				return {
+					scale: newScale,
+					xOffset:
+						oldScale.xOffset -
+						mouseX * (newScale / oldScale.scale) +
+						mouseX +
+						deltaX,
+					yOffset:
+						oldScale.yOffset -
+						mouseY * (newScale / oldScale.scale) +
+						mouseY +
+						deltaY,
+				};
+			});
+		},
+		[],
+	);
+
 	const ref = useRef<HTMLDivElement>(null);
 	const focused = useRef<boolean>(false);
 
 	const pointerCache = useRef<PointerEvent[]>([]);
+
+	const editLock = useMemo(() => [false], []);
 
 	useEffect(() => {
 		const onScroll = (e: Event) => {
@@ -175,7 +223,7 @@ export default function MainEditor(args: {
 				if (ref.current) {
 					window.removeEventListener("keydown", onKeyDown);
 					window.removeEventListener("pointerdown", onPointerDown);
-					window.addEventListener("blur", onClear);
+					window.removeEventListener("blur", onClear);
 				}
 			};
 		}
@@ -185,9 +233,8 @@ export default function MainEditor(args: {
 		pointerCache.current.push(e.nativeEvent);
 		let moveHandler: ((e: PointerEvent) => void) | null = null;
 		const stopHandler: () => void = () => {
-			e.preventDefault();
-			e.stopPropagation();
 			if (pointerCache.current.length === 0) {
+				editLock[0] = false;
 				document.removeEventListener("pointerup", stopHandler, {
 					capture: true,
 				});
@@ -198,12 +245,13 @@ export default function MainEditor(args: {
 			}
 		};
 		if (
-			(pointerCache.current.length === 1 &&
-				e.ctrlKey &&
-				(e.pointerType !== "mouse" || e.button === 0)) ||
-			(e.button === 1 && e.pointerType === "mouse") ||
-			(e.pointerType === "pen" && e.pressure === 0)
+			!editLock[0] &&
+			pointerCache.current.length === 1 &&
+			((e.ctrlKey && (e.pointerType !== "mouse" || e.button === 0)) ||
+				(e.button === 1 && e.pointerType === "mouse") ||
+				(e.pointerType === "pen" && e.pressure === 0))
 		) {
+			editLock[0] = true;
 			e.preventDefault();
 			e.stopPropagation();
 			const xStartMouse = e.clientX;
@@ -212,6 +260,7 @@ export default function MainEditor(args: {
 			const yStart = args.scale.yOffset;
 			moveHandler = (e: PointerEvent) => {
 				if (pointerCache.current.length === 0) {
+					editLock[0] = false;
 					document.removeEventListener("pointerup", stopHandler, {
 						capture: true,
 					});
@@ -230,7 +279,6 @@ export default function MainEditor(args: {
 				);
 				pointerCache.current[i] = e;
 				e.preventDefault();
-				e.stopPropagation();
 				const newY = yStart + (e.clientY - yStartMouse);
 				const newX = xStart + (e.clientX - xStartMouse);
 				args.setScale({
@@ -240,16 +288,20 @@ export default function MainEditor(args: {
 				});
 			};
 		} else if (
+			!editLock[0] &&
 			pointerCache.current.length >= 2 &&
 			e.pointerType === "touch"
 		) {
 			e.preventDefault();
-			e.stopPropagation();
-			let prevPointerDistance = -1;
+			let prevPointerDistance: number | null = null;
 			let previousX: number | null = null;
 			let previousY: number | null = null;
 			moveHandler = (e: PointerEvent) => {
-				if (pointerCache.current.length === 0) {
+				if (
+					pointerCache.current.length === 0 ||
+					pointerCache.current.length > 2
+				) {
+					editLock[0] = false;
 					document.removeEventListener("pointerup", stopHandler, {
 						capture: true,
 					});
@@ -268,70 +320,43 @@ export default function MainEditor(args: {
 				);
 				pointerCache.current[i] = e;
 				e.preventDefault();
-				e.stopPropagation();
 				if (pointerCache.current.length === 2) {
+					editLock[0] = true;
 					const pointerDistance = Math.sqrt(
-						(pointerCache.current[0].clientX -
-							pointerCache.current[1].clientX) **
+						(pointerCache.current[0].screenX -
+							pointerCache.current[1].screenX) **
 							2 +
-							(pointerCache.current[0].clientY -
-								pointerCache.current[1].clientY) **
+							(pointerCache.current[0].screenY -
+								pointerCache.current[1].screenY) **
 								2,
 					);
-					if (prevPointerDistance > 0 && ref.current) {
-						const delta = pointerDistance - prevPointerDistance;
-						const mouseX =
-							(pointerCache.current[0].clientX +
-								pointerCache.current[1].clientX) /
-							2;
-						const mouseY =
-							(pointerCache.current[0].clientY +
-								pointerCache.current[1].clientY) /
-							2;
-						let xDiff = 0;
-						let yDiff = 0;
-						if (previousX !== null && previousY !== null) {
-							xDiff = mouseX - previousX;
-							yDiff = mouseY - previousY;
-						}
-						previousX = mouseX;
-						previousY = mouseY;
-						const bounds = ref.current.getBoundingClientRect();
-						const zoomX =
-							mouseX -
-							bounds.x -
-							bounds.width / 2 -
-							args.scale.xOffset;
-						const zoomY =
-							mouseY -
-							bounds.y -
-							bounds.height / 2 -
-							args.scale.yOffset;
-						args.setScale((oldScale) => {
-							const newScale = Math.min(
-								Math.max(
-									oldScale.scale *
-										(1 + delta * TOUCH_ZOOM_SCALE),
-									CONSTANT.ZOOM_MIN,
-								),
-								CONSTANT.ZOOM_MAX,
-							);
-							return {
-								scale: newScale,
-								xOffset:
-									oldScale.xOffset -
-									zoomX * (newScale / oldScale.scale) +
-									zoomX +
-									xDiff,
-								yOffset:
-									oldScale.yOffset -
-									zoomY * (newScale / oldScale.scale) +
-									zoomY +
-									yDiff,
-							};
-						});
+					const clientX =
+						(pointerCache.current[0].clientX +
+							pointerCache.current[1].clientX) /
+						2;
+					const clientY =
+						(pointerCache.current[0].clientY +
+							pointerCache.current[1].clientY) /
+						2;
+					if (
+						prevPointerDistance !== null &&
+						previousX !== null &&
+						previousY !== null &&
+						ref.current
+					) {
+						panZoom(
+							ref.current.getBoundingClientRect(),
+							clientX,
+							clientY,
+							(pointerDistance - prevPointerDistance) *
+								TOUCH_ZOOM_SCALE,
+							clientX - previousX,
+							clientY - previousY,
+						);
 					}
 					prevPointerDistance = pointerDistance;
+					previousX = clientX;
+					previousY = clientY;
 				} else {
 					prevPointerDistance = -1;
 				}
@@ -440,44 +465,12 @@ export default function MainEditor(args: {
 			onPointerUpCapture={pointerUp}
 			onWheel={(e) => {
 				if (ref.current && args.layoutData) {
-					let newScale = 0;
-					const delta = Math.sign(e.deltaY);
-					if (delta > 0) {
-						newScale = Math.max(
-							args.scale.scale / 1.05,
-							CONSTANT.ZOOM_MIN,
-						);
-					} else if (delta < 0) {
-						newScale = Math.min(
-							args.scale.scale * 1.05,
-							CONSTANT.ZOOM_MAX,
-						);
-					}
-
-					const bounds = ref.current.getBoundingClientRect();
-					const mouseX =
-						e.clientX -
-						bounds.x -
-						bounds.width / 2 -
-						args.scale.xOffset;
-					const mouseY =
-						e.clientY -
-						bounds.y -
-						bounds.height / 2 -
-						args.scale.yOffset;
-					args.setScale((oldScale) => {
-						return {
-							scale: newScale,
-							xOffset:
-								oldScale.xOffset -
-								mouseX * (newScale / oldScale.scale) +
-								mouseX,
-							yOffset:
-								oldScale.yOffset -
-								mouseY * (newScale / oldScale.scale) +
-								mouseY,
-						};
-					});
+					panZoom(
+						ref.current.getBoundingClientRect(),
+						e.clientX,
+						e.clientY,
+						-Math.sign(e.deltaY) * 0.05,
+					);
 				}
 			}}
 			ref={ref}
@@ -495,12 +488,16 @@ export default function MainEditor(args: {
 					}
 					height={args.layoutData.canvas.height}
 					hoverIndex={args.hoverIndex}
+					isEditing={editLock}
 					pressedKeys={args.pressedKeys}
 					removeElement={args.removeElement}
 					scale={args.scale.scale}
 					setAssets={args.setAssets}
 					setEditingElement={args.setEditingElement}
 					setHoverIndex={args.setHoverIndex}
+					setIsEditing={(val: boolean) => {
+						editLock[0] = val;
+					}}
 					showContextMenu={args.showContextMenu}
 					showPopup={args.showPopup}
 					style={{
