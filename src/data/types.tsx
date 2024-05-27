@@ -1,5 +1,29 @@
 import * as ContextMenu from "@/components/contextMenu";
 
+/* Mutability helpers */
+type ImmutableObject<T> = {
+	readonly [K in keyof T]: Immutable<T[K]>;
+};
+
+export type Immutable<T> = {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	readonly [K in keyof T]: T[K] extends Function
+		? T[K]
+		: ImmutableObject<T[K]>;
+};
+
+type MutableObject<T> = {
+	-readonly [K in keyof T]: Mutable<T[K]>;
+};
+
+export type Mutable<T> = {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	-readonly [K in keyof T]: T[K] extends Function
+		? T[K]
+		: MutableObject<T[K]>;
+};
+
+/* Element data */
 export enum EmulatorElementType {
 	Thumbstick = "Thumbstick",
 	Dpad = "Dpad",
@@ -93,11 +117,22 @@ export type EmulatorElement = EmulatorElementDefault &
 	EmulatorElementDpad &
 	EmulatorElementThumbstick;
 
+/* Skin assets */
 export enum AssetType {
 	PDF = "PDF",
 	PNG = "PNG",
 }
 
+export interface Asset {
+	readonly file: File;
+	readonly type: AssetType | null;
+	readonly url: string | null;
+	readonly width: number;
+	readonly height: number;
+	readonly attemptLoad?: boolean;
+}
+
+/* Emulator general skin and layout data */
 export interface EmulatorLayout {
 	readonly lockBackgroundRatio: boolean;
 	readonly assets: {
@@ -136,43 +171,33 @@ export interface InfoFile {
 	>;
 }
 
-export interface Asset {
-	readonly file: File;
-	type: AssetType | null;
-	url: string | null;
-	width: number;
-	height: number;
-	attemptLoad?: boolean;
-}
-
+/* History entry */
 export interface HistoryEvent {
 	readonly infoFile: InfoFile;
 	readonly currentRepresentation: string;
 	readonly focusState: FocusState;
 }
 
-type ImmutableObject<T> = {
-	readonly [K in keyof T]: Immutable<T[K]>;
-};
+/* Editor pan/zoom state */
+export interface ScaleData {
+	scale: number;
+	xOffset: number;
+	yOffset: number;
+}
 
-export type Immutable<T> = {
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	readonly [K in keyof T]: T[K] extends Function
-		? T[K]
-		: ImmutableObject<T[K]>;
-};
+/* Editor focus for copy/paste and z-index reordering */
+export enum FocusTarget {
+	ELEMENT = "ELEMENT",
+	REPRESENTATION = "REPRESENTATION",
+}
 
-type MutableObject<T> = {
-	-readonly [K in keyof T]: Mutable<T[K]>;
-};
+export interface FocusState {
+	target: FocusTarget | null;
+	elements: number[];
+	representation: string;
+}
 
-export type Mutable<T> = {
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	-readonly [K in keyof T]: T[K] extends Function
-		? T[K]
-		: MutableObject<T[K]>;
-};
-
+/* Boilerplate types */
 export type ShowPopupFunc = (
 	popup: React.JSX.Element,
 	onClose: () => void,
@@ -184,20 +209,3 @@ export type ShowContextMenuFunc = (
 	x: number,
 	y: number,
 ) => void;
-
-export interface ScaleData {
-	scale: number;
-	xOffset: number;
-	yOffset: number;
-}
-
-export enum FocusTarget {
-	ELEMENT = "ELEMENT",
-	REPRESENTATION = "REPRESENTATION",
-}
-
-export interface FocusState {
-	target: FocusTarget | null;
-	elements: number[];
-	representation: string;
-}

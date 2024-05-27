@@ -1,4 +1,4 @@
-import { Asset, AssetType } from "@/data/types";
+import { Asset, AssetType, Mutable } from "@/data/types";
 import convertPdfToImage from "@/utils/pdf/pdfToImg";
 import { Dispatch, SetStateAction } from "react";
 
@@ -50,14 +50,14 @@ export const loadAsset = async (asset: Asset, tryCallback: () => void) => {
 	try {
 		if (asset.url) return false;
 		const data = await readImage(asset.file);
-		asset.type = data.type;
-		asset.url = data.url;
-		asset.width = data.width;
-		asset.height = data.height;
+		(asset as Mutable<Asset>).type = data.type;
+		(asset as Mutable<Asset>).url = data.url;
+		(asset as Mutable<Asset>).width = data.width;
+		(asset as Mutable<Asset>).height = data.height;
 		return true;
 	} catch (e) {
 		console.error("Unable to load asset!", e);
-		asset.type = null;
+		(asset as Mutable<Asset>).type = null;
 		return false;
 	}
 };
@@ -79,7 +79,8 @@ export const loadAssetHelper = (
 						oldAssets[fileName] === assets[fileName]
 					) {
 						const newAssets = Object.assign({}, oldAssets);
-						newAssets[fileName].attemptLoad = true;
+						(newAssets[fileName] as Mutable<Asset>).attemptLoad =
+							true;
 						return newAssets;
 					}
 					return oldAssets;
