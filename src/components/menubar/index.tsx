@@ -11,9 +11,7 @@ import React, {
 	useState,
 } from "react";
 import MenuButton from "./menubutton";
-import writeZip from "@/utils/zip/zipWrite";
 import { Asset, InfoFile, ScaleData, ShowPopupFunc } from "@/data/types";
-import zipRead from "@/utils/zip/zipRead";
 import AboutInfo from "../commonPopups/aboutinfo";
 import JSONParseError from "../commonPopups/jsonparseerror";
 import ControlsInfo from "../commonPopups/controlsinfo";
@@ -36,6 +34,8 @@ export default function MenuBar(args: {
 		SetStateAction<{ left: boolean; right: boolean }>
 	>;
 	showPreferences: () => void;
+	loadDeltaskin: (file: File) => void;
+	saveDeltaskin: () => void;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const ref = useRef<HTMLDivElement>(null);
@@ -126,67 +126,7 @@ export default function MenuBar(args: {
 									e.target.files &&
 									e.target.files.length > 0
 								) {
-									zipRead(e.target.files[0])
-										.then((tree) => {
-											if ("info.json" in tree) {
-												tree["info.json"].file
-													.text()
-													.then((val: string) => {
-														try {
-															const readJson =
-																JSON.parse(val);
-															args.parseJSON(
-																readJson,
-															);
-															args.setAssets(
-																tree,
-															);
-														} catch (e) {
-															console.error(
-																"Error parsing imported JSON!",
-																e,
-															);
-															args.showPopup(
-																<JSONParseError />,
-																() => {},
-															);
-														}
-													});
-											} else {
-												console.error(
-													"Skin file missing info.json!",
-													e,
-												);
-												args.showPopup(
-													<>
-														<h1>Error</h1>
-
-														<p>
-															Skin file is missing
-															info.json!
-														</p>
-													</>,
-													() => {},
-												);
-											}
-										})
-										.catch((e) => {
-											console.error(
-												"Error reading skin file!",
-												e,
-											);
-											args.showPopup(
-												<>
-													<h1>Error</h1>
-
-													<p>
-														Unable to read skin
-														file!
-													</p>
-												</>,
-												() => {},
-											);
-										});
+									args.loadDeltaskin(e.target.files[0]);
 								}
 							}) as unknown as (
 								this: GlobalEventHandlers,
@@ -202,48 +142,7 @@ export default function MenuBar(args: {
 						label="Save Deltaskin"
 						onClick={() => {
 							setIsActive(false);
-							const exportObj = args.saveJSON();
-							const file = new File(
-								[
-									new Blob([exportObj.json], {
-										type: "application/json",
-									}),
-								],
-								"info.json",
-							);
-							const tree = args.getReferencedAssets(
-								exportObj.infoFile,
-							);
-							tree["info.json"] = {
-								file: file,
-								type: null,
-								url: null,
-								width: -1,
-								height: -1,
-							};
-							writeZip(tree)
-								.then((url) => {
-									const elem = document.createElement("a");
-									elem.href = url;
-									elem.download = "skin.deltaskin";
-									document.body.appendChild(elem);
-									elem.click();
-									document.body.removeChild(elem);
-								})
-								.catch((e) => {
-									console.error(
-										"Error exporting skin file!",
-										e,
-									);
-									args.showPopup(
-										<>
-											<h1>Error</h1>
-
-											<p>Unable to export skin file!</p>
-										</>,
-										() => {},
-									);
-								});
+							args.saveDeltaskin();
 						}}
 					/>
 					<MenuButton

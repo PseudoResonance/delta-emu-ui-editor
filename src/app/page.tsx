@@ -37,6 +37,8 @@ import ElementValueWindow from "@/components/windows/elementValueWindow";
 import JSONParseError from "@/components/commonPopups/jsonparseerror";
 import * as Preferences from "@/preferences/preferences";
 import PreferencesWindow from "@/components/windows/preferences";
+import zipRead from "@/utils/zip/zipRead";
+import writeZip from "@/utils/zip/zipWrite";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -76,6 +78,7 @@ const defaultRepresentation: Representation = {
 };
 
 const defaultInfoFile: InfoFile = {
+	hiddenLoadedFileName: "",
 	name: "",
 	identifier: "",
 	gameTypeIdentifier: "",
@@ -329,6 +332,104 @@ export default function Home() {
 		);
 	};
 
+	const loadDeltaskin: (file: File) => void = useCallback((file: File) => {
+		zipRead(file)
+			.then((tree) => {
+				if ("info.json" in tree) {
+					tree["info.json"].file.text().then((val: string) => {
+						try {
+							const readJson = JSON.parse(val);
+							parseJSON(readJson, file.name);
+							setAssets(tree);
+						} catch (e) {
+							console.error("Error parsing imported JSON!", e);
+							showPopup(<JSONParseError />, () => {});
+						}
+					});
+				} else {
+					console.error("Skin file missing info.json!");
+					showPopup(
+						<>
+							<h1>Error</h1>
+
+							<p>Skin file is missing info.json!</p>
+						</>,
+						() => {},
+					);
+				}
+			})
+			.catch((e) => {
+				console.error("Error reading skin file!", e);
+				showPopup(
+					<>
+						<h1>Error</h1>
+
+						<p>Unable to read skin file!</p>
+					</>,
+					() => {},
+				);
+			});
+	}, []);
+
+	const saveDeltaskin: () => void = useCallback(() => {
+		const exportObj = saveJSON();
+		const file = new File(
+			[
+				new Blob([exportObj.json], {
+					type: "application/json",
+				}),
+			],
+			"info.json",
+		);
+		const tree = getReferencedAssets(exportObj.infoFile);
+		tree["info.json"] = {
+			file: file,
+			type: null,
+			url: null,
+			width: -1,
+			height: -1,
+		};
+		const name = exportObj.infoFile.hiddenLoadedFileName
+			? exportObj.infoFile.hiddenLoadedFileName
+			: (exportObj.infoFile.name.trim().length > 0
+					? exportObj.infoFile.name
+					: "skin") + ".deltaskin";
+		writeZip(tree)
+			.then((url) => {
+				const elem = document.createElement("a");
+				elem.href = url;
+				elem.download = name;
+				document.body.appendChild(elem);
+				elem.click();
+				document.body.removeChild(elem);
+			})
+			.catch((e) => {
+				console.error("Error exporting skin file!", e);
+				showPopup(
+					<>
+						<h1>Error</h1>
+
+						<p>Unable to export skin file!</p>
+					</>,
+					() => {},
+				);
+			});
+	}, [infoFile]);
+
+	useEffect(() => {
+		/* Additional save listener */
+		const keyDown = (e: KeyboardEvent) => {
+			if (e.ctrlKey && e.code === "KeyS") {
+				saveDeltaskin();
+				e.preventDefault();
+			}
+		};
+		window.addEventListener("keydown", keyDown);
+		return () => {
+			window.removeEventListener("keydown", keyDown);
+		};
+	}, [saveDeltaskin]);
+
 	useEffect(() => {
 		const keyDown = (e: KeyboardEvent) => {
 			if (pressedKeys.indexOf(e.code) === -1) {
@@ -341,6 +442,7 @@ export default function Home() {
 				: "";
 			if (!(nodeType === "input" || nodeType === "textarea")) {
 				if (e.ctrlKey) {
+					/* Global keybind listener */
 					if (
 						(e.code === "KeyZ" && !e.shiftKey) ||
 						(e.code === "KeyY" && e.shiftKey)
@@ -740,13 +842,11 @@ export default function Home() {
 
 	const saveJSON: () => { json: string; infoFile: InfoFile } = () => {
 		const exportObj: InfoFile = {
-			name: "name" in infoFile ? infoFile.name : "",
-			identifier: "identifier" in infoFile ? infoFile.identifier : "",
-			gameTypeIdentifier:
-				"gameTypeIdentifier" in infoFile
-					? infoFile.gameTypeIdentifier
-					: "",
-			debug: "debug" in infoFile ? infoFile.debug : false,
+			hiddenLoadedFileName: infoFile.hiddenLoadedFileName,
+			name: infoFile.name,
+			identifier: infoFile.identifier,
+			gameTypeIdentifier: infoFile.gameTypeIdentifier,
+			debug: infoFile.debug,
 			representations: {},
 		};
 		if ("representations" in infoFile) {
@@ -943,9 +1043,10 @@ export default function Home() {
 		return exportObj;
 	};
 
-	const parseJSON = (json: Record<string, unknown>) => {
+	const parseJSON = (json: Record<string, unknown>, fileName?: string) => {
 		try {
 			const newInfoFile: InfoFile = {
+				hiddenLoadedFileName: fileName ? fileName : "",
 				name: "name" in json ? (json.name as string) : "",
 				identifier:
 					"identifier" in json ? (json.identifier as string) : "",
@@ -1558,12 +1659,14 @@ export default function Home() {
 					}
 					clearUI={newProject}
 					getReferencedAssets={getReferencedAssets}
+					loadDeltaskin={loadDeltaskin}
 					parseJSON={parseJSON}
 					redo={() => {
 						if (historyInfo.currentState < history.length) {
 							revertHistory(historyInfo.currentState + 1);
 						}
 					}}
+					saveDeltaskin={saveDeltaskin}
 					saveJSON={saveJSON}
 					setAssets={setAssets}
 					setScale={setScale}

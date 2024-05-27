@@ -161,6 +161,7 @@ export interface Representation {
 }
 
 export interface InfoFile {
+	readonly hiddenLoadedFileName: string;
 	readonly name: string;
 	readonly identifier: string;
 	readonly gameTypeIdentifier: string;

@@ -16,13 +16,13 @@ export default function AboutInfo() {
 					PseudoResonance
 				</a>
 				<br />
-				Source code available at{" "}
+				Source code{" "}
 				<a
 					href="https://github.com/PseudoResonance/delta-emu-ui-editor"
 					rel="noreferrer noopener"
 					target="_blank"
 				>
-					GitHub
+					available at GitHub
 				</a>
 				<br />
 				PDF importing with{" "}

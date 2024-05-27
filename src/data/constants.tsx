@@ -5,6 +5,7 @@ export const SPONSOR_URLS: { name: string; url: string }[] = [
 	{ name: "Ko-fi", url: "https://ko-fi.com/pseudoresonance" },
 ];
 export const CONTROLS: Record<string, string[][]> = {
+	Save: [["Ctrl", "S"]],
 	Copy: [["Ctrl", "C"]],
 	Paste: [["Ctrl", "V"]],
 	Undo: [
