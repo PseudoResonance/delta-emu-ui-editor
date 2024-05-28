@@ -17,35 +17,41 @@ export default function Popup(args: {
 					: []}
 			</div>
 
-			<div className={styles.buttons}>
-				<button
-					className={`${styles.button} ${
-						typeof args.onAccept === "function"
-							? styles.cancel
-							: styles.close
-					}`}
-					onClick={() => {
-						args.onClose();
-						args.removeSelf();
-					}}
-				>
-					{typeof args.onAccept === "function" ? "Cancel" : "Close"}
-				</button>
-
-				{typeof args.onAccept === "function" ? (
+			<menu className={styles.buttons}>
+				<li>
 					<button
-						className={`${styles.button} ${styles.confirm}`}
+						className={`${styles.button} ${
+							typeof args.onAccept === "function"
+								? styles.cancel
+								: styles.close
+						}`}
 						onClick={() => {
-							if (args.onAccept) args.onAccept();
+							args.onClose();
 							args.removeSelf();
 						}}
 					>
-						Confirm
+						{typeof args.onAccept === "function"
+							? "Cancel"
+							: "Close"}
 					</button>
+				</li>
+
+				{typeof args.onAccept === "function" ? (
+					<li>
+						<button
+							className={`${styles.button} ${styles.confirm}`}
+							onClick={() => {
+								if (args.onAccept) args.onAccept();
+								args.removeSelf();
+							}}
+						>
+							Confirm
+						</button>
+					</li>
 				) : (
 					<></>
 				)}
-			</div>
+			</menu>
 		</div>
 	);
 }

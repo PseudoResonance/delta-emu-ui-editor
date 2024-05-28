@@ -20,6 +20,11 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				<noscript>
+					JavaScript must be enabled to run {CONSTANT.NAME}
+				</noscript>
+			</head>
 			<body className={`${inter.className} ${styles.body}`}>
 				<NoSSR>{children}</NoSSR>
 			</body>
