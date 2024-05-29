@@ -353,7 +353,9 @@ export default function VisualEditor(args: {
 					previousX = clientX;
 					previousY = clientY;
 				} else {
-					prevPointerDistance = -1;
+					prevPointerDistance = null;
+					previousX = null;
+					previousY = null;
 				}
 			};
 		}
