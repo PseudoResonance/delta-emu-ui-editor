@@ -2,7 +2,7 @@ import { Asset, AssetType, Mutable } from "@/data/types";
 import convertPdfToImage from "@/utils/pdf/pdfToImg";
 import { Dispatch, SetStateAction } from "react";
 
-export const readImage = (file: File) => {
+const readImage = (file: File) => {
 	return new Promise<{
 		type: AssetType;
 		url: string;
@@ -42,11 +42,7 @@ export const readImage = (file: File) => {
 	});
 };
 
-export const loadAsset = async (asset: Asset, tryCallback: () => void) => {
-	if (asset.attemptLoad) {
-		return false;
-	}
-	tryCallback();
+const loadAsset = async (asset: Asset) => {
 	try {
 		if (asset.url) return false;
 		const data = await readImage(asset.file);
@@ -67,26 +63,9 @@ export const loadAssetHelper = (
 	assets: Record<string, Asset> | null,
 	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>,
 ) => {
-	if (assets && fileName in assets) {
-		loadAsset(assets[fileName], () => {
-			if (assets && fileName in assets) {
-				setAssets((oldAssets) => {
-					if (
-						oldAssets &&
-						assets &&
-						fileName in oldAssets &&
-						fileName in assets &&
-						oldAssets[fileName] === assets[fileName]
-					) {
-						const newAssets = Object.assign({}, oldAssets);
-						(newAssets[fileName] as Mutable<Asset>).attemptLoad =
-							true;
-						return newAssets;
-					}
-					return oldAssets;
-				});
-			}
-		}).then((res) => {
+	if (assets && fileName in assets && !assets[fileName].attemptLoad) {
+		(assets[fileName] as Mutable<Asset>).attemptLoad = true;
+		loadAsset(assets[fileName]).then((res) => {
 			if (res) {
 				setAssets((oldAssets) => Object.assign({}, oldAssets));
 			}

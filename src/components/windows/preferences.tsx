@@ -1,38 +1,21 @@
 "use client";
 
 import * as Preferences from "@/preferences/preferences";
-import DropdownInput from "../inputs/dropdowninput";
-import update, { Spec } from "immutability-helper";
-import { useState } from "react";
+import { Spec } from "immutability-helper";
+import DropdownInput from "../inputs/dropdown";
 
 export default function PreferencesWindow(args: {
 	preferences: Preferences.State;
 	setPreferences: (update: Spec<Preferences.State, never>) => void;
 }) {
-	const [prefs, setPrefs] = useState<Preferences.State>(args.preferences);
-
-	const updatePrefs: (stateUpdate: Spec<Preferences.State, never>) => void = (
-		stateUpdate: Spec<Preferences.State, never>,
-	) => {
-		setPrefs((state: Preferences.State) => update(state, stateUpdate));
-		args.setPreferences((state: Preferences.State) =>
-			update(state, stateUpdate),
-		);
-	};
 	return (
-		<div
-			style={{
-				minWidth: "40svw",
-				minHeight: "40svh",
-			}}
-		>
+		<div>
 			<h2>Preferences</h2>
 			<hr />
 			<DropdownInput
-				elementIndex={0}
 				label="Theme"
 				onChange={(val: string) => {
-					updatePrefs({
+					args.setPreferences({
 						theme: {
 							$set: Preferences.Theme[
 								val as keyof typeof Preferences.Theme
@@ -40,7 +23,7 @@ export default function PreferencesWindow(args: {
 						},
 					});
 				}}
-				value={prefs.theme}
+				value={args.preferences.theme}
 				values={
 					{
 						[Preferences.Theme.DEFAULT]: "Default",
@@ -50,10 +33,9 @@ export default function PreferencesWindow(args: {
 				}
 			/>
 			<DropdownInput
-				elementIndex={0}
 				label="Color Scheme"
 				onChange={(val: string) => {
-					updatePrefs({
+					args.setPreferences({
 						colorScheme: {
 							$set: Preferences.ColorScheme[
 								val as keyof typeof Preferences.ColorScheme
@@ -61,7 +43,7 @@ export default function PreferencesWindow(args: {
 						},
 					});
 				}}
-				value={prefs.colorScheme}
+				value={args.preferences.colorScheme}
 				values={
 					{
 						[Preferences.ColorScheme.DEFAULT]: "Default",

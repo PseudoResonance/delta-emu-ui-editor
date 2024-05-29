@@ -4,7 +4,7 @@ import icons from "@/utils/icons.module.css";
 import ValueInput from "../inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
 import Button from "../inputs/button";
-import DropdownInput from "../inputs/dropdowninput";
+import DropdownInput from "../inputs/dropdown";
 import FileInput from "../inputs/fileinput";
 import {
 	Asset,
@@ -570,7 +570,6 @@ export default function ElementValues(args: {
 	return (
 		<div>
 			<DropdownInput
-				elementIndex={args.elementIndex}
 				label="Type"
 				onChange={(val: string) => {
 					args.updateElement({

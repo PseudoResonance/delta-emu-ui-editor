@@ -39,6 +39,8 @@ import * as Preferences from "@/preferences/preferences";
 import PreferencesWindow from "@/components/windows/preferences";
 import zipRead from "@/utils/zip/zipRead";
 import writeZip from "@/utils/zip/zipWrite";
+import CenteredElement from "@/components/centeredElement";
+import Popup from "@/components/popup/popup";
 
 const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
@@ -139,6 +141,8 @@ export default function Home() {
 		left: true,
 		right: true,
 	});
+	const [preferencesVisible, setPreferencesVisible] =
+		useState<boolean>(false);
 	const [preferences, setPreferences] = useState<Preferences.State>(
 		Preferences.load(),
 	);
@@ -1632,22 +1636,16 @@ export default function Home() {
 		return ret.join(" ");
 	}, [preferences]);
 
-	const showPreferences = () => {
-		showPopup(
-			<PreferencesWindow
-				preferences={preferences}
-				setPreferences={updatePreferences}
-			/>,
-			() => {},
-		);
-	};
+	const showPreferences = useCallback(() => {
+		setPreferencesVisible(true);
+	}, []);
 
 	return (
 		<div className={`${themes.root} ${extraClasses}`}>
 			<main
 				className={styles.main}
 				inert={
-					popups.length > 0 || contextMenu.data
+					popups.length > 0 || contextMenu.data || preferencesVisible
 						? ("" as unknown as boolean)
 						: undefined
 				}
@@ -1789,6 +1787,19 @@ export default function Home() {
 			</main>
 
 			<div className={styles.overlay}>
+				{preferencesVisible && (
+					<CenteredElement>
+						<Popup
+							onClose={() => {}}
+							removeSelf={() => setPreferencesVisible(false)}
+						>
+							<PreferencesWindow
+								preferences={preferences}
+								setPreferences={updatePreferences}
+							/>
+						</Popup>
+					</CenteredElement>
+				)}
 				<PopupWrapper elements={popups} setPopups={setPopups} />
 
 				<ContextMenu.Wrapper

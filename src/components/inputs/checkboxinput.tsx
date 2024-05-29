@@ -2,14 +2,14 @@
 import styles from "./input.module.css";
 import icons from "@/utils/icons.module.css";
 import checkboxStyles from "./checkbox.module.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export default function CheckboxInput(args: {
 	label: string;
 	value: boolean;
 	onChange: (val: boolean) => void;
 }) {
-	const id = (Math.random() + 1).toString(36).substring(2);
+	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const [state, setState] = useState<boolean>(false);
 	const onChange = () => {
 		const val = !state;

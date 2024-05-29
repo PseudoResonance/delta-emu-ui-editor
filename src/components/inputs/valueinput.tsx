@@ -1,6 +1,6 @@
 "use client";
 import styles from "./input.module.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ChangeEvent, KeyboardEvent, WheelEvent, useRef } from "react";
 
 const editorKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight"];
@@ -39,7 +39,7 @@ export default function ValueInput(args: {
 	debounce?: number;
 	suggestionsId?: string;
 }) {
-	const id = (Math.random() + 1).toString(36).substring(2);
+	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const wheelLock = useRef<unknown>(null);
 	const value = useRef<string>("");
 	const debounceTimeout: NodeJS.Timeout[] = [];

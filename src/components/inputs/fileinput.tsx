@@ -1,6 +1,6 @@
 "use client";
 import styles from "./input.module.css";
-import React from "react";
+import React, { useMemo } from "react";
 import { ChangeEvent, useRef } from "react";
 
 export default function FileInput(args: {
@@ -9,7 +9,7 @@ export default function FileInput(args: {
 	onChange: (val: File) => void;
 }) {
 	const ref = useRef<HTMLInputElement>(null);
-	const id = (Math.random() + 1).toString(36).substring(2);
+	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
 			args.onChange(e.target.files[0]);

@@ -1,0 +1,12 @@
+.popupHolder {
+	width: 100svw;
+	height: 100svh;
+	z-index: 1000000;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.2s;
+	pointer-events: initial;
+	backdrop-filter: blur(var(--popup-blur));
+}

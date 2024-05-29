@@ -4,7 +4,7 @@ import icons from "@/utils/icons.module.css";
 import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
 import Button from "@/components/inputs/button";
-import DropdownInput from "@/components/inputs/dropdowninput";
+import DropdownInput from "../inputs/dropdown";
 import FileInput from "@/components/inputs/fileinput";
 import { Asset, AssetType, EmulatorLayout } from "@/data/types";
 import { loadAssetHelper } from "@/utils/readImage";
@@ -25,7 +25,6 @@ export default function CanvasValues(args: {
 	return (
 		<>
 			<DropdownInput
-				elementIndex={0}
 				label="Background Type"
 				onChange={(val: string) => {
 					args.setLayoutData({
