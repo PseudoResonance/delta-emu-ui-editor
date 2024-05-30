@@ -12,10 +12,11 @@ interface BaseArgs {
 interface IconArgs extends BaseArgs {
 	iconClassFalse: string;
 	iconClassTrue: string;
+	label: string;
 }
 
 interface TextArgs extends BaseArgs {
-	children?: string | React.JSX.Element | React.JSX.Element[];
+	children: string | React.JSX.Element | React.JSX.Element[];
 }
 
 type Args = TextArgs | IconArgs;
@@ -34,11 +35,7 @@ export default function CheckboxInput(args: Args) {
 		}
 	}, [args.value]);
 	return (
-		<form
-			className={`${inputStyles.input} ${"label" in args ? "" : styles.iconState} ${inputStyles.button} ${
-				state ? inputStyles.checked : ""
-			}`}
-		>
+		<form className={`${inputStyles.input} ${inputStyles.button}`}>
 			<span
 				style={{
 					overflow: "hidden",
@@ -62,8 +59,10 @@ export default function CheckboxInput(args: Args) {
 				/>
 			</span>
 			<label
+				aria-label={"label" in args ? args.label : undefined}
 				className={`${inputStyles.inputInner} ${styles.container}`}
 				htmlFor={id}
+				title={"label" in args ? args.label : undefined}
 			>
 				<span
 					className={`${icons.icon} ${state ? ("iconClassTrue" in args ? args.iconClassTrue : icons.checkboxChecked) : "iconClassFalse" in args ? args.iconClassFalse : icons.checkboxUnchecked}`}

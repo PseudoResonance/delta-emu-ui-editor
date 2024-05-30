@@ -74,6 +74,7 @@ export default function ElementValues(args: {
 						value={args.elementData.data.thumbstick.name}
 					/>
 					<Button
+						label={"Select Thumbstick Image File"}
 						onClick={() => {
 							requestFiles("image/*,.pdf", false, (files) => {
 								const val = files[0];
@@ -636,6 +637,7 @@ export default function ElementValues(args: {
 					value={args.elementData.x.toFixed(0)}
 				/>
 				<Button
+					label={"Center Along X Axis"}
 					onClick={() => {
 						args.updateElement({
 							x: {
@@ -687,6 +689,7 @@ export default function ElementValues(args: {
 					value={args.elementData.y.toFixed(0)}
 				/>
 				<Button
+					label={"Center Along Y Axis"}
 					onClick={() => {
 						args.updateElement({
 							y: {

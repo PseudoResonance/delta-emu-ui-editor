@@ -5,6 +5,7 @@ import styles from "../input.module.css";
 export default function Button(args: {
 	onClick: () => void;
 	children?: string | React.JSX.Element | React.JSX.Element[];
+	label?: string;
 }) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	return (
@@ -21,7 +22,12 @@ export default function Button(args: {
 			>
 				<button id={id} onClick={args.onClick} type="button"></button>
 			</span>
-			<label className={styles.inputInner} htmlFor={id}>
+			<label
+				aria-label={"label" in args ? args.label : undefined}
+				className={styles.inputInner}
+				htmlFor={id}
+				title={"label" in args ? args.label : undefined}
+			>
 				<span>
 					{...args.children
 						? args.children instanceof Array

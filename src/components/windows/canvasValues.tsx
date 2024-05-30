@@ -78,6 +78,7 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.small}
 						/>
 						<Button
+							label={"Select Small Image File"}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -130,6 +131,7 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.medium}
 						/>
 						<Button
+							label={"Select Medium Image File"}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -182,6 +184,7 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.large}
 						/>
 						<Button
+							label={"Select Large Image File"}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -232,6 +235,7 @@ export default function CanvasValues(args: {
 						value={args.layoutData.assets.resizable}
 					/>
 					<Button
+						label={"Select PDF Image File"}
 						onClick={() => {
 							requestFiles(".pdf", false, (files) => {
 								const val = files[0];
@@ -354,6 +358,7 @@ export default function CanvasValues(args: {
 					<CheckboxInput
 						iconClassFalse={icons.chainBroken}
 						iconClassTrue={icons.chain}
+						label={"Lock Aspect Ratio"}
 						onChange={(val) => {
 							args.setLayoutData({
 								lockBackgroundRatio: {
