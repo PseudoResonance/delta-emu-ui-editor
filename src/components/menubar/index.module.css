@@ -7,7 +7,8 @@
 	display: flex;
 }
 
-.menubar > div {
+.menubar > div,
+.navButtons {
 	display: flex;
 }
 
@@ -28,7 +29,9 @@
 }
 
 .menucategory:hover,
-.menucategory:focus-within {
+.menucategory:focus-within,
+.menutoggle:hover,
+.menutoggle:focus-within {
 	background-color: var(--background-menu-rgb-hover);
 }
 
@@ -63,10 +66,6 @@
 	color: inherit;
 	background-color: transparent;
 	text-align: left;
-}
-
-.menutoggle:hover {
-	background-color: var(--background-menu-rgb-hover);
 }
 
 .menubutton {

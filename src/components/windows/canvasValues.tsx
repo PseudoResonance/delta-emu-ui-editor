@@ -450,7 +450,6 @@ export default function CanvasValues(args: {
 				}}
 				onFocusLost={(val: string) => {
 					const num = parseInt(val);
-					console.log(val, isNaN(num));
 					if (isNaN(num) || val.length === 0) {
 						args.setLayoutData({
 							padding: {

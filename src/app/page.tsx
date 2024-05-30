@@ -1649,6 +1649,11 @@ export default function Home() {
 						? ("" as unknown as boolean)
 						: undefined
 				}
+				onScrollCapture={(e: React.UIEvent) => {
+					(e.target as HTMLElement).scrollTop = 0;
+					(e.target as HTMLElement).scrollLeft = 0;
+					e.preventDefault();
+				}}
 			>
 				<MenuBar
 					canRedo={historyInfo.currentState < history.length}
@@ -1683,6 +1688,12 @@ export default function Home() {
 				<Sidebar
 					hiddenNarrow={sidebarVisibility.left}
 					position={SidebarPosition.LEFT}
+					requestVisible={() => {
+						setSidebarVisibility({
+							left: false,
+							right: true,
+						});
+					}}
 				>
 					<SkinInfoWindow
 						infoFile={infoFile}
@@ -1725,6 +1736,12 @@ export default function Home() {
 				<Sidebar
 					hiddenNarrow={sidebarVisibility.right}
 					position={SidebarPosition.RIGHT}
+					requestVisible={() => {
+						setSidebarVisibility({
+							left: true,
+							right: false,
+						});
+					}}
 				>
 					<div>
 						<ZoomWindow

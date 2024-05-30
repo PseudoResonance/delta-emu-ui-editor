@@ -1,15 +1,27 @@
 "use client";
 import styles from "./index.module.css";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function Sidebar(args: {
 	hiddenNarrow: boolean;
 	children?: React.JSX.Element | React.JSX.Element[];
 	position: SidebarPosition;
+	requestVisible: () => void;
 }) {
+	const ref = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const onFocus = () => {
+			args.requestVisible();
+		};
+		ref.current?.addEventListener("focusin", onFocus);
+		return () => {
+			ref.current?.removeEventListener("focusin", onFocus);
+		};
+	});
 	return (
 		<div
 			className={`${styles.sidebar} ${getStyle(args.position)} ${args.hiddenNarrow ? styles.hideNarrow : styles.showNarrow}`}
+			ref={ref}
 		>
 			{...(args.children
 				? args.children instanceof Array
