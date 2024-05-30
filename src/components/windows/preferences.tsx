@@ -26,7 +26,7 @@ export default function PreferencesWindow(args: {
 				value={args.preferences.theme}
 				values={
 					{
-						[Preferences.Theme.DEFAULT]: "Default",
+						[Preferences.Theme.DEFAULT]: "System Default",
 						[Preferences.Theme.LIGHT]: "Light",
 						[Preferences.Theme.DARK]: "Dark",
 					} as { [key in Preferences.Theme]: string }

@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef } from "react";
 import styles from "./index.module.css";
 
 export default function Popup(args: {
@@ -7,6 +8,10 @@ export default function Popup(args: {
 	onClose: () => void;
 	onAccept?: () => void;
 }) {
+	const defaultButton = useRef<HTMLButtonElement>(null);
+	useEffect(() => {
+		defaultButton.current?.focus({ focusVisible: true } as FocusOptions);
+	}, []);
 	return (
 		<div className={styles.popup}>
 			<div className={styles.content}>
@@ -29,6 +34,7 @@ export default function Popup(args: {
 							args.onClose();
 							args.removeSelf();
 						}}
+						ref={defaultButton}
 					>
 						{typeof args.onAccept === "function"
 							? "Cancel"
