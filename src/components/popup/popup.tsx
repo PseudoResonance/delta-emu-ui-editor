@@ -13,7 +13,7 @@ export default function Popup(args: {
 		defaultButton.current?.focus({ focusVisible: true } as FocusOptions);
 	}, []);
 	return (
-		<div className={styles.popup}>
+		<div className={styles.popup} role="dialog">
 			<div className={styles.content}>
 				{...args.children
 					? args.children instanceof Array

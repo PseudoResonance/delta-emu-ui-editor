@@ -57,6 +57,7 @@ export default function CanvasValues(args: {
 				<>
 					<div className={inputFlexStyle.inputFlex}>
 						<ValueInput
+							ariaLabel="Small Image File Name"
 							context={args.currentRepresentation}
 							debounce={1000}
 							label="Small Image"
@@ -110,6 +111,7 @@ export default function CanvasValues(args: {
 					</div>
 					<div className={inputFlexStyle.inputFlex}>
 						<ValueInput
+							ariaLabel="Medium Image File Name"
 							context={args.currentRepresentation}
 							debounce={1000}
 							label="Medium Image"
@@ -163,6 +165,7 @@ export default function CanvasValues(args: {
 					</div>
 					<div className={inputFlexStyle.inputFlex}>
 						<ValueInput
+							ariaLabel="Large Image File Name"
 							context={args.currentRepresentation}
 							debounce={1000}
 							label="Large Image"
@@ -218,6 +221,7 @@ export default function CanvasValues(args: {
 			) : (
 				<div className={inputFlexStyle.inputFlex}>
 					<ValueInput
+						ariaLabel="PDF Image File Name"
 						context={args.currentRepresentation}
 						debounce={1000}
 						label="PDF Image"

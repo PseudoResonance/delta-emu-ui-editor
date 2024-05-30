@@ -12,7 +12,7 @@ interface BaseArgs {
 }
 
 interface ChildrenDefined extends BaseArgs {
-	children: React.JSX.Element | React.JSX.Element[];
+	children?: string | React.JSX.Element | React.JSX.Element[] | false;
 }
 
 interface ChildrenFunction extends BaseArgs {
@@ -29,6 +29,14 @@ interface ChildrenFunction extends BaseArgs {
 type Args = ChildrenDefined | ChildrenFunction;
 
 export default function TreeItem(args: Args) {
+	const children =
+		"getChildren" in args
+			? args.getChildren(args.data, args.keyStr, args.depth)
+			: args.children instanceof Array
+				? args.children && args.children
+				: args.children
+					? [args.children]
+					: [];
 	const actionHandlers: Record<string, object> = {};
 	if (typeof args.onClick === "function")
 		actionHandlers.onClick = args.onClick;
@@ -40,12 +48,26 @@ export default function TreeItem(args: Args) {
 		actionHandlers.onMouseLeave = args.onPointerLeave;
 	return (
 		<div
+			aria-expanded={children.length > 0 ? true : undefined}
+			aria-selected={
+				typeof args.onClick === "function"
+					? args.showActive
+						? true
+						: false
+					: undefined
+			}
 			className={`${styles.tree}${
 				args.showActive ? " " + styles.active : ""
 			}`}
 			data-type={"tree-node"}
 			onBlur={(e) => {
 				if (args.onPointerLeave) args.onPointerLeave(e);
+			}}
+			onClick={(e) => {
+				if (args.onClick) {
+					args.onClick(e);
+					e.stopPropagation();
+				}
 			}}
 			onContextMenu={(e) => {
 				if (e.target === e.currentTarget && args.onContextMenu) {
@@ -139,12 +161,14 @@ export default function TreeItem(args: Args) {
 					}
 				}
 			}}
+			role="treeitem"
 			tabIndex={-1}
 		>
 			{Object.keys(actionHandlers).length > 0 ? (
 				typeof args.label !== "string" ? (
 					<div
 						className={`${styles.label} ${styles.clickable}`}
+						role="none"
 						{...actionHandlers}
 					>
 						{args.label}
@@ -152,28 +176,31 @@ export default function TreeItem(args: Args) {
 				) : (
 					<p
 						className={`${styles.label} ${styles.clickable}`}
+						role="none"
 						{...actionHandlers}
 					>
 						{args.label.length > 0 ? args.label : "\u00A0"}
 					</p>
 				)
 			) : typeof args.label !== "string" ? (
-				<div className={styles.label}>{args.label}</div>
+				<div className={styles.label} role="none">
+					{args.label}
+				</div>
 			) : (
-				<p className={styles.label}>
+				<p className={styles.label} role="none">
 					{args.label.length > 0 ? args.label : "\u00A0"}
 				</p>
 			)}
 
-			<div className={styles.treeChildren} data-type={"tree-children"}>
-				{..."getChildren" in args
-					? args.getChildren(args.data, args.keyStr, args.depth)
-					: args.children instanceof Array
-						? args.children
-						: args.children
-							? [args.children]
-							: []}
-			</div>
+			{children.length > 0 && (
+				<div
+					className={styles.treeChildren}
+					data-type={"tree-children"}
+					role="group"
+				>
+					{...children}
+				</div>
+			)}
 		</div>
 	);
 }

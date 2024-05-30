@@ -55,6 +55,7 @@ const clamp = (
 export default function ValueInput(args: {
 	context: string;
 	label: string;
+	ariaLabel?: string;
 	increment?: number;
 	places?: number;
 	minValue?: number;
@@ -329,7 +330,11 @@ export default function ValueInput(args: {
 	}
 	return (
 		<div className={styles.input}>
-			<label className={styles.label} htmlFor={id}>
+			<label
+				aria-label={args.ariaLabel ? args.ariaLabel : undefined}
+				className={styles.label}
+				htmlFor={id}
+			>
 				{args.label}
 			</label>
 

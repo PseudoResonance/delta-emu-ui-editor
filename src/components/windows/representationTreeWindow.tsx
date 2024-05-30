@@ -144,7 +144,10 @@ export default function RepresentationTreeWindow(args: {
 		}
 	};
 	return (
-		<Tree.Wrapper style={{ padding: "3px 5px" }}>
+		<Tree.Wrapper
+			ariaLabel={"Representation tree"}
+			style={{ padding: "3px 5px" }}
+		>
 			<Tree.Item
 				data={args.infoFile.representations}
 				depth={0}

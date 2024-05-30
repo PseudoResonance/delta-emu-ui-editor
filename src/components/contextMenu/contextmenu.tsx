@@ -11,7 +11,7 @@ export default function ContextMenu(args: {
 	removeSelf: () => void;
 }) {
 	return (
-		<div className={styles.contextMenu}>
+		<div className={styles.contextMenu} role="menu">
 			{args.data.map((val, i) => (
 				<button
 					key={i}
@@ -19,6 +19,7 @@ export default function ContextMenu(args: {
 						val.onClick();
 						args.removeSelf();
 					}}
+					role="menuitem"
 				>
 					{val.label}
 				</button>

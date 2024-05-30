@@ -44,10 +44,14 @@ export default function ElementListWindow(args: {
 					>
 						Add Element
 					</Button>
-					<Tree.Wrapper style={{ padding: "3px 5px" }}>
+					<Tree.Wrapper
+						ariaLabel={"Element list"}
+						style={{ padding: "3px 5px" }}
+					>
 						<Tree.Item
 							label={
 								<div
+									role="none"
 									style={{
 										display: "flex",
 										justifyContent: "space-between",
@@ -56,35 +60,50 @@ export default function ElementListWindow(args: {
 									}}
 								>
 									<p
+										role="none"
 										style={{
 											margin: 0,
 										}}
 									>
 										Canvas
 									</p>
-									<div
-										className={`${icons.icon} ${allHidden ? icons.visibilityHidden : icons.visibilityShown}`}
-										onClick={() => {
-											const data: {
-												[index: number]: Spec<
-													EmulatorElement,
-													never
-												>;
-											} = {};
-											args.elements.forEach((_, i) => {
-												data[i] = {
-													hidden: {
-														$set: !allHidden,
-													},
-												};
-											});
-											args.updateAllElements(data);
-										}}
+									<menu
+										role="menu"
 										style={{
-											height: "var(--icon-size)",
-											width: "var(--icon-size)",
+											listStyle: "none",
+											margin: 0,
+											padding: 0,
 										}}
-									/>
+									>
+										<div
+											aria-label="Toggle Canvas Visibility"
+											className={`${icons.icon} ${allHidden ? icons.visibilityHidden : icons.visibilityShown}`}
+											onClick={() => {
+												const data: {
+													[index: number]: Spec<
+														EmulatorElement,
+														never
+													>;
+												} = {};
+												args.elements.forEach(
+													(_, i) => {
+														data[i] = {
+															hidden: {
+																$set: !allHidden,
+															},
+														};
+													},
+												);
+												args.updateAllElements(data);
+											}}
+											role="menuitem"
+											style={{
+												height: "var(--icon-size)",
+												width: "var(--icon-size)",
+											}}
+											title="Toggle Canvas Visibility"
+										/>
+									</menu>
 								</div>
 							}
 							onClick={() => {
@@ -116,6 +135,7 @@ export default function ElementListWindow(args: {
 											key={i}
 											label={
 												<div
+													role="none"
 													style={{
 														display: "flex",
 														justifyContent:
@@ -125,33 +145,46 @@ export default function ElementListWindow(args: {
 													}}
 												>
 													<p
+														role="none"
 														style={{
 															margin: 0,
 														}}
 													>
 														{label}
 													</p>
-													<div
-														className={`${icons.icon} ${args.elements[i].hidden ? icons.visibilityHidden : icons.visibilityShown}`}
-														onClick={() => {
-															args.updateElement(
-																i,
-																{
-																	hidden: {
-																		$set: !args
-																			.elements[
-																			i
-																		]
-																			.hidden,
-																	},
-																},
-															);
-														}}
+													<menu
+														role="menu"
 														style={{
-															height: "var(--icon-size)",
-															width: "var(--icon-size)",
+															listStyle: "none",
+															margin: 0,
+															padding: 0,
 														}}
-													></div>
+													>
+														<div
+															aria-label={`Toggle ${label} Visibility`}
+															className={`${icons.icon} ${args.elements[i].hidden ? icons.visibilityHidden : icons.visibilityShown}`}
+															onClick={() => {
+																args.updateElement(
+																	i,
+																	{
+																		hidden: {
+																			$set: !args
+																				.elements[
+																				i
+																			]
+																				.hidden,
+																		},
+																	},
+																);
+															}}
+															role="menuitem"
+															style={{
+																height: "var(--icon-size)",
+																width: "var(--icon-size)",
+															}}
+															title={`Toggle ${label} Visibility`}
+														/>
+													</menu>
 												</div>
 											}
 											onClick={() => {
@@ -232,10 +265,11 @@ export default function ElementListWindow(args: {
 											}
 										>
 											{val.type ===
-											EmulatorElementType.Thumbstick ? (
+												EmulatorElementType.Thumbstick && (
 												<Tree.Item
 													label={
 														<div
+															role="none"
 															style={{
 																display: "flex",
 																justifyContent:
@@ -247,40 +281,56 @@ export default function ElementListWindow(args: {
 															}}
 														>
 															<p
+																aria-label="Thumbstick Icon"
+																role="none"
 																style={{
 																	margin: 0,
 																}}
 															>
 																Icon
 															</p>
-															<div
-																className={`${icons.icon} ${args.elements[i].data.thumbstick.hidden ? icons.visibilityHidden : icons.visibilityShown}`}
-																onClick={() => {
-																	args.updateElement(
-																		i,
-																		{
-																			data: {
-																				thumbstick:
-																					{
-																						hidden: {
-																							$set: !args
-																								.elements[
-																								i
-																							]
-																								.data
-																								.thumbstick
-																								.hidden,
-																						},
-																					},
-																			},
-																		},
-																	);
-																}}
+															<menu
+																aria-label="Thumbstick Icon"
+																role="menu"
 																style={{
-																	height: "var(--icon-size)",
-																	width: "var(--icon-size)",
+																	listStyle:
+																		"none",
+																	margin: 0,
+																	padding: 0,
 																}}
-															></div>
+															>
+																<div
+																	aria-label="Toggle Thumbstick Icon Visibility"
+																	className={`${icons.icon} ${args.elements[i].data.thumbstick.hidden ? icons.visibilityHidden : icons.visibilityShown}`}
+																	onClick={() => {
+																		args.updateElement(
+																			i,
+																			{
+																				data: {
+																					thumbstick:
+																						{
+																							hidden: {
+																								$set: !args
+																									.elements[
+																									i
+																								]
+																									.data
+																									.thumbstick
+																									.hidden,
+																							},
+																						},
+																				},
+																			},
+																		);
+																	}}
+																	role="menuitem"
+																	style={{
+																		height: "var(--icon-size)",
+																		width: "var(--icon-size)",
+																	}}
+																	title="Toggle Thumbstick Icon Visibility"
+																/>
+															</menu>
 														</div>
 													}
 													onClick={() => {
@@ -364,11 +414,7 @@ export default function ElementListWindow(args: {
 														args.editingElement ===
 														i
 													}
-												>
-													<></>
-												</Tree.Item>
-											) : (
-												<></>
+												/>
 											)}
 										</Tree.Item>
 									);

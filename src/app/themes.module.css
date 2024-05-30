@@ -23,7 +23,7 @@
 	--secondary-rgb-hover: rgba(190, 190, 190, 1);
 	--button-rgb: rgb(192, 192, 192);
 	--button-rgb-hover: rgba(0, 0, 0, 0.3);
-	--button-rgb-active: rgba(0, 0, 0, 0.45);
+	--button-rgb-active: rgba(0, 0, 0, 0.4);
 	--button-icon-rgb-active: rgba(0, 0, 0, 0.8);
 	--separator-rgb: rgb(167, 167, 167);
 	--border-rgb: rgb(194, 194, 194);
@@ -66,8 +66,8 @@
 	--secondary-rgb: rgba(20, 20, 20, 1);
 	--secondary-rgb-hover: rgba(50, 50, 50, 1);
 	--button-rgb: rgba(40, 40, 40, 1);
-	--button-rgb-hover: rgba(255, 255, 255, 0.15);
-	--button-rgb-active: rgba(255, 255, 255, 0.3);
+	--button-rgb-hover: rgba(255, 255, 255, 0.2);
+	--button-rgb-active: rgba(255, 255, 255, 0.25);
 	--separator-rgb: rgb(65, 65, 65);
 	--border-rgb: rgb(99, 99, 99);
 	--select-rgb: rgba(150, 150, 150, 1);
