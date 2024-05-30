@@ -1650,9 +1650,11 @@ export default function Home() {
 						: undefined
 				}
 				onScrollCapture={(e: React.UIEvent) => {
-					(e.target as HTMLElement).scrollTop = 0;
-					(e.target as HTMLElement).scrollLeft = 0;
-					e.preventDefault();
+					if (e.target === e.currentTarget) {
+						(e.target as HTMLElement).scrollTop = 0;
+						(e.target as HTMLElement).scrollLeft = 0;
+						e.preventDefault();
+					}
 				}}
 			>
 				<MenuBar
