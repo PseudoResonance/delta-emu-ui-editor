@@ -22,6 +22,7 @@ export default function DropdownInput(args: {
 	values: Record<string, string>;
 	onChange: (val: string) => void;
 }) {
+	const innerRef = useRef<HTMLSelectElement>(null);
 	const elem = useRef<HTMLDivElement>(null);
 	const elemDropdown = useRef<HTMLDivElement>(null);
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
@@ -107,8 +108,9 @@ export default function DropdownInput(args: {
 			>
 				<select
 					id={id}
-					onBlur={() => {
+					onBlur={(e) => {
 						setIsFocus(false);
+						if (e.relatedTarget) setIsOpen(false);
 					}}
 					onChange={(e) => {
 						onChange(e.target.value);
@@ -116,6 +118,7 @@ export default function DropdownInput(args: {
 					onFocus={() => {
 						setIsFocus(true);
 					}}
+					ref={innerRef}
 					value={state}
 				>
 					{...Object.keys(args.values).map((key) => (
@@ -129,7 +132,10 @@ export default function DropdownInput(args: {
 				<label
 					className={inputStyles.label}
 					htmlFor={id}
-					onClick={() => setIsOpen(true)}
+					onClick={() => {
+						setIsOpen(true);
+						if (innerRef.current) innerRef.current.focus();
+					}}
 					onPointerOut={() => {
 						setIsHover(false);
 					}}
@@ -144,7 +150,10 @@ export default function DropdownInput(args: {
 					className={`${inputStyles.inputInner} ${styles.dropdown} ${
 						isOpen ? styles.active : ""
 					} ${isHover || isFocus ? styles.hover : ""}`}
-					onClick={() => setIsOpen(true)}
+					onClick={() => {
+						setIsOpen(true);
+						if (innerRef.current) innerRef.current.focus();
+					}}
 					ref={elem}
 				>
 					<div
