@@ -48,7 +48,7 @@ export default function TreeItem(args: Args) {
 		actionHandlers.onMouseLeave = args.onPointerLeave;
 	return (
 		<div
-			aria-expanded={children.length > 0 ? true : undefined}
+			aria-expanded={true}
 			aria-selected={
 				typeof args.onClick === "function"
 					? args.showActive
