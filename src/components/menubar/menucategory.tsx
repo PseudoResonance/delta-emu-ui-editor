@@ -12,7 +12,7 @@ export default function MenuCategory(args: {
 		<div className={`${styles.menucategory}`}>
 			<button
 				className={styles.label}
-				data-category={true}
+				data-type={"menu-category"}
 				onClick={() => {
 					args.setIsActive(true);
 				}}

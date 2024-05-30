@@ -74,15 +74,6 @@ export default function ElementValues(args: {
 						value={args.elementData.data.thumbstick.name}
 					/>
 					<Button
-						label={
-							<div
-								className={`${icons.icon} ${icons.fileAdd}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						}
 						onClick={() => {
 							requestFiles("image/*,.pdf", false, (files) => {
 								const val = files[0];
@@ -102,7 +93,15 @@ export default function ElementValues(args: {
 								});
 							});
 						}}
-					/>
+					>
+						<div
+							className={`${icons.icon} ${icons.fileAdd}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
+							}}
+						/>
+					</Button>
 				</div>,
 				<ValueInput
 					context={String(args.elementIndex)}
@@ -637,15 +636,6 @@ export default function ElementValues(args: {
 					value={args.elementData.x.toFixed(0)}
 				/>
 				<Button
-					label={
-						<div
-							className={`${icons.icon} ${icons.horizontalAlign}`}
-							style={{
-								height: "var(--icon-size)",
-								width: "var(--icon-size)",
-							}}
-						/>
-					}
 					onClick={() => {
 						args.updateElement({
 							x: {
@@ -657,7 +647,15 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
-				/>
+				>
+					<div
+						className={`${icons.icon} ${icons.horizontalAlign}`}
+						style={{
+							height: "var(--icon-size)",
+							width: "var(--icon-size)",
+						}}
+					/>
+				</Button>
 			</div>
 
 			<div className={inputFlexStyle.inputFlex}>
@@ -689,15 +687,6 @@ export default function ElementValues(args: {
 					value={args.elementData.y.toFixed(0)}
 				/>
 				<Button
-					label={
-						<div
-							className={`${icons.icon} ${icons.verticalAlign}`}
-							style={{
-								height: "var(--icon-size)",
-								width: "var(--icon-size)",
-							}}
-						/>
-					}
 					onClick={() => {
 						args.updateElement({
 							y: {
@@ -708,6 +697,13 @@ export default function ElementValues(args: {
 								),
 							},
 						});
+					}}
+				></Button>
+				<div
+					className={`${icons.icon} ${icons.verticalAlign}`}
+					style={{
+						height: "var(--icon-size)",
+						width: "var(--icon-size)",
 					}}
 				/>
 			</div>
@@ -881,14 +877,14 @@ export default function ElementValues(args: {
 						/>,
 					]}
 			<Button
-				label="Duplicate Element"
 				onClick={() => {
 					args.duplicateThis();
 				}}
-			/>
+			>
+				Duplicate Element
+			</Button>
 
 			<Button
-				label="Delete Element"
 				onClick={() => {
 					args.showPopup(
 						<>
@@ -905,7 +901,9 @@ export default function ElementValues(args: {
 						},
 					);
 				}}
-			/>
+			>
+				Delete Element
+			</Button>
 		</div>
 	);
 }

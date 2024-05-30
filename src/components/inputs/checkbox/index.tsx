@@ -15,7 +15,7 @@ interface IconArgs extends BaseArgs {
 }
 
 interface TextArgs extends BaseArgs {
-	label: string;
+	children?: string | React.JSX.Element | React.JSX.Element[];
 }
 
 type Args = TextArgs | IconArgs;
@@ -72,7 +72,15 @@ export default function CheckboxInput(args: Args) {
 						width: "var(--icon-size)",
 					}}
 				/>
-				{"label" in args && <span>{args.label}</span>}
+				{"children" in args && (
+					<span>
+						{...args.children
+							? args.children instanceof Array
+								? args.children
+								: [args.children]
+							: []}
+					</span>
+				)}
 			</label>
 		</form>
 	);

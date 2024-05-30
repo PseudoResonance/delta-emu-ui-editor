@@ -3,7 +3,7 @@
 import ValueInput from "../inputs/valueinput";
 import CheckboxInput from "../inputs/checkbox";
 import { InfoFile, ShowContextMenuFunc, ShowPopupFunc } from "@/data/types";
-import TreeItem from "../objectTree";
+import * as Tree from "../objectTree";
 
 export default function RepresentationTreeWindow(args: {
 	infoFile: InfoFile;
@@ -23,7 +23,7 @@ export default function RepresentationTreeWindow(args: {
 			return Object.keys(e)
 				.sort()
 				.map((key: string, i: number) => (
-					<TreeItem
+					<Tree.Item
 						data={e[key] as Record<string, unknown>}
 						depth={depth + 1}
 						getChildren={getChildren}
@@ -71,14 +71,15 @@ export default function RepresentationTreeWindow(args: {
 													value=""
 												/>
 												<CheckboxInput
-													label="Layout Node"
 													onChange={(
 														val: boolean,
 													) => {
 														newData[1] = val;
 													}}
 													value={depth >= 1}
-												/>
+												>
+													Layout Node
+												</CheckboxInput>
 											</>,
 											() => {},
 											() => {
@@ -143,8 +144,8 @@ export default function RepresentationTreeWindow(args: {
 		}
 	};
 	return (
-		<div style={{ padding: "3px 5px" }}>
-			<TreeItem
+		<Tree.Wrapper style={{ padding: "3px 5px" }}>
+			<Tree.Item
 				data={args.infoFile.representations}
 				depth={0}
 				getChildren={getChildren}
@@ -176,12 +177,13 @@ export default function RepresentationTreeWindow(args: {
 											/>
 
 											<CheckboxInput
-												label="Layout Node"
 												onChange={(val: boolean) => {
 													newData[1] = val;
 												}}
 												value={false}
-											/>
+											>
+												Layout Node
+											</CheckboxInput>
 										</>,
 										() => {},
 										() => {
@@ -204,6 +206,6 @@ export default function RepresentationTreeWindow(args: {
 					);
 				}}
 			/>
-		</div>
+		</Tree.Wrapper>
 	);
 }

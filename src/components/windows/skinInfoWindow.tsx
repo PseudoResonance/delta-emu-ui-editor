@@ -49,12 +49,13 @@ export default function SkinInfoWindow(args: {
 			/>
 
 			<CheckboxInput
-				label="Show Debug"
 				onChange={(val: boolean) => {
 					args.setInfoFile({ debug: { $set: val } });
 				}}
 				value={args.infoFile.debug}
-			/>
+			>
+				Show Debug
+			</CheckboxInput>
 		</div>
 	);
 }

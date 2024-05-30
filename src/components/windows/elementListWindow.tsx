@@ -8,10 +8,10 @@ import {
 	ShowPopupFunc,
 } from "@/data/types";
 import { getElementLabel } from "../visualEditor/element";
-import TreeItem from "../objectTree";
 import Button from "../inputs/button";
 import { Dispatch, SetStateAction } from "react";
 import { Spec } from "immutability-helper";
+import * as Tree from "../objectTree";
 
 export default function ElementListWindow(args: {
 	elements: EmulatorElement[];
@@ -38,13 +38,14 @@ export default function ElementListWindow(args: {
 			{args.layoutData && (
 				<>
 					<Button
-						label="Add Element"
 						onClick={() => {
 							args.addElement();
 						}}
-					/>
-					<div style={{ padding: "3px 5px" }}>
-						<TreeItem
+					>
+						Add Element
+					</Button>
+					<Tree.Wrapper style={{ padding: "3px 5px" }}>
+						<Tree.Item
 							label={
 								<div
 									style={{
@@ -111,7 +112,7 @@ export default function ElementListWindow(args: {
 								(val: EmulatorElement, i: number) => {
 									const label = getElementLabel(val, true);
 									return (
-										<TreeItem
+										<Tree.Item
 											key={i}
 											label={
 												<div
@@ -232,7 +233,7 @@ export default function ElementListWindow(args: {
 										>
 											{val.type ===
 											EmulatorElementType.Thumbstick ? (
-												<TreeItem
+												<Tree.Item
 													label={
 														<div
 															style={{
@@ -365,16 +366,16 @@ export default function ElementListWindow(args: {
 													}
 												>
 													<></>
-												</TreeItem>
+												</Tree.Item>
 											) : (
 												<></>
 											)}
-										</TreeItem>
+										</Tree.Item>
 									);
 								},
 							)}
-						</TreeItem>
-					</div>
+						</Tree.Item>
+					</Tree.Wrapper>
 				</>
 			)}
 		</div>

@@ -57,7 +57,15 @@
 	transition: all 0.02s linear;
 }
 
-.clickable:hover,
 .active > .label {
+	background-color: var(--button-rgb-active);
+}
+
+.tree:focus {
+	outline: none;
+}
+
+.clickable:hover,
+.tree:focus > .label {
 	background-color: var(--button-rgb-hover);
 }

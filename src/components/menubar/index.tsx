@@ -53,7 +53,10 @@ export default function MenuBar(args: {
 				if (elem) {
 					switch (e.key) {
 						case "ArrowDown":
-							if (elem.getAttribute("data-category")) {
+							if (
+								elem.getAttribute("data-type") ===
+								"menu-category"
+							) {
 								setIsActive(true);
 								(
 									elem.nextElementSibling
@@ -66,7 +69,10 @@ export default function MenuBar(args: {
 							}
 							break;
 						case "ArrowLeft":
-							if (elem.getAttribute("data-category")) {
+							if (
+								elem.getAttribute("data-type") ===
+								"menu-category"
+							) {
 								if (
 									elem.parentElement
 										?.previousElementSibling &&
@@ -94,7 +100,10 @@ export default function MenuBar(args: {
 							}
 							break;
 						case "ArrowRight":
-							if (elem.getAttribute("data-category")) {
+							if (
+								elem.getAttribute("data-type") ===
+								"menu-category"
+							) {
 								if (
 									elem.parentElement?.nextElementSibling &&
 									elem.parentElement?.nextElementSibling
@@ -125,15 +134,18 @@ export default function MenuBar(args: {
 								)?.focus();
 							} else if (
 								elem.parentElement?.previousElementSibling?.getAttribute(
-									"data-category",
-								)
+									"data-type",
+								) === "menu-category"
 							) {
 								(
 									elem.parentElement
 										.previousElementSibling as HTMLElement
 								).focus();
 								setIsActive(false);
-							} else if (elem.getAttribute("data-category")) {
+							} else if (
+								elem.getAttribute("data-type") ===
+								"menu-category"
+							) {
 								setIsActive(false);
 							}
 							break;

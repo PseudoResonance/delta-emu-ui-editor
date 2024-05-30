@@ -78,15 +78,6 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.small}
 						/>
 						<Button
-							label={
-								<div
-									className={`${icons.icon} ${icons.fileAdd}`}
-									style={{
-										height: "var(--icon-size)",
-										width: "var(--icon-size)",
-									}}
-								/>
-							}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -106,7 +97,15 @@ export default function CanvasValues(args: {
 									});
 								});
 							}}
-						/>
+						>
+							<div
+								className={`${icons.icon} ${icons.fileAdd}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						</Button>
 					</div>
 					<div className={inputFlexStyle.inputFlex}>
 						<ValueInput
@@ -131,15 +130,6 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.medium}
 						/>
 						<Button
-							label={
-								<div
-									className={`${icons.icon} ${icons.fileAdd}`}
-									style={{
-										height: "var(--icon-size)",
-										width: "var(--icon-size)",
-									}}
-								/>
-							}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -159,7 +149,15 @@ export default function CanvasValues(args: {
 									});
 								});
 							}}
-						/>
+						>
+							<div
+								className={`${icons.icon} ${icons.fileAdd}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						</Button>
 					</div>
 					<div className={inputFlexStyle.inputFlex}>
 						<ValueInput
@@ -184,15 +182,6 @@ export default function CanvasValues(args: {
 							value={args.layoutData.assets.large}
 						/>
 						<Button
-							label={
-								<div
-									className={`${icons.icon} ${icons.fileAdd}`}
-									style={{
-										height: "var(--icon-size)",
-										width: "var(--icon-size)",
-									}}
-								/>
-							}
 							onClick={() => {
 								requestFiles(".png", false, (files) => {
 									const val = files[0];
@@ -212,7 +201,15 @@ export default function CanvasValues(args: {
 									});
 								});
 							}}
-						/>
+						>
+							<div
+								className={`${icons.icon} ${icons.fileAdd}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						</Button>
 					</div>
 				</>
 			) : (
@@ -235,15 +232,6 @@ export default function CanvasValues(args: {
 						value={args.layoutData.assets.resizable}
 					/>
 					<Button
-						label={
-							<div
-								className={`${icons.icon} ${icons.fileAdd}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						}
 						onClick={() => {
 							requestFiles(".pdf", false, (files) => {
 								const val = files[0];
@@ -263,7 +251,15 @@ export default function CanvasValues(args: {
 								});
 							});
 						}}
-					/>
+					>
+						<div
+							className={`${icons.icon} ${icons.fileAdd}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
+							}}
+						/>
+					</Button>
 				</div>
 			)}
 
@@ -511,7 +507,6 @@ export default function CanvasValues(args: {
 			/>
 
 			<CheckboxInput
-				label="Translucent Layout"
 				onChange={(val: boolean) => {
 					args.setLayoutData({
 						translucent: {
@@ -520,10 +515,11 @@ export default function CanvasValues(args: {
 					});
 				}}
 				value={args.layoutData.translucent}
-			/>
+			>
+				Translucent Layout
+			</CheckboxInput>
 
 			<Button
-				label="Resize to Background"
 				onClick={() => {
 					const bgName = args.getCurrentBackgroundAssetName();
 					if (
@@ -544,7 +540,9 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
-			/>
+			>
+				Resize to Background
+			</Button>
 		</>
 	);
 }
