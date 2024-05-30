@@ -1,16 +1,17 @@
 "use client";
+import inputFlexStyle from "./inputFlex.module.css";
 import lockRatioStyle from "./lockRatio.module.css";
 import icons from "@/utils/icons.module.css";
 import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
 import Button from "@/components/inputs/button";
 import DropdownInput from "@/components/inputs/dropdown";
-import FileInput from "@/components/inputs/file";
 import { Asset, AssetType, EmulatorLayout } from "@/data/types";
 import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 import CheckboxInput from "@/components/inputs/checkbox";
 import Suggestions from "@/components/inputs/inputSuggestions";
+import requestFiles from "@/utils/requestFiles";
 
 export default function CanvasValues(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -54,127 +55,172 @@ export default function CanvasValues(args: {
 			/>
 			{args.layoutData.assets.type === AssetType.PNG ? (
 				<>
-					<ValueInput
-						context={args.currentRepresentation}
-						debounce={1000}
-						label="Small Name"
-						onChange={(val: string) => {
-							args.setLayoutData({
-								assets: {
-									small: {
-										$set: val,
+					<div className={inputFlexStyle.inputFlex}>
+						<ValueInput
+							context={args.currentRepresentation}
+							debounce={1000}
+							label="Small Image"
+							onChange={(val: string) => {
+								args.setLayoutData({
+									assets: {
+										small: {
+											$set: val,
+										},
 									},
-								},
-							});
-							loadAssetHelper(val, args.assets, args.setAssets);
-						}}
-						suggestionsId="assets"
-						value={args.layoutData.assets.small}
-					/>
-					<FileInput
-						accept=".png"
-						key="smallfile"
-						label="Choose Small Image"
-						onChange={(val: File) => {
-							args.addAsset(val.name, {
-								file: val,
-								type: null,
-								url: null,
-								width: -1,
-								height: -1,
-							});
-							args.setLayoutData({
-								assets: {
-									small: {
-										$set: val.name,
+								});
+								loadAssetHelper(
+									val,
+									args.assets,
+									args.setAssets,
+								);
+							}}
+							suggestionsId="assets"
+							value={args.layoutData.assets.small}
+						/>
+						<Button
+							label={
+								<div
+									className={`${icons.icon} ${icons.fileAdd}`}
+									style={{
+										height: "var(--icon-size)",
+										width: "var(--icon-size)",
+									}}
+								/>
+							}
+							onClick={() => {
+								requestFiles(".png", false, (files) => {
+									const val = files[0];
+									args.addAsset(val.name, {
+										file: val,
+										type: null,
+										url: null,
+										width: -1,
+										height: -1,
+									});
+									args.setLayoutData({
+										assets: {
+											small: {
+												$set: val.name,
+											},
+										},
+									});
+								});
+							}}
+						/>
+					</div>
+					<div className={inputFlexStyle.inputFlex}>
+						<ValueInput
+							context={args.currentRepresentation}
+							debounce={1000}
+							label="Medium Image"
+							onChange={(val: string) => {
+								args.setLayoutData({
+									assets: {
+										medium: {
+											$set: val,
+										},
 									},
-								},
-							});
-						}}
-					/>
-					<ValueInput
-						context={args.currentRepresentation}
-						debounce={1000}
-						label="Medium Name"
-						onChange={(val: string) => {
-							args.setLayoutData({
-								assets: {
-									medium: {
-										$set: val,
+								});
+								loadAssetHelper(
+									val,
+									args.assets,
+									args.setAssets,
+								);
+							}}
+							suggestionsId="assets"
+							value={args.layoutData.assets.medium}
+						/>
+						<Button
+							label={
+								<div
+									className={`${icons.icon} ${icons.fileAdd}`}
+									style={{
+										height: "var(--icon-size)",
+										width: "var(--icon-size)",
+									}}
+								/>
+							}
+							onClick={() => {
+								requestFiles(".png", false, (files) => {
+									const val = files[0];
+									args.addAsset(val.name, {
+										file: val,
+										type: null,
+										url: null,
+										width: -1,
+										height: -1,
+									});
+									args.setLayoutData({
+										assets: {
+											medium: {
+												$set: val.name,
+											},
+										},
+									});
+								});
+							}}
+						/>
+					</div>
+					<div className={inputFlexStyle.inputFlex}>
+						<ValueInput
+							context={args.currentRepresentation}
+							debounce={1000}
+							label="Large Image"
+							onChange={(val: string) => {
+								args.setLayoutData({
+									assets: {
+										large: {
+											$set: val,
+										},
 									},
-								},
-							});
-							loadAssetHelper(val, args.assets, args.setAssets);
-						}}
-						suggestionsId="assets"
-						value={args.layoutData.assets.medium}
-					/>
-					<FileInput
-						accept=".png"
-						key="mediumfile"
-						label="Choose Medium Image"
-						onChange={(val: File) => {
-							args.addAsset(val.name, {
-								file: val,
-								type: null,
-								url: null,
-								width: -1,
-								height: -1,
-							});
-							args.setLayoutData({
-								assets: {
-									medium: {
-										$set: val.name,
-									},
-								},
-							});
-						}}
-					/>
-					<ValueInput
-						context={args.currentRepresentation}
-						debounce={1000}
-						label="Large Name"
-						onChange={(val: string) => {
-							args.setLayoutData({
-								assets: {
-									large: {
-										$set: val,
-									},
-								},
-							});
-							loadAssetHelper(val, args.assets, args.setAssets);
-						}}
-						suggestionsId="assets"
-						value={args.layoutData.assets.large}
-					/>
-					<FileInput
-						accept=".png"
-						key="largefile"
-						label="Choose Large Image"
-						onChange={(val: File) => {
-							args.addAsset(val.name, {
-								file: val,
-								type: null,
-								url: null,
-								width: -1,
-								height: -1,
-							});
-							args.setLayoutData({
-								assets: {
-									large: {
-										$set: val.name,
-									},
-								},
-							});
-						}}
-					/>
+								});
+								loadAssetHelper(
+									val,
+									args.assets,
+									args.setAssets,
+								);
+							}}
+							suggestionsId="assets"
+							value={args.layoutData.assets.large}
+						/>
+						<Button
+							label={
+								<div
+									className={`${icons.icon} ${icons.fileAdd}`}
+									style={{
+										height: "var(--icon-size)",
+										width: "var(--icon-size)",
+									}}
+								/>
+							}
+							onClick={() => {
+								requestFiles(".png", false, (files) => {
+									const val = files[0];
+									args.addAsset(val.name, {
+										file: val,
+										type: null,
+										url: null,
+										width: -1,
+										height: -1,
+									});
+									args.setLayoutData({
+										assets: {
+											large: {
+												$set: val.name,
+											},
+										},
+									});
+								});
+							}}
+						/>
+					</div>
 				</>
 			) : (
-				<>
+				<div className={inputFlexStyle.inputFlex}>
 					<ValueInput
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="PDF Name"
+						label="PDF Image"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -188,29 +234,37 @@ export default function CanvasValues(args: {
 						suggestionsId="assets"
 						value={args.layoutData.assets.resizable}
 					/>
-
-					<FileInput
-						accept=".pdf"
-						key="resizablefile"
-						label="Choose PDF Image"
-						onChange={(val: File) => {
-							args.addAsset(val.name, {
-								file: val,
-								type: null,
-								url: null,
-								width: -1,
-								height: -1,
-							});
-							args.setLayoutData({
-								assets: {
-									resizable: {
-										$set: val.name,
+					<Button
+						label={
+							<div
+								className={`${icons.icon} ${icons.fileAdd}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						}
+						onClick={() => {
+							requestFiles(".pdf", false, (files) => {
+								const val = files[0];
+								args.addAsset(val.name, {
+									file: val,
+									type: null,
+									url: null,
+									width: -1,
+									height: -1,
+								});
+								args.setLayoutData({
+									assets: {
+										resizable: {
+											$set: val.name,
+										},
 									},
-								},
+								});
 							});
 						}}
 					/>
-				</>
+				</div>
 			)}
 
 			<div className={lockRatioStyle.container}>

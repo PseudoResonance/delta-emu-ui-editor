@@ -1,11 +1,10 @@
 "use client";
-import style from "./elementvalues.module.css";
+import inputFlexStyle from "./inputFlex.module.css";
 import icons from "@/utils/icons.module.css";
 import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
 import Button from "@/components/inputs/button";
 import DropdownInput from "@/components/inputs/dropdown";
-import FileInput from "@/components/inputs/file";
 import {
 	Asset,
 	EmulatorElement,
@@ -19,6 +18,7 @@ import { Spec } from "immutability-helper";
 import Suggestions from "@/components/inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
 import { getElementLabel } from "@/components/visualEditor/element";
+import requestFiles from "@/utils/requestFiles";
 
 export default function ElementValues(args: {
 	assets: Record<string, Asset> | null;
@@ -44,10 +44,10 @@ export default function ElementValues(args: {
 		INPUT_PRESET && args.elementData.type in INPUT_PRESET.buttons
 			? INPUT_PRESET.buttons[args.elementData.type]
 			: null;
-	let data: React.JSX.Element[] = [];
+	let valueElements: React.JSX.Element[] = [];
 	switch (args.elementData.type) {
 		case EmulatorElementType.Thumbstick:
-			data = [
+			valueElements = [
 				<Suggestions
 					id={"assets"}
 					values={
@@ -58,37 +58,52 @@ export default function ElementValues(args: {
 							: []
 					}
 				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					debounce={1000}
-					key="thumbstickname"
-					label="Image Name"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: { thumbstick: { name: { $set: val } } },
-						});
-						loadAssetHelper(val, args.assets, args.setAssets);
-					}}
-					suggestionsId="assets"
-					value={args.elementData.data.thumbstick.name}
-				/>,
-				<FileInput
-					accept="image/*,.pdf"
-					key="thumbstickfile"
-					label="Thumbstick Image"
-					onChange={(val: File) => {
-						args.addAsset(val.name, {
-							file: val,
-							type: null,
-							url: null,
-							width: -1,
-							height: -1,
-						});
-						args.updateElement({
-							data: { thumbstick: { name: { $set: val.name } } },
-						});
-					}}
-				/>,
+				<div className={inputFlexStyle.inputFlex}>
+					<ValueInput
+						context={String(args.elementIndex)}
+						debounce={1000}
+						key="thumbstickname"
+						label="Thumbstick Image"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: { thumbstick: { name: { $set: val } } },
+							});
+							loadAssetHelper(val, args.assets, args.setAssets);
+						}}
+						suggestionsId="assets"
+						value={args.elementData.data.thumbstick.name}
+					/>
+					<Button
+						label={
+							<div
+								className={`${icons.icon} ${icons.fileAdd}`}
+								style={{
+									height: "var(--icon-size)",
+									width: "var(--icon-size)",
+								}}
+							/>
+						}
+						onClick={() => {
+							requestFiles("image/*,.pdf", false, (files) => {
+								const val = files[0];
+								args.addAsset(val.name, {
+									file: val,
+									type: null,
+									url: null,
+									width: -1,
+									height: -1,
+								});
+								args.updateElement({
+									data: {
+										thumbstick: {
+											name: { $set: val.name },
+										},
+									},
+								});
+							});
+						}}
+					/>
+				</div>,
 				<ValueInput
 					context={String(args.elementIndex)}
 					key="thumbstickwidth"
@@ -162,8 +177,8 @@ export default function ElementValues(args: {
 			];
 		// eslint-disable-next-line no-fallthrough
 		case EmulatorElementType.Dpad:
-			data = [
-				...data,
+			valueElements = [
+				...valueElements,
 				<Suggestions
 					id={"inputUp"}
 					values={
@@ -283,7 +298,7 @@ export default function ElementValues(args: {
 			];
 			break;
 		case EmulatorElementType.Touchscreen:
-			data = [
+			valueElements = [
 				<Suggestions
 					id={"inputX"}
 					values={
@@ -345,7 +360,7 @@ export default function ElementValues(args: {
 			];
 			break;
 		case EmulatorElementType.Screen:
-			data = [
+			valueElements = [
 				<Suggestions
 					id={"screenX"}
 					values={
@@ -533,7 +548,7 @@ export default function ElementValues(args: {
 			];
 			break;
 		default:
-			data = [
+			valueElements = [
 				<Suggestions
 					id={"inputs"}
 					values={
@@ -592,8 +607,8 @@ export default function ElementValues(args: {
 				}
 			/>
 
-			{...data}
-			<div className={style.inputFlex}>
+			{...valueElements}
+			<div className={inputFlexStyle.inputFlex}>
 				<ValueInput
 					context={String(args.elementIndex)}
 					label="X"
@@ -645,7 +660,7 @@ export default function ElementValues(args: {
 				/>
 			</div>
 
-			<div className={style.inputFlex}>
+			<div className={inputFlexStyle.inputFlex}>
 				<ValueInput
 					context={String(args.elementIndex)}
 					label="Y"

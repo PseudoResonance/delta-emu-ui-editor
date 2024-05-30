@@ -3,7 +3,6 @@ import styles from "./index.module.css";
 import icons from "@/utils/icons.module.css";
 import MenuCategory from "./menucategory";
 import React, {
-	ChangeEvent,
 	Dispatch,
 	SetStateAction,
 	useEffect,
@@ -17,6 +16,7 @@ import JSONParseError from "../commonPopups/jsonparseerror";
 import ControlsInfo from "../commonPopups/controlsinfo";
 import MenuToggle from "./menutoggle";
 import SponsorInfo from "../commonPopups/sponsorinfo";
+import requestFiles from "@/utils/requestFiles";
 
 export default function MenuBar(args: {
 	clearUI: () => void;
@@ -232,26 +232,9 @@ export default function MenuBar(args: {
 							label="Load Deltaskin"
 							onClick={() => {
 								setIsActive(false);
-								const elem = document.createElement("input");
-								elem.type = "file";
-								elem.accept = ".deltaskin";
-								elem.style.display = "none";
-								elem.onchange = ((
-									e: ChangeEvent<HTMLInputElement>,
-								) => {
-									if (
-										e.target.files &&
-										e.target.files.length > 0
-									) {
-										args.loadDeltaskin(e.target.files[0]);
-									}
-								}) as unknown as (
-									this: GlobalEventHandlers,
-									ev: Event,
-								) => unknown;
-								document.body.appendChild(elem);
-								elem.click();
-								document.body.removeChild(elem);
+								requestFiles(".deltaskin", false, (files) => {
+									args.loadDeltaskin(files[0]);
+								});
 							}}
 						/>
 						<MenuButton
@@ -284,43 +267,28 @@ export default function MenuBar(args: {
 							label="Load info.json"
 							onClick={() => {
 								setIsActive(false);
-								const elem = document.createElement("input");
-								elem.type = "file";
-								elem.accept = "application/json";
-								elem.style.display = "none";
-								elem.onchange = ((
-									e: ChangeEvent<HTMLInputElement>,
-								) => {
-									if (
-										e.target.files &&
-										e.target.files.length > 0
-									) {
-										e.target.files[0]
-											.text()
-											.then((val: string) => {
-												try {
-													const readJson =
-														JSON.parse(val);
-													args.parseJSON(readJson);
-												} catch (e) {
-													console.error(
-														"Error parsing imported JSON!",
-														e,
-													);
-													args.showPopup(
-														<JSONParseError />,
-														() => {},
-													);
-												}
-											});
-									}
-								}) as unknown as (
-									this: GlobalEventHandlers,
-									ev: Event,
-								) => unknown;
-								document.body.appendChild(elem);
-								elem.click();
-								document.body.removeChild(elem);
+								requestFiles(
+									"application/json",
+									false,
+									(files) => {
+										files[0].text().then((val: string) => {
+											try {
+												const readJson =
+													JSON.parse(val);
+												args.parseJSON(readJson);
+											} catch (e) {
+												console.error(
+													"Error parsing imported JSON!",
+													e,
+												);
+												args.showPopup(
+													<JSONParseError />,
+													() => {},
+												);
+											}
+										});
+									},
+								);
 							}}
 						/>
 						<MenuButton
