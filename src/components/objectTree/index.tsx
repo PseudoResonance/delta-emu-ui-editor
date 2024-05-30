@@ -46,21 +46,29 @@ export default function TreeItem(args: Args) {
 		>
 			{Object.keys(actionHandlers).length > 0 ? (
 				typeof args.label !== "string" ? (
-					<div className={styles.clickable} {...actionHandlers}>
+					<div
+						className={`${styles.label} ${styles.clickable}`}
+						{...actionHandlers}
+					>
 						{args.label}
 					</div>
 				) : (
-					<p className={styles.clickable} {...actionHandlers}>
+					<p
+						className={`${styles.label} ${styles.clickable}`}
+						{...actionHandlers}
+					>
 						{args.label.length > 0 ? args.label : "\u00A0"}
 					</p>
 				)
 			) : typeof args.label !== "string" ? (
-				<div>{args.label}</div>
+				<div className={styles.label}>{args.label}</div>
 			) : (
-				<p>{args.label.length > 0 ? args.label : "\u00A0"}</p>
+				<p className={styles.label}>
+					{args.label.length > 0 ? args.label : "\u00A0"}
+				</p>
 			)}
 
-			<div className={styles.treeSub}>
+			<div className={styles.treeChildren}>
 				{..."getChildren" in args
 					? args.getChildren(args.data, args.keyStr, args.depth)
 					: args.children instanceof Array

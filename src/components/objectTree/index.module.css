@@ -1,35 +1,45 @@
 .tree {
-	font-size: 1em;
 	line-height: var(--tree-text-line-height);
 	position: relative;
 }
 
-.tree > :not(.treeSub) {
+.tree > .label {
 	margin: 0;
 	padding: var(--tree-padding-y) 0;
 }
 
-.treeSub {
-	padding-left: var(--tree-nest-depth);
+.treeChildren {
+	padding-left: var(--tree-text-line-height);
 	position: relative;
 }
 
-.treeSub > .tree::before {
+.treeChildren > .tree::before {
 	content: "";
 	display: block;
 	position: absolute;
 	width: var(--tree-line-width);
 	height: 100%;
 	top: 0;
-	left: calc((var(--tree-nest-depth) / -2) - (var(--tree-line-width) / 2));
+	left: calc(
+		(var(--tree-text-line-height) / -2) - (var(--tree-line-width) / 2)
+	);
 	background-color: var(--tree-line-rgb);
 }
 
-.treeSub > .tree::after {
+.treeChildren > .tree:last-child::before {
+	height: calc(
+		(
+				var(--tree-text-line-height) + var(--tree-padding-y) +
+					var(--tree-padding-y)
+			) / 2 + (var(--tree-line-width) / 2)
+	);
+}
+
+.treeChildren > .tree::after {
 	content: "";
 	display: block;
 	position: absolute;
-	width: calc(var(--tree-nest-depth) / 2);
+	width: calc(var(--tree-text-line-height) / 2);
 	height: var(--tree-line-width);
 	top: calc(
 		(
@@ -39,28 +49,15 @@
 					) / 2
 			) - (var(--tree-line-width) / 2)
 	);
-	left: calc(var(--tree-nest-depth) / -2);
+	left: calc(var(--tree-text-line-height) / -2);
 	background-color: var(--tree-line-rgb);
 }
 
-.treeSub > .tree:last-child::before {
-	width: var(--tree-line-width);
-	height: calc(
-		(
-				var(--tree-text-line-height) + var(--tree-padding-y) +
-					var(--tree-padding-y)
-			) / 2 + (var(--tree-line-width) / 2)
-	);
-	top: 0;
-	left: calc((var(--tree-nest-depth) / -2) - (var(--tree-line-width) / 2));
-}
-
-.clickable,
-.clickable > :not(.treeSub) {
+.label {
 	transition: all 0.02s linear;
 }
 
 .clickable:hover,
-.active > :not(.treeSub) {
+.active > .label {
 	background-color: var(--button-rgb-hover);
 }
