@@ -1,7 +1,7 @@
 "use client";
 
 import ValueInput from "../inputs/valueinput";
-import CheckboxInput from "../inputs/checkboxinput";
+import CheckboxInput from "../inputs/checkbox";
 import { InfoFile, ShowContextMenuFunc, ShowPopupFunc } from "@/data/types";
 import TreeItem from "../objectTree";
 

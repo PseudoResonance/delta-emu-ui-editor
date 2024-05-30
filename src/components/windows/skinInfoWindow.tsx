@@ -2,7 +2,7 @@
 
 import ValueInput from "../inputs/valueinput";
 import Suggestions from "../inputs/inputSuggestions";
-import CheckboxInput from "../inputs/checkboxinput";
+import CheckboxInput from "../inputs/checkbox";
 import INPUT_PRESETS from "@/data/consoleInfo";
 import { Spec } from "immutability-helper";
 import { InfoFile } from "@/data/types";

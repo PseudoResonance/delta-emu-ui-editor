@@ -9,9 +9,8 @@ import FileInput from "@/components/inputs/fileinput";
 import { Asset, AssetType, EmulatorLayout } from "@/data/types";
 import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
-import CheckboxInput from "@/components/inputs/checkboxinput";
+import CheckboxInput from "@/components/inputs/checkbox";
 import Suggestions from "@/components/inputs/inputSuggestions";
-import IconCheckboxInput from "@/components/inputs/iconCheckbox";
 
 export default function CanvasValues(args: {
 	getCurrentBackgroundAssetName: () => string;
@@ -302,16 +301,9 @@ export default function CanvasValues(args: {
 						/>
 						<div />
 					</div>
-					<IconCheckboxInput
-						icon={
-							<div
-								className={`${icons.icon} ${icons.chain} ${lockRatioStyle.button}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						}
+					<CheckboxInput
+						iconClassFalse={icons.chainBroken}
+						iconClassTrue={icons.chain}
 						onChange={(val) => {
 							args.setLayoutData({
 								lockBackgroundRatio: {

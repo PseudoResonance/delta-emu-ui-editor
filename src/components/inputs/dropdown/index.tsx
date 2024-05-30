@@ -1,5 +1,5 @@
 "use client";
-import inputStyle from "../input.module.css";
+import inputStyles from "../input.module.css";
 import styles from "./index.module.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -125,9 +125,9 @@ export default function DropdownInput(args: {
 					))}
 				</select>
 			</span>
-			<div className={inputStyle.input}>
+			<div className={inputStyles.input}>
 				<label
-					className={inputStyle.label}
+					className={inputStyles.label}
 					htmlFor={id}
 					onClick={() => setIsOpen(true)}
 					onPointerOut={() => {
@@ -141,7 +141,7 @@ export default function DropdownInput(args: {
 				</label>
 
 				<div
-					className={`${inputStyle.inputInner} ${styles.dropdown} ${
+					className={`${inputStyles.inputInner} ${styles.dropdown} ${
 						isOpen ? styles.active : ""
 					} ${isHover || isFocus ? styles.hover : ""}`}
 					onClick={() => setIsOpen(true)}

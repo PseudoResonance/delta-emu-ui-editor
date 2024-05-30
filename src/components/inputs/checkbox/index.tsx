@@ -1,14 +1,26 @@
 "use client";
-import styles from "./input.module.css";
+import inputStyles from "../input.module.css";
+import styles from "./index.module.css";
 import icons from "@/utils/icons.module.css";
-import checkboxStyles from "./checkbox.module.css";
 import React, { useEffect, useMemo, useState } from "react";
 
-export default function CheckboxInput(args: {
-	label: string;
+interface BaseArgs {
 	value: boolean;
 	onChange: (val: boolean) => void;
-}) {
+}
+
+interface IconArgs extends BaseArgs {
+	iconClassFalse: string;
+	iconClassTrue: string;
+}
+
+interface TextArgs extends BaseArgs {
+	label: string;
+}
+
+type Args = TextArgs | IconArgs;
+
+export default function CheckboxInput(args: Args) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const [state, setState] = useState<boolean>(false);
 	const onChange = () => {
@@ -23,8 +35,8 @@ export default function CheckboxInput(args: {
 	}, [args.value]);
 	return (
 		<form
-			className={`${styles.input} ${styles.button}${
-				state ? " " + styles.checked : ""
+			className={`${inputStyles.input} ${"label" in args ? "" : styles.iconState} ${inputStyles.button} ${
+				state ? inputStyles.checked : ""
 			}`}
 		>
 			<span
@@ -50,17 +62,17 @@ export default function CheckboxInput(args: {
 				/>
 			</span>
 			<label
-				className={`${styles.inputInner} ${checkboxStyles.container}`}
+				className={`${inputStyles.inputInner} ${styles.container}`}
 				htmlFor={id}
 			>
 				<span
-					className={`${icons.icon} ${state ? icons.checkboxChecked : icons.checkboxUnchecked}`}
+					className={`${icons.icon} ${state ? ("iconClassTrue" in args ? args.iconClassTrue : icons.checkboxChecked) : "iconClassFalse" in args ? args.iconClassFalse : icons.checkboxUnchecked}`}
 					style={{
 						height: "var(--icon-size)",
 						width: "var(--icon-size)",
 					}}
 				/>
-				<span>{args.label}</span>
+				{"label" in args && <span>{args.label}</span>}
 			</label>
 		</form>
 	);
