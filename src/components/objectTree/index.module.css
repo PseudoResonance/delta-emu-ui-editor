@@ -55,6 +55,7 @@
 	left: calc((var(--tree-nest-depth) / -2) - (var(--tree-line-width) / 2));
 }
 
+.clickable,
 .clickable > :not(.treeSub) {
 	transition: all 0.02s linear;
 }
