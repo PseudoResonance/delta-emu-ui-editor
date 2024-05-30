@@ -32,4 +32,5 @@
 	background-color: var(--secondary-rgb-hover);
 	border: var(--border-rgb) var(--border-width) solid;
 	border-radius: var(--border-radius);
+	font-family: inherit;
 }

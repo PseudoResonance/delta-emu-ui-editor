@@ -32,9 +32,9 @@ const ControlEntry = (args: { action: string; controls: string[][] }) => {
 							(prev, key, i, arr) => (
 								prev.push(
 									...[
-										<p className={styles.key} key={i}>
+										<kbd className={styles.key} key={i}>
 											{key}
-										</p>,
+										</kbd>,
 										...(i + 1 < arr.length
 											? [<p key={`p${i}`}>+</p>]
 											: []),
