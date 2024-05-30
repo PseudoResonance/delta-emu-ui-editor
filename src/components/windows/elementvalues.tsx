@@ -698,14 +698,15 @@ export default function ElementValues(args: {
 							},
 						});
 					}}
-				></Button>
-				<div
-					className={`${icons.icon} ${icons.verticalAlign}`}
-					style={{
-						height: "var(--icon-size)",
-						width: "var(--icon-size)",
-					}}
-				/>
+				>
+					<div
+						className={`${icons.icon} ${icons.verticalAlign}`}
+						style={{
+							height: "var(--icon-size)",
+							width: "var(--icon-size)",
+						}}
+					/>
+				</Button>
 			</div>
 
 			<ValueInput
