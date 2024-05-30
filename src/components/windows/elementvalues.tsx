@@ -1,11 +1,11 @@
 "use client";
 import style from "./elementvalues.module.css";
 import icons from "@/utils/icons.module.css";
-import ValueInput from "../inputs/valueinput";
+import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
-import Button from "../inputs/button";
-import DropdownInput from "../inputs/dropdown";
-import FileInput from "../inputs/fileinput";
+import Button from "@/components/inputs/button";
+import DropdownInput from "@/components/inputs/dropdown";
+import FileInput from "@/components/inputs/file";
 import {
 	Asset,
 	EmulatorElement,
@@ -16,9 +16,9 @@ import {
 } from "@/data/types";
 import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
-import Suggestions from "../inputs/inputSuggestions";
+import Suggestions from "@/components/inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
-import { getElementLabel } from "../visualEditor/element";
+import { getElementLabel } from "@/components/visualEditor/element";
 
 export default function ElementValues(args: {
 	assets: Record<string, Asset> | null;

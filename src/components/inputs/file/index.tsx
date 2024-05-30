@@ -1,5 +1,5 @@
 "use client";
-import styles from "./input.module.css";
+import styles from "../input.module.css";
 import React, { useMemo } from "react";
 import { ChangeEvent, useRef } from "react";
 
@@ -8,17 +8,26 @@ export default function FileInput(args: {
 	accept?: string;
 	onChange: (val: File) => void;
 }) {
-	const ref = useRef<HTMLInputElement>(null);
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
+	const ref = useRef<HTMLInputElement>(null);
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
 			args.onChange(e.target.files[0]);
 		}
 	};
 	return (
-		<div className={styles.input}>
-			<label className={styles.label}>{args.label}</label>
-			<label className={styles.inputInner} htmlFor={id}>
+		<div className={`${styles.input} ${styles.button}`}>
+			<label className={styles.label} htmlFor={id}>
+				{args.label}
+			</label>
+			<label
+				className={styles.inputInner}
+				htmlFor={id}
+				onKeyDown={(e) => {
+					if (e.key === "Enter") (e.target as HTMLElement).click();
+				}}
+				tabIndex={0}
+			>
 				Choose File
 			</label>
 			<input
