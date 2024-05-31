@@ -1,14 +1,14 @@
 "use client";
 
 export interface State {
-	readonly theme: Theme;
 	readonly colorScheme: ColorScheme;
+	readonly theme: Theme;
 }
 
 export enum Theme {
+	DARK = "DARK",
 	DEFAULT = "DEFAULT",
 	LIGHT = "LIGHT",
-	DARK = "DARK",
 }
 
 export enum ColorScheme {
@@ -19,8 +19,8 @@ export enum ColorScheme {
 }
 
 export const DEFAULT: State = {
-	theme: Theme.DEFAULT,
 	colorScheme: ColorScheme.DEFAULT,
+	theme: Theme.DEFAULT,
 };
 
 const save: (state: State) => void = (state: State) => {

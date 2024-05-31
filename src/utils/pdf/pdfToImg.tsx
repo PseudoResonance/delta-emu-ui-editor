@@ -17,9 +17,9 @@ const readFileData = (file: File) => {
 };
 
 const convertPdfToImage: (file: File) => Promise<{
+	height: number;
 	type: AssetType;
 	url: string;
-	height: number;
 	width: number;
 }> = async (file: File) => {
 	pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -37,14 +37,14 @@ const convertPdfToImage: (file: File) => Promise<{
 			canvas.height = viewport.height;
 			canvas.width = viewport.width;
 			await page.render({
+				background: "rgba(0,0,0,0)",
 				canvasContext: context,
 				viewport: viewport,
-				background: "rgba(0,0,0,0)",
 			}).promise;
 			return {
+				height: viewport.height,
 				type: AssetType.PDF,
 				url: canvas.toDataURL(),
-				height: viewport.height,
 				width: viewport.width,
 			};
 		}

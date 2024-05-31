@@ -18,9 +18,9 @@ const recurseOffsetHeight: (elem: HTMLElement) => number = (
 
 export default function DropdownInput(args: {
 	label: string;
+	onChange: (val: string) => void;
 	value: string;
 	values: Record<string, string>;
-	onChange: (val: string) => void;
 }) {
 	const innerRef = useRef<HTMLSelectElement>(null);
 	const elem = useRef<HTMLDivElement>(null);
@@ -31,11 +31,11 @@ export default function DropdownInput(args: {
 	const [isHover, setIsHover] = useState<boolean>(false);
 	const [isFocus, setIsFocus] = useState<boolean>(false);
 	const [dropdownPos, setDropdownPos] = useState<{
-		width: number;
+		heightLeft: number;
 		left: number;
 		top: number;
-		heightLeft: number;
-	}>({ width: 0, left: 0, top: 0, heightLeft: 0 });
+		width: number;
+	}>({ heightLeft: 0, left: 0, top: 0, width: 0 });
 	const onChange = (val: string) => {
 		setIsOpen(false);
 		setState(val);
@@ -65,12 +65,12 @@ export default function DropdownInput(args: {
 	useEffect(() => {
 		if (elem.current) {
 			setDropdownPos({
-				width: elem.current.offsetWidth,
-				left: elem.current.offsetLeft,
-				top: elem.current.offsetTop + elem.current.offsetHeight,
 				heightLeft:
 					recurseOffsetHeight(elem.current) -
 					elem.current.offsetHeight,
+				left: elem.current.offsetLeft,
+				top: elem.current.offsetTop + elem.current.offsetHeight,
+				width: elem.current.offsetWidth,
 			});
 		}
 	}, [elem]);
@@ -78,12 +78,12 @@ export default function DropdownInput(args: {
 		const onResize = () => {
 			if (elem.current) {
 				setDropdownPos({
-					width: elem.current.offsetWidth,
-					left: elem.current.offsetLeft,
-					top: elem.current.offsetTop + elem.current.offsetHeight,
 					heightLeft:
 						recurseOffsetHeight(elem.current) -
 						elem.current.offsetHeight,
+					left: elem.current.offsetLeft,
+					top: elem.current.offsetTop + elem.current.offsetHeight,
+					width: elem.current.offsetWidth,
 				});
 			}
 		};
@@ -98,12 +98,12 @@ export default function DropdownInput(args: {
 		<form className={styles.input}>
 			<span
 				style={{
-					overflow: "hidden",
-					width: 0,
 					height: 0,
-					padding: 0,
 					margin: -1,
+					overflow: "hidden",
+					padding: 0,
 					position: "fixed",
+					width: 0,
 				}}
 			>
 				<select
@@ -176,8 +176,8 @@ export default function DropdownInput(args: {
 						className={styles.horizontalAlign}
 						ref={elemDropdown}
 						style={{
-							top: dropdownPos.top,
 							height: dropdownPos.heightLeft,
+							top: dropdownPos.top,
 						}}
 					>
 						<div
@@ -189,8 +189,8 @@ export default function DropdownInput(args: {
 						<div
 							className={styles.dropdownItems}
 							style={{
-								width: dropdownPos.width,
 								maxHeight: dropdownPos.heightLeft,
+								width: dropdownPos.width,
 							}}
 						>
 							{Object.keys(args.values).map((val: string) => (

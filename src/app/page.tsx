@@ -46,30 +46,30 @@ const MAX_HISTORY = 100;
 const HISTORY_DEBOUNCE = 200;
 
 const historyInfo = {
-	writing: false,
-	isHistoryEdit: false,
 	currentState: 0,
+	isHistoryEdit: false,
 	processing: false,
+	writing: false,
 };
 
 const defaultLayout: EmulatorLayout = {
-	lockBackgroundRatio: false,
 	assets: {
-		type: AssetType.PDF,
+		large: "",
+		medium: "",
 		resizable: "",
 		small: "",
-		medium: "",
-		large: "",
+		type: AssetType.PDF,
 	},
 	canvas: {
-		width: 500,
 		height: 500,
+		width: 500,
 	},
+	lockBackgroundRatio: false,
 	padding: {
-		top: 0,
 		bottom: 0,
 		left: 0,
 		right: 0,
+		top: 0,
 	},
 	translucent: false,
 };
@@ -80,30 +80,30 @@ const defaultRepresentation: Representation = {
 };
 
 const defaultInfoFile: InfoFile = {
-	hiddenLoadedFileName: "",
-	name: "",
-	identifier: "",
-	gameTypeIdentifier: "",
 	debug: false,
+	gameTypeIdentifier: "",
+	hiddenLoadedFileName: "",
+	identifier: "",
+	name: "",
 	representations: {
-		iphone: {
-			standard: {
-				portrait: structuredClone(defaultRepresentation),
+		ipad: {
+			splitView: {
 				landscape: structuredClone(defaultRepresentation),
+				portrait: structuredClone(defaultRepresentation),
 			},
-			edgeToEdge: {
-				portrait: structuredClone(defaultRepresentation),
+			standard: {
 				landscape: structuredClone(defaultRepresentation),
+				portrait: structuredClone(defaultRepresentation),
 			},
 		},
-		ipad: {
-			standard: {
-				portrait: structuredClone(defaultRepresentation),
+		iphone: {
+			edgeToEdge: {
 				landscape: structuredClone(defaultRepresentation),
+				portrait: structuredClone(defaultRepresentation),
 			},
-			splitView: {
-				portrait: structuredClone(defaultRepresentation),
+			standard: {
 				landscape: structuredClone(defaultRepresentation),
+				portrait: structuredClone(defaultRepresentation),
 			},
 		},
 	},
@@ -150,8 +150,8 @@ export default function Home() {
 	const [popups, setPopups] = useState<
 		{
 			data: React.JSX.Element;
-			onClose: () => void;
 			onAccept?: () => void;
+			onClose: () => void;
 		}[]
 	>([]);
 	const [contextMenu, setContextMenu] = useState<{
@@ -176,9 +176,9 @@ export default function Home() {
 		yOffset: 0,
 	});
 	const [focusState, setFocusState] = useState<FocusState>({
-		target: null,
 		elements: [],
 		representation: "",
+		target: null,
 	});
 	const [editingElement, setEditingElementInternal] = useState<number>(-1);
 	const setEditingElement = useCallback((val: number) => {
@@ -186,21 +186,21 @@ export default function Home() {
 		if (val > -1) {
 			setFocusState((state) => {
 				const ret = {
-					target: FocusTarget.ELEMENT,
 					elements: state.elements.includes(val)
 						? state.elements.sort((x, y) =>
 								x == val ? 1 : y == val ? -1 : 0,
 							)
 						: [...state.elements, val],
 					representation: currentRepresentation,
+					target: FocusTarget.ELEMENT,
 				};
 				return ret;
 			});
 		} else {
 			setFocusState((state) =>
 				update(state, {
-					target: { $set: FocusTarget.REPRESENTATION },
 					representation: { $set: currentRepresentation },
+					target: { $set: FocusTarget.REPRESENTATION },
 				}),
 			);
 		}
@@ -261,39 +261,39 @@ export default function Home() {
 
 	const addElement: () => void = () => {
 		addElementData({
-			type: EmulatorElementType.Default,
 			data: {
 				inputs: [],
 				inputsobj: {
-					up: "up",
 					down: "down",
 					left: "left",
 					right: "right",
+					up: "up",
 					x: "touchScreenX",
 					y: "touchScreenY",
 				},
-				thumbstick: {
-					name: "",
-					width: 0,
-					height: 0,
-					hidden: false,
-				},
 				screen: {
+					height: 0,
+					width: 0,
 					x: 0,
 					y: 0,
-					width: 0,
+				},
+				thumbstick: {
 					height: 0,
+					hidden: false,
+					name: "",
+					width: 0,
 				},
 			},
-			x: 0,
-			y: 0,
-			width: 100,
 			height: 100,
-			paddingTop: 0,
+			hidden: false,
 			paddingBottom: 0,
 			paddingLeft: 0,
 			paddingRight: 0,
-			hidden: false,
+			paddingTop: 0,
+			type: EmulatorElementType.Default,
+			width: 100,
+			x: 0,
+			y: 0,
 		});
 	};
 
@@ -388,10 +388,10 @@ export default function Home() {
 		const tree = getReferencedAssets(exportObj.infoFile);
 		tree["info.json"] = {
 			file: file,
+			height: -1,
 			type: null,
 			url: null,
 			width: -1,
-			height: -1,
 		};
 		const name = exportObj.infoFile.hiddenLoadedFileName
 			? exportObj.infoFile.hiddenLoadedFileName
@@ -716,9 +716,9 @@ export default function Home() {
 			setEditingElementInternal(-1);
 			setHoverIndex(-1);
 			setFocusState({
-				target: FocusTarget.REPRESENTATION,
 				elements: [],
 				representation: key,
+				target: FocusTarget.REPRESENTATION,
 			});
 			setCurrentRepresentation(key);
 			if (assets) {
@@ -840,17 +840,17 @@ export default function Home() {
 
 	const clearUI: () => void = () => {
 		setEditingElementInternal(-1);
-		setFocusState({ target: null, elements: [], representation: "" });
+		setFocusState({ elements: [], representation: "", target: null });
 		setCurrentRepresentation("");
 	};
 
-	const saveJSON: () => { json: string; infoFile: InfoFile } = () => {
+	const saveJSON: () => { infoFile: InfoFile; json: string } = () => {
 		const exportObj: InfoFile = {
-			hiddenLoadedFileName: infoFile.hiddenLoadedFileName,
-			name: infoFile.name,
-			identifier: infoFile.identifier,
-			gameTypeIdentifier: infoFile.gameTypeIdentifier,
 			debug: infoFile.debug,
+			gameTypeIdentifier: infoFile.gameTypeIdentifier,
+			hiddenLoadedFileName: infoFile.hiddenLoadedFileName,
+			identifier: infoFile.identifier,
+			name: infoFile.name,
 			representations: {},
 		};
 		if ("representations" in infoFile) {
@@ -885,51 +885,51 @@ export default function Home() {
 				exportObj as unknown as Record<string, object>,
 			);
 		}
-		return { json: JSON.stringify(exportObj), infoFile: infoFile };
+		return { infoFile: infoFile, json: JSON.stringify(exportObj) };
 	};
 
 	const saveRepresentation = (data: Representation) => {
 		const exportObj: {
 			assets: Record<string, string>;
-			items: {
-				inputs: string[] | Record<string, string>;
-				frame: {
-					x: number;
-					y: number;
-					width: number;
-					height: number;
-				};
-				extendedEdges: {
-					top: number;
-					bottom: number;
-					left: number;
-					right: number;
-				};
-			}[];
-			screens: {
-				inputFrame: {
-					x: number;
-					y: number;
-					width: number;
-					height: number;
-				};
-				outputFrame: {
-					x: number;
-					y: number;
-					width: number;
-					height: number;
-				};
-			}[];
-			mappingSize: {
-				width: number;
-				height: number;
-			};
 			extendedEdges: {
-				top: number;
 				bottom: number;
 				left: number;
 				right: number;
+				top: number;
 			};
+			items: {
+				extendedEdges: {
+					bottom: number;
+					left: number;
+					right: number;
+					top: number;
+				};
+				frame: {
+					height: number;
+					width: number;
+					x: number;
+					y: number;
+				};
+				inputs: string[] | Record<string, string>;
+			}[];
+			mappingSize: {
+				height: number;
+				width: number;
+			};
+			screens: {
+				inputFrame: {
+					height: number;
+					width: number;
+					x: number;
+					y: number;
+				};
+				outputFrame: {
+					height: number;
+					width: number;
+					x: number;
+					y: number;
+				};
+			}[];
 			translucent: boolean;
 		} = {
 			assets:
@@ -940,28 +940,28 @@ export default function Home() {
 								: "",
 						}
 					: {
-							small: data.layout.assets.small
-								? data.layout.assets.small
+							large: data.layout.assets.large
+								? data.layout.assets.large
 								: "",
 							medium: data.layout.assets.medium
 								? data.layout.assets.medium
 								: "",
-							large: data.layout.assets.large
-								? data.layout.assets.large
+							small: data.layout.assets.small
+								? data.layout.assets.small
 								: "",
 						},
-			items: [],
-			screens: [],
-			mappingSize: {
-				width: Math.round(data.layout.canvas.width),
-				height: Math.round(data.layout.canvas.height),
-			},
 			extendedEdges: {
-				top: Math.round(data.layout.padding.top),
 				bottom: Math.round(data.layout.padding.bottom),
 				left: Math.round(data.layout.padding.left),
 				right: Math.round(data.layout.padding.right),
+				top: Math.round(data.layout.padding.top),
 			},
+			items: [],
+			mappingSize: {
+				height: Math.round(data.layout.canvas.height),
+				width: Math.round(data.layout.canvas.width),
+			},
+			screens: [],
 			translucent: data.layout.translucent,
 		};
 		data.elements.forEach((val: EmulatorElement) => {
@@ -969,27 +969,26 @@ export default function Home() {
 			const thumbstick:
 				| {
 						thumbstick: {
+							height: number;
 							name: string;
 							width: number;
-							height: number;
 						};
 				  }
 				| Record<string, object> = {};
 			switch (val.type) {
 				case EmulatorElementType.Thumbstick:
 					thumbstick.thumbstick = {
+						height: val.data.thumbstick.height
+							? Math.round(val.data.thumbstick.height)
+							: 0,
 						name: val.data.thumbstick.name,
 						width: val.data.thumbstick.width
 							? Math.round(val.data.thumbstick.width)
-							: 0,
-						height: val.data.thumbstick.height
-							? Math.round(val.data.thumbstick.height)
 							: 0,
 					};
 				// eslint-disable-next-line no-fallthrough
 				case EmulatorElementType.Dpad:
 					inputs = {
-						up: val.data.inputsobj.up ? val.data.inputsobj.up : "",
 						down: val.data.inputsobj.down
 							? val.data.inputsobj.down
 							: "",
@@ -999,6 +998,7 @@ export default function Home() {
 						right: val.data.inputsobj.right
 							? val.data.inputsobj.right
 							: "",
+						up: val.data.inputsobj.up ? val.data.inputsobj.up : "",
 					};
 					break;
 				case EmulatorElementType.Touchscreen:
@@ -1010,16 +1010,16 @@ export default function Home() {
 				case EmulatorElementType.Screen:
 					exportObj.screens.push({
 						inputFrame: {
+							height: Math.round(val.data.screen.height),
+							width: Math.round(val.data.screen.width),
 							x: Math.round(val.data.screen.x),
 							y: Math.round(val.data.screen.y),
-							width: Math.round(val.data.screen.width),
-							height: Math.round(val.data.screen.height),
 						},
 						outputFrame: {
+							height: Math.round(val.height),
+							width: Math.round(val.width),
 							x: Math.round(val.x),
 							y: Math.round(val.y),
-							width: Math.round(val.width),
-							height: Math.round(val.height),
 						},
 					});
 					return;
@@ -1029,19 +1029,19 @@ export default function Home() {
 			}
 			exportObj.items.push({
 				...thumbstick,
-				inputs: inputs,
-				frame: {
-					x: Math.round(val.x),
-					y: Math.round(val.y),
-					width: Math.round(val.width),
-					height: Math.round(val.height),
-				},
 				extendedEdges: {
-					top: Math.round(val.paddingTop),
 					bottom: Math.round(val.paddingBottom),
 					left: Math.round(val.paddingLeft),
 					right: Math.round(val.paddingRight),
+					top: Math.round(val.paddingTop),
 				},
+				frame: {
+					height: Math.round(val.height),
+					width: Math.round(val.width),
+					x: Math.round(val.x),
+					y: Math.round(val.y),
+				},
+				inputs: inputs,
 			});
 		});
 		return exportObj;
@@ -1050,15 +1050,15 @@ export default function Home() {
 	const parseJSON = (json: Record<string, unknown>, fileName?: string) => {
 		try {
 			const newInfoFile: InfoFile = {
-				hiddenLoadedFileName: fileName ? fileName : "",
-				name: "name" in json ? (json.name as string) : "",
-				identifier:
-					"identifier" in json ? (json.identifier as string) : "",
+				debug: "debug" in json ? (json.debug as boolean) : false,
 				gameTypeIdentifier:
 					"gameTypeIdentifier" in json
 						? (json.gameTypeIdentifier as string)
 						: "",
-				debug: "debug" in json ? (json.debug as boolean) : false,
+				hiddenLoadedFileName: fileName ? fileName : "",
+				identifier:
+					"identifier" in json ? (json.identifier as string) : "",
+				name: "name" in json ? (json.name as string) : "",
 				representations: {},
 			};
 			const gameTypeIdentifier = newInfoFile.gameTypeIdentifier;
@@ -1075,10 +1075,10 @@ export default function Home() {
 					) {
 						const parsed = parseRepresentation(
 							data as {
-								items: Record<string, object>[];
 								assets: Record<string, string>;
-								mappingSize: Record<string, string>;
 								extendedEdges?: Record<string, string>;
+								items: Record<string, object>[];
+								mappingSize: Record<string, string>;
 							},
 							gameTypeIdentifier,
 						);
@@ -1126,10 +1126,10 @@ export default function Home() {
 
 	const parseRepresentation = (
 		json: {
-			items: Record<string, unknown>[];
 			assets: Record<string, string>;
-			mappingSize: Record<string, string>;
 			extendedEdges?: Record<string, string>;
+			items: Record<string, unknown>[];
+			mappingSize: Record<string, string>;
 		},
 		gameTypeIdentifier: string,
 	) => {
@@ -1144,24 +1144,24 @@ export default function Home() {
 				const data = {
 					inputs: [] as string[],
 					inputsobj: {
-						up: "up",
 						down: "down",
 						left: "left",
 						right: "right",
+						up: "up",
 						x: "touchScreenX",
 						y: "touchScreenY",
 					},
-					thumbstick: {
-						name: "",
-						width: 0,
-						height: 0,
-						hidden: false,
-					},
 					screen: {
+						height: 0,
+						width: 0,
 						x: 0,
 						y: 0,
-						width: 0,
+					},
+					thumbstick: {
 						height: 0,
+						hidden: false,
+						name: "",
+						width: 0,
 					},
 				};
 				if (val.inputs instanceof Array) {
@@ -1215,30 +1215,12 @@ export default function Home() {
 				}
 				if (val.frame && typeof val.frame === "object") {
 					newElements.push({
-						type: type,
 						data: data,
-						x:
-							"x" in val.frame
-								? parseInt(val.frame.x as string)
-								: 0,
-						y:
-							"y" in val.frame
-								? parseInt(val.frame.y as string)
-								: 0,
-						width:
-							"width" in val.frame
-								? parseInt(val.frame.width as string)
-								: 0,
 						height:
 							"height" in val.frame
 								? parseInt(val.frame.height as string)
 								: 0,
-						paddingTop:
-							val.extendedEdges &&
-							typeof val.extendedEdges === "object" &&
-							"top" in val.extendedEdges
-								? parseInt(val.extendedEdges.top as string)
-								: 0,
+						hidden: false,
 						paddingBottom:
 							val.extendedEdges &&
 							typeof val.extendedEdges === "object" &&
@@ -1257,7 +1239,25 @@ export default function Home() {
 							"right" in val.extendedEdges
 								? parseInt(val.extendedEdges.right as string)
 								: 0,
-						hidden: false,
+						paddingTop:
+							val.extendedEdges &&
+							typeof val.extendedEdges === "object" &&
+							"top" in val.extendedEdges
+								? parseInt(val.extendedEdges.top as string)
+								: 0,
+						type: type,
+						width:
+							"width" in val.frame
+								? parseInt(val.frame.width as string)
+								: 0,
+						x:
+							"x" in val.frame
+								? parseInt(val.frame.x as string)
+								: 0,
+						y:
+							"y" in val.frame
+								? parseInt(val.frame.y as string)
+								: 0,
 					});
 				}
 			});
@@ -1267,10 +1267,10 @@ export default function Home() {
 				typeof json.gameScreenFrame === "object"
 			) {
 				const screenInputDefault = {
+					height: 0,
+					width: 0,
 					x: 0,
 					y: 0,
-					width: 0,
-					height: 0,
 				};
 				if (gameTypeIdentifier in INPUT_PRESETS) {
 					screenInputDefault.width =
@@ -1279,25 +1279,38 @@ export default function Home() {
 						INPUT_PRESETS[gameTypeIdentifier].inputScreen.height;
 				}
 				newElements.push({
-					type: EmulatorElementType.Screen,
 					data: {
 						inputs: [],
 						inputsobj: {
-							up: "up",
 							down: "down",
 							left: "left",
 							right: "right",
+							up: "up",
 							x: "touchScreenX",
 							y: "touchScreenY",
 						},
+						screen: screenInputDefault,
 						thumbstick: {
-							name: "",
-							width: 0,
 							height: 0,
 							hidden: false,
+							name: "",
+							width: 0,
 						},
-						screen: screenInputDefault,
 					},
+					height:
+						"height" in json.gameScreenFrame
+							? parseInt(json.gameScreenFrame.height as string)
+							: 0,
+					hidden: false,
+					paddingBottom: 0,
+					paddingLeft: 0,
+					paddingRight: 0,
+					paddingTop: 0,
+					type: EmulatorElementType.Screen,
+					width:
+						"width" in json.gameScreenFrame
+							? parseInt(json.gameScreenFrame.width as string)
+							: 0,
 					x:
 						"x" in json.gameScreenFrame
 							? parseInt(json.gameScreenFrame.x as string)
@@ -1306,19 +1319,6 @@ export default function Home() {
 						"y" in json.gameScreenFrame
 							? parseInt(json.gameScreenFrame.y as string)
 							: 0,
-					width:
-						"width" in json.gameScreenFrame
-							? parseInt(json.gameScreenFrame.width as string)
-							: 0,
-					height:
-						"height" in json.gameScreenFrame
-							? parseInt(json.gameScreenFrame.height as string)
-							: 0,
-					paddingTop: 0,
-					paddingBottom: 0,
-					paddingLeft: 0,
-					paddingRight: 0,
-					hidden: false,
 				});
 			}
 			if (
@@ -1328,24 +1328,29 @@ export default function Home() {
 			) {
 				json.screens?.forEach((val: Record<string, object>) => {
 					newElements.push({
-						type: EmulatorElementType.Screen,
 						data: {
 							inputs: [],
 							inputsobj: {
-								up: "up",
 								down: "down",
 								left: "left",
 								right: "right",
+								up: "up",
 								x: "touchScreenX",
 								y: "touchScreenY",
 							},
-							thumbstick: {
-								name: "",
-								width: 0,
-								height: 0,
-								hidden: false,
-							},
 							screen: {
+								height:
+									"height" in val.inputFrame
+										? parseInt(
+												val.inputFrame.height as string,
+											)
+										: 0,
+								width:
+									"width" in val.inputFrame
+										? parseInt(
+												val.inputFrame.width as string,
+											)
+										: 0,
 								x:
 									"x" in val.inputFrame
 										? parseInt(val.inputFrame.x as string)
@@ -1354,20 +1359,28 @@ export default function Home() {
 									"y" in val.inputFrame
 										? parseInt(val.inputFrame.y as string)
 										: 0,
-								width:
-									"width" in val.inputFrame
-										? parseInt(
-												val.inputFrame.width as string,
-											)
-										: 0,
-								height:
-									"height" in val.inputFrame
-										? parseInt(
-												val.inputFrame.height as string,
-											)
-										: 0,
+							},
+							thumbstick: {
+								height: 0,
+								hidden: false,
+								name: "",
+								width: 0,
 							},
 						},
+						height:
+							"height" in val.outputFrame
+								? parseInt(val.outputFrame.height as string)
+								: 0,
+						hidden: false,
+						paddingBottom: 0,
+						paddingLeft: 0,
+						paddingRight: 0,
+						paddingTop: 0,
+						type: EmulatorElementType.Screen,
+						width:
+							"width" in val.outputFrame
+								? parseInt(val.outputFrame.width as string)
+								: 0,
 						x:
 							"x" in val.outputFrame
 								? parseInt(val.outputFrame.x as string)
@@ -1376,19 +1389,6 @@ export default function Home() {
 							"y" in val.outputFrame
 								? parseInt(val.outputFrame.y as string)
 								: 0,
-						width:
-							"width" in val.outputFrame
-								? parseInt(val.outputFrame.width as string)
-								: 0,
-						height:
-							"height" in val.outputFrame
-								? parseInt(val.outputFrame.height as string)
-								: 0,
-						paddingTop: 0,
-						paddingBottom: 0,
-						paddingLeft: 0,
-						paddingRight: 0,
-						hidden: false,
 					});
 				});
 			}
@@ -1481,9 +1481,9 @@ export default function Home() {
 								? oldHistory.slice(0, historyInfo.currentState)
 								: oldHistory.slice(-MAX_HISTORY);
 						newHistory.push({
-							infoFile: structuredClone(infoFile),
 							currentRepresentation: currentRepresentation,
 							focusState: focusState,
+							infoFile: structuredClone(infoFile),
 						});
 						historyInfo.currentState = newHistory.length;
 						return newHistory;

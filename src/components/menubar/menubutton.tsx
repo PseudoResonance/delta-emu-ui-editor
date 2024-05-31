@@ -3,9 +3,9 @@ import styles from "./index.module.css";
 import React from "react";
 
 export default function MenuButton(args: {
+	disabled?: boolean;
 	label: string | React.JSX.Element;
 	onClick: () => void;
-	disabled?: boolean;
 	style?: React.CSSProperties;
 }) {
 	return (

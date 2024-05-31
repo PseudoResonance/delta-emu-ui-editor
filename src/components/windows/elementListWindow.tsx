@@ -14,19 +14,19 @@ import { Spec } from "immutability-helper";
 import * as Tree from "../objectTree";
 
 export default function ElementListWindow(args: {
-	elements: EmulatorElement[];
 	addElement: () => void;
 	addElementData: (data: EmulatorElement) => void;
-	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
-	removeElement: (key: number) => void;
-	layoutData: EmulatorLayout | null;
 	editingElement: number;
-	setEditingElement: (val: number) => void;
-	updateAllElements: (elements: Spec<EmulatorElement[], never>) => void;
+	elements: EmulatorElement[];
 	hoverIndex: number;
+	layoutData: EmulatorLayout | null;
+	removeElement: (key: number) => void;
+	setEditingElement: (val: number) => void;
 	setHoverIndex: Dispatch<SetStateAction<number>>;
-	showPopup: ShowPopupFunc;
 	showContextMenu: ShowContextMenuFunc;
+	showPopup: ShowPopupFunc;
+	updateAllElements: (elements: Spec<EmulatorElement[], never>) => void;
+	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 }) {
 	const allHidden = args.elements.reduce<boolean>(
 		(prev, cur) => prev && cur.hidden,
@@ -53,9 +53,9 @@ export default function ElementListWindow(args: {
 								<div
 									role="none"
 									style={{
+										alignItems: "stretch",
 										display: "flex",
 										justifyContent: "space-between",
-										alignItems: "stretch",
 										position: "relative",
 									}}
 								>
@@ -137,10 +137,10 @@ export default function ElementListWindow(args: {
 												<div
 													role="none"
 													style={{
+														alignItems: "stretch",
 														display: "flex",
 														justifyContent:
 															"space-between",
-														alignItems: "stretch",
 														position: "relative",
 													}}
 												>
@@ -271,11 +271,11 @@ export default function ElementListWindow(args: {
 														<div
 															role="none"
 															style={{
+																alignItems:
+																	"stretch",
 																display: "flex",
 																justifyContent:
 																	"space-between",
-																alignItems:
-																	"stretch",
 																position:
 																	"relative",
 															}}

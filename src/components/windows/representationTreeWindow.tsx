@@ -6,13 +6,13 @@ import { InfoFile, ShowContextMenuFunc, ShowPopupFunc } from "@/data/types";
 import * as Tree from "../objectTree";
 
 export default function RepresentationTreeWindow(args: {
-	infoFile: InfoFile;
 	applyRepresentation: (key: string) => void;
-	currentRepresentation: string;
-	showPopup: ShowPopupFunc;
-	showContextMenu: ShowContextMenuFunc;
-	deleteNode: (key: string) => void;
 	createNode: (key: string, isLayout: boolean) => void;
+	currentRepresentation: string;
+	deleteNode: (key: string) => void;
+	infoFile: InfoFile;
+	showContextMenu: ShowContextMenuFunc;
+	showPopup: ShowPopupFunc;
 }) {
 	const getChildren: (
 		e: Record<string, unknown>,

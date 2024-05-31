@@ -9,8 +9,8 @@ import * as CONSTANT from "@/data/constants";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: CONSTANT.NAME,
 	description: CONSTANT.DESCRIPTION,
+	title: CONSTANT.NAME,
 };
 
 export default function RootLayout({

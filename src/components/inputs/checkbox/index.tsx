@@ -5,8 +5,8 @@ import icons from "@/utils/icons.module.css";
 import React, { useEffect, useMemo, useState } from "react";
 
 interface BaseArgs {
-	value: boolean;
 	onChange: (val: boolean) => void;
+	value: boolean;
 }
 
 interface IconArgs extends BaseArgs {
@@ -38,12 +38,12 @@ export default function CheckboxInput(args: Args) {
 		<form className={`${inputStyles.input} ${inputStyles.button}`}>
 			<span
 				style={{
-					overflow: "hidden",
-					width: 0,
 					height: 0,
-					padding: 0,
 					margin: -1,
+					overflow: "hidden",
+					padding: 0,
 					position: "fixed",
+					width: 0,
 				}}
 			>
 				<input

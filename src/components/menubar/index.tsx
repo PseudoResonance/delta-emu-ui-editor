@@ -19,23 +19,23 @@ import SponsorInfo from "../commonPopups/sponsorinfo";
 import requestFiles from "@/utils/requestFiles";
 
 export default function MenuBar(args: {
-	clearUI: () => void;
-	setScale: Dispatch<SetStateAction<ScaleData>>;
-	saveJSON: () => { json: string; infoFile: InfoFile };
-	parseJSON: (json: Record<string, unknown>) => void;
-	canUndo: boolean;
-	undo: () => void;
 	canRedo: boolean;
-	redo: () => void;
-	showPopup: ShowPopupFunc;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	canUndo: boolean;
+	clearUI: () => void;
 	getReferencedAssets: (infoFile: InfoFile) => Record<string, Asset>;
+	loadDeltaskin: (file: File) => void;
+	parseJSON: (json: Record<string, unknown>) => void;
+	redo: () => void;
+	saveDeltaskin: () => void;
+	saveJSON: () => { infoFile: InfoFile; json: string };
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	setScale: Dispatch<SetStateAction<ScaleData>>;
 	setSidebarVisibility: Dispatch<
 		SetStateAction<{ left: boolean; right: boolean }>
 	>;
+	showPopup: ShowPopupFunc;
 	showPreferences: () => void;
-	loadDeltaskin: (file: File) => void;
-	saveDeltaskin: () => void;
+	undo: () => void;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const ref = useRef<HTMLDivElement>(null);

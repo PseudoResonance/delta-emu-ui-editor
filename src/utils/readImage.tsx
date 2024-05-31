@@ -4,9 +4,9 @@ import { Dispatch, SetStateAction } from "react";
 
 const readImage = (file: File) => {
 	return new Promise<{
+		height: number;
 		type: AssetType;
 		url: string;
-		height: number;
 		width: number;
 	}>((resolve, reject) => {
 		if (file.name.toLocaleLowerCase().endsWith(".pdf")) {
@@ -22,12 +22,12 @@ const readImage = (file: File) => {
 			const image = new Image();
 			image.onload = (e) => {
 				resolve({
-					type: AssetType.PNG,
-					url: url,
 					height:
 						e.target instanceof HTMLImageElement
 							? (e.target as HTMLImageElement).naturalHeight
 							: -1,
+					type: AssetType.PNG,
+					url: url,
 					width:
 						e.target instanceof HTMLImageElement
 							? (e.target as HTMLImageElement).naturalWidth

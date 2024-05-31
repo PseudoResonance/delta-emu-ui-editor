@@ -4,9 +4,9 @@ import styles from "./index.module.css";
 
 export default function Popup(args: {
 	children?: React.JSX.Element | React.JSX.Element[];
-	removeSelf: () => void;
-	onClose: () => void;
 	onAccept?: () => void;
+	onClose: () => void;
+	removeSelf: () => void;
 }) {
 	const defaultButton = useRef<HTMLButtonElement>(null);
 	useEffect(() => {

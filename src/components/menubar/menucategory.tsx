@@ -3,9 +3,9 @@ import styles from "./index.module.css";
 import React, { Dispatch, SetStateAction } from "react";
 
 export default function MenuCategory(args: {
-	label: string;
 	children?: React.JSX.Element | React.JSX.Element[];
 	isActive: boolean;
+	label: string;
 	setIsActive: Dispatch<SetStateAction<boolean>>;
 }) {
 	return (

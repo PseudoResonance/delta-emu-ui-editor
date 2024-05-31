@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys-fix/sort-keys-fix */
 export const NAME = "Delta Emulator UI Designer";
 export const DESCRIPTION = "Visual UI designer for Delta Emulator skins";
 export const SPONSOR_URLS: { name: string; url: string }[] = [

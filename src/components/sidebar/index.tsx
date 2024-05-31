@@ -3,8 +3,8 @@ import styles from "./index.module.css";
 import React, { useEffect, useRef } from "react";
 
 export default function Sidebar(args: {
-	hiddenNarrow: boolean;
 	children?: React.JSX.Element | React.JSX.Element[];
+	hiddenNarrow: boolean;
 	position: SidebarPosition;
 	requestVisible: () => void;
 }) {

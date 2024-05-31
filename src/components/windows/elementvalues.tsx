@@ -21,20 +21,20 @@ import { getElementLabel } from "@/components/visualEditor/element";
 import requestFiles from "@/utils/requestFiles";
 
 export default function ElementValues(args: {
-	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	addAsset: (path: string, asset: Asset) => void;
-	elementIndex: number;
-	updateElement: (data: Spec<EmulatorElement, never>) => void;
-	elementData: EmulatorElement;
-	duplicateThis: () => void;
+	assets: Record<string, Asset> | null;
+	currentRepresentation: string;
 	deleteThis: () => void;
-	parentWidth: number;
-	parentHeight: number;
+	duplicateThis: () => void;
+	elementData: EmulatorElement;
+	elementIndex: number;
 	infoFile: InfoFile;
 	layoutData: EmulatorLayout;
+	parentHeight: number;
+	parentWidth: number;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	showPopup: ShowPopupFunc;
-	currentRepresentation: string;
+	updateElement: (data: Spec<EmulatorElement, never>) => void;
 }) {
 	const INPUT_PRESET =
 		args.infoFile.gameTypeIdentifier in INPUT_PRESETS
@@ -80,10 +80,10 @@ export default function ElementValues(args: {
 								const val = files[0];
 								args.addAsset(val.name, {
 									file: val,
+									height: -1,
 									type: null,
 									url: null,
 									width: -1,
-									height: -1,
 								});
 								args.updateElement({
 									data: {

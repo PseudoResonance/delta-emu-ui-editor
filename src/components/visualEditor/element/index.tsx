@@ -16,30 +16,30 @@ const PADDING_EXPANDS_WITH_BOX_MOVE = false;
 
 export default function EmulatorElementComponent(args: {
 	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
-	isBackground: boolean;
-	pressedKeys: string[];
-	parentWidth: number;
-	parentHeight: number;
-	elementData: EmulatorElement;
 	defaultPadding: {
-		top: number;
 		bottom: number;
 		left: number;
 		right: number;
+		top: number;
 	};
-	onClick: () => void;
-	updateElement: (data: Spec<EmulatorElement, never>) => void;
-	setHoverIndex: Dispatch<SetStateAction<number>>;
-	isHover: boolean;
-	scale: number;
-	showPopup: ShowPopupFunc;
-	showContextMenu: ShowContextMenuFunc;
-	duplicateThis: () => void;
 	deleteThis: () => void;
-	zIndex: number | null;
+	duplicateThis: () => void;
+	elementData: EmulatorElement;
+	isBackground: boolean;
 	isEditing: boolean[];
+	isHover: boolean;
+	onClick: () => void;
+	parentHeight: number;
+	parentWidth: number;
+	pressedKeys: string[];
+	scale: number;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	setHoverIndex: Dispatch<SetStateAction<number>>;
 	setIsEditing: (val: boolean) => void;
+	showContextMenu: ShowContextMenuFunc;
+	showPopup: ShowPopupFunc;
+	updateElement: (data: Spec<EmulatorElement, never>) => void;
+	zIndex: number | null;
 }) {
 	const [isActive, setIsActive] = useState<boolean>(false);
 	const label = getElementLabel(args.elementData);
@@ -472,16 +472,6 @@ export default function EmulatorElementComponent(args: {
 				);
 			}}
 			style={{
-				width: Math.max(
-					0,
-					(args.elementData.width +
-						(args.elementData.type === EmulatorElementType.Screen
-							? 0
-							: args.elementData.paddingLeft +
-								args.elementData.paddingRight)) *
-						args.scale -
-						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
-				),
 				height: Math.max(
 					0,
 					(args.elementData.height +
@@ -492,13 +482,6 @@ export default function EmulatorElementComponent(args: {
 						args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				),
-				top:
-					(args.elementData.y -
-						(args.elementData.type === EmulatorElementType.Screen
-							? 0
-							: args.elementData.paddingTop)) *
-						args.scale -
-					CONSTANT.ELEMENT_BORDER_WIDTH,
 				left:
 					(args.elementData.x -
 						(args.elementData.type === EmulatorElementType.Screen
@@ -506,6 +489,23 @@ export default function EmulatorElementComponent(args: {
 							: args.elementData.paddingLeft)) *
 						args.scale -
 					CONSTANT.ELEMENT_BORDER_WIDTH,
+				top:
+					(args.elementData.y -
+						(args.elementData.type === EmulatorElementType.Screen
+							? 0
+							: args.elementData.paddingTop)) *
+						args.scale -
+					CONSTANT.ELEMENT_BORDER_WIDTH,
+				width: Math.max(
+					0,
+					(args.elementData.width +
+						(args.elementData.type === EmulatorElementType.Screen
+							? 0
+							: args.elementData.paddingLeft +
+								args.elementData.paddingRight)) *
+						args.scale -
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
+				),
 				zIndex: args.zIndex !== null ? args.zIndex : "auto",
 			}}
 		>
@@ -577,10 +577,6 @@ export default function EmulatorElementComponent(args: {
 			<div
 				className={styles.padding}
 				style={{
-					paddingTop:
-						(args.elementData.type === EmulatorElementType.Screen
-							? 0
-							: args.elementData.paddingTop) * args.scale,
 					paddingBottom:
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
@@ -593,30 +589,21 @@ export default function EmulatorElementComponent(args: {
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
 							: args.elementData.paddingRight) * args.scale,
+					paddingTop:
+						(args.elementData.type === EmulatorElementType.Screen
+							? 0
+							: args.elementData.paddingTop) * args.scale,
 				}}
 			>
 				<div
 					className={styles.inner}
 					style={{
 						display: "block",
-						position: "absolute",
-						width: Math.max(
-							0,
-							args.elementData.width * args.scale -
-								2 * CONSTANT.ELEMENT_BORDER_WIDTH,
-						),
 						height: Math.max(
 							0,
 							args.elementData.height * args.scale -
 								2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 						),
-						top:
-							(args.elementData.type ===
-							EmulatorElementType.Screen
-								? 0
-								: args.elementData.paddingTop) *
-								args.scale -
-							CONSTANT.ELEMENT_BORDER_WIDTH,
 						left:
 							(args.elementData.type ===
 							EmulatorElementType.Screen
@@ -624,6 +611,19 @@ export default function EmulatorElementComponent(args: {
 								: args.elementData.paddingLeft) *
 								args.scale -
 							CONSTANT.ELEMENT_BORDER_WIDTH,
+						position: "absolute",
+						top:
+							(args.elementData.type ===
+							EmulatorElementType.Screen
+								? 0
+								: args.elementData.paddingTop) *
+								args.scale -
+							CONSTANT.ELEMENT_BORDER_WIDTH,
+						width: Math.max(
+							0,
+							args.elementData.width * args.scale -
+								2 * CONSTANT.ELEMENT_BORDER_WIDTH,
+						),
 					}}
 				>
 					{args.elementData.type === EmulatorElementType.Dpad ||
@@ -662,20 +662,20 @@ export default function EmulatorElementComponent(args: {
 						>
 							<div
 								style={{
-									width:
-										args.elementData.data.thumbstick &&
-										args.elementData.data.thumbstick.width
-											? `${args.elementData.data.thumbstick.width * args.scale}px`
-											: "0",
+									backgroundImage: `url(${bgUrl})`,
+									backgroundPosition: "center",
+									backgroundSize: "100% 100%",
 									height:
 										args.elementData.data.thumbstick &&
 										args.elementData.data.thumbstick.height
 											? `${args.elementData.data.thumbstick.height * args.scale}px`
 											: "0",
 									position: "absolute",
-									backgroundImage: `url(${bgUrl})`,
-									backgroundSize: "100% 100%",
-									backgroundPosition: "center",
+									width:
+										args.elementData.data.thumbstick &&
+										args.elementData.data.thumbstick.width
+											? `${args.elementData.data.thumbstick.width * args.scale}px`
+											: "0",
 								}}
 							></div>
 						</div>

@@ -3,11 +3,11 @@ import styles from "./index.module.css";
 import React from "react";
 
 export default function MenuToggle(args: {
+	className?: string;
+	disabled?: boolean;
 	label: string | React.JSX.Element;
 	onClick: () => void;
-	disabled?: boolean;
 	style?: React.CSSProperties;
-	className?: string;
 }) {
 	return (
 		<button

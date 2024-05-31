@@ -20,7 +20,8 @@
 	flex-grow: 0;
 }
 
-.buttonTop, .buttonBottom {
+.buttonTop,
+.buttonBottom {
 	flex-grow: 1;
 	position: relative;
 	display: grid;
@@ -28,11 +29,13 @@
 	grid-template-rows: repeat(2, 1fr);
 }
 
-.buttonAligner, .buttonAlignerSquare {
+.buttonAligner,
+.buttonAlignerSquare {
 	display: flex;
 	align-items: stretch;
 }
 
-.buttonAligner > div, .buttonAlignerSquare > div {
+.buttonAligner > div,
+.buttonAlignerSquare > div {
 	width: 100%;
 }

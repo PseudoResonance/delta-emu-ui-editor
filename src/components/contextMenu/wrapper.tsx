@@ -45,8 +45,8 @@ export default function ContextMenuWrapper(args: {
 					<div
 						className={styles.aligner}
 						style={{
-							pointerEvents: "none",
 							flexBasis: `${args.menu.y}px`,
+							pointerEvents: "none",
 						}}
 					/>
 
@@ -54,8 +54,8 @@ export default function ContextMenuWrapper(args: {
 						<div
 							className={styles.aligner}
 							style={{
-								pointerEvents: "none",
 								flexBasis: `${args.menu.x}px`,
+								pointerEvents: "none",
 							}}
 						/>
 

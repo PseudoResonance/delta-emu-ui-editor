@@ -4,11 +4,11 @@ import React, { MouseEvent, SyntheticEvent } from "react";
 
 interface BaseArgs {
 	label: string | React.JSX.Element;
-	showActive?: boolean;
 	onClick?: (e: SyntheticEvent<HTMLDivElement>) => void;
 	onContextMenu?: (e: MouseEvent<HTMLDivElement>) => void;
 	onPointerEnter?: (e: SyntheticEvent<HTMLDivElement>) => void;
 	onPointerLeave?: (e: SyntheticEvent<HTMLDivElement>) => void;
+	showActive?: boolean;
 }
 
 interface ChildrenDefined extends BaseArgs {
@@ -16,14 +16,14 @@ interface ChildrenDefined extends BaseArgs {
 }
 
 interface ChildrenFunction extends BaseArgs {
+	data: Record<string, unknown>;
+	depth: number;
 	getChildren: (
 		e: Record<string, unknown>,
 		keyStr: string,
 		depth: number,
 	) => React.JSX.Element[];
-	data: Record<string, unknown>;
 	keyStr: string;
-	depth: number;
 }
 
 type Args = ChildrenDefined | ChildrenFunction;

@@ -14,33 +14,33 @@ import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
 export default function EmulatorWindow(args: {
-	getCurrentBackgroundAssetName: () => string;
-	focusState: FocusState;
-	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
-	pressedKeys: string[];
-	elements: EmulatorElement[];
 	addElementData: (data: EmulatorElement) => void;
-	removeElement: (key: number) => void;
-	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
-	editingElement: number;
-	setEditingElement: (val: number) => void;
-	setHoverIndex: Dispatch<SetStateAction<number>>;
-	style: object;
-	scale: number;
-	width: number;
-	height: number;
-	hoverIndex: number;
+	assets: Record<string, Asset> | null;
 	defaultPadding: {
-		top: number;
 		bottom: number;
 		left: number;
 		right: number;
+		top: number;
 	};
-	showPopup: ShowPopupFunc;
-	showContextMenu: ShowContextMenuFunc;
+	editingElement: number;
+	elements: EmulatorElement[];
+	focusState: FocusState;
+	getCurrentBackgroundAssetName: () => string;
+	height: number;
+	hoverIndex: number;
 	isEditing: boolean[];
+	pressedKeys: string[];
+	removeElement: (key: number) => void;
+	scale: number;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	setEditingElement: (val: number) => void;
+	setHoverIndex: Dispatch<SetStateAction<number>>;
 	setIsEditing: (val: boolean) => void;
+	showContextMenu: ShowContextMenuFunc;
+	showPopup: ShowPopupFunc;
+	style: object;
+	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
+	width: number;
 }) {
 	const targetAssetName = args.getCurrentBackgroundAssetName();
 	const bgAsset =
@@ -65,11 +65,11 @@ export default function EmulatorWindow(args: {
 				className={styles.window}
 				style={{
 					...args.style,
-					width:
-						args.width * args.scale -
-						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 					height:
 						args.height * args.scale -
+						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
+					width:
+						args.width * args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				}}
 			>
@@ -80,10 +80,10 @@ export default function EmulatorWindow(args: {
 						src={bgUrl}
 						style={{
 							display: bgUrl.length > 0 ? "inherit" : "none",
-							width: args.width * args.scale,
 							height: args.height * args.scale,
-							top: -CONSTANT.ELEMENT_BORDER_WIDTH,
 							left: -CONSTANT.ELEMENT_BORDER_WIDTH,
+							top: -CONSTANT.ELEMENT_BORDER_WIDTH,
+							width: args.width * args.scale,
 						}}
 					/>
 				}

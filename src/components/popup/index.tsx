@@ -6,15 +6,15 @@ import Popup from "./popup";
 export default function PopupWrapper(args: {
 	elements: {
 		data: React.JSX.Element;
-		onClose: () => void;
 		onAccept?: () => void;
+		onClose: () => void;
 	}[];
 	setPopups: Dispatch<
 		SetStateAction<
 			{
 				data: React.JSX.Element;
-				onClose: () => void;
 				onAccept?: () => void;
+				onClose: () => void;
 			}[]
 		>
 	>;

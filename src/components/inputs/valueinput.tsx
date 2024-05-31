@@ -53,19 +53,19 @@ const clamp = (
 };
 
 export default function ValueInput(args: {
-	context: string;
-	label: string;
 	ariaLabel?: string;
+	context: string;
+	debounce?: number;
 	increment?: number;
-	places?: number;
-	minValue?: number;
+	label: string;
 	maxValue?: number;
-	value: string;
-	type?: string;
+	minValue?: number;
 	onChange: (val: string) => void;
 	onFocusLost?: (val: string) => void;
-	debounce?: number;
+	places?: number;
 	suggestionsId?: string;
+	type?: string;
+	value: string;
 }) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const wheelLock = useRef<unknown>(null);

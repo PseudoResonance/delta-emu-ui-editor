@@ -25,56 +25,56 @@ export type Mutable<T> = {
 
 /* Element data */
 export enum EmulatorElementType {
-	Thumbstick = "Thumbstick",
-	Dpad = "Dpad",
-	Touchscreen = "Touchscreen",
-	Screen = "Screen",
 	Default = "Default",
+	Dpad = "Dpad",
+	Screen = "Screen",
+	Thumbstick = "Thumbstick",
+	Touchscreen = "Touchscreen",
 }
 
 interface EmulatorElementBase {
-	readonly type: EmulatorElementType;
-	readonly x: number;
-	readonly y: number;
-	readonly width: number;
 	readonly height: number;
 	readonly hidden: boolean;
+	readonly type: EmulatorElementType;
+	readonly width: number;
+	readonly x: number;
+	readonly y: number;
 }
 
 interface EmulatorElementThumbstick extends EmulatorElementBase {
 	readonly data: {
 		readonly inputsobj: {
-			readonly up: string;
 			readonly down: string;
 			readonly left: string;
 			readonly right: string;
+			readonly up: string;
 		};
 		readonly thumbstick: {
-			readonly name: string;
-			readonly width: number;
 			readonly height: number;
 			readonly hidden: boolean;
+			readonly name: string;
+			readonly width: number;
 		};
 	};
-	readonly paddingTop: number;
 	readonly paddingBottom: number;
 	readonly paddingLeft: number;
 	readonly paddingRight: number;
+	readonly paddingTop: number;
 }
 
 interface EmulatorElementDpad extends EmulatorElementBase {
 	readonly data: {
 		readonly inputsobj: {
-			readonly up: string;
 			readonly down: string;
 			readonly left: string;
 			readonly right: string;
+			readonly up: string;
 		};
 	};
-	readonly paddingTop: number;
 	readonly paddingBottom: number;
 	readonly paddingLeft: number;
 	readonly paddingRight: number;
+	readonly paddingTop: number;
 }
 
 interface EmulatorElementTouchscreen extends EmulatorElementBase {
@@ -84,19 +84,19 @@ interface EmulatorElementTouchscreen extends EmulatorElementBase {
 			readonly y: string;
 		};
 	};
-	readonly paddingTop: number;
 	readonly paddingBottom: number;
 	readonly paddingLeft: number;
 	readonly paddingRight: number;
+	readonly paddingTop: number;
 }
 
 interface EmulatorElementScreen extends EmulatorElementBase {
 	readonly data: {
 		readonly screen: {
+			readonly height: number;
+			readonly width: number;
 			readonly x: number;
 			readonly y: number;
-			readonly width: number;
-			readonly height: number;
 		};
 	};
 }
@@ -105,10 +105,10 @@ interface EmulatorElementDefault extends EmulatorElementBase {
 	readonly data: {
 		readonly inputs: string[];
 	};
-	readonly paddingTop: number;
 	readonly paddingBottom: number;
 	readonly paddingLeft: number;
 	readonly paddingRight: number;
+	readonly paddingTop: number;
 }
 
 export type EmulatorElement = EmulatorElementDefault &
@@ -124,33 +124,33 @@ export enum AssetType {
 }
 
 export interface Asset {
+	readonly attemptLoad?: boolean;
 	readonly file: File;
+	readonly height: number;
 	readonly type: AssetType | null;
 	readonly url: string | null;
 	readonly width: number;
-	readonly height: number;
-	readonly attemptLoad?: boolean;
 }
 
 /* Emulator general skin and layout data */
 export interface EmulatorLayout {
-	readonly lockBackgroundRatio: boolean;
 	readonly assets: {
-		readonly type: AssetType;
+		readonly large: string;
+		readonly medium: string;
 		readonly resizable: string;
 		readonly small: string;
-		readonly medium: string;
-		readonly large: string;
+		readonly type: AssetType;
 	};
 	readonly canvas: {
-		readonly width: number;
 		readonly height: number;
+		readonly width: number;
 	};
+	readonly lockBackgroundRatio: boolean;
 	readonly padding: {
-		readonly top: number;
 		readonly bottom: number;
 		readonly left: number;
 		readonly right: number;
+		readonly top: number;
 	};
 	readonly translucent: boolean;
 }
@@ -161,11 +161,11 @@ export interface Representation {
 }
 
 export interface InfoFile {
-	readonly hiddenLoadedFileName: string;
-	readonly name: string;
-	readonly identifier: string;
-	readonly gameTypeIdentifier: string;
 	readonly debug: boolean;
+	readonly gameTypeIdentifier: string;
+	readonly hiddenLoadedFileName: string;
+	readonly identifier: string;
+	readonly name: string;
 	readonly representations: Record<
 		string,
 		Record<string, Record<string, Representation>>
@@ -174,9 +174,9 @@ export interface InfoFile {
 
 /* History entry */
 export interface HistoryEvent {
-	readonly infoFile: InfoFile;
 	readonly currentRepresentation: string;
 	readonly focusState: FocusState;
+	readonly infoFile: InfoFile;
 }
 
 /* Editor pan/zoom state */
@@ -193,9 +193,9 @@ export enum FocusTarget {
 }
 
 export interface FocusState {
-	target: FocusTarget | null;
 	elements: number[];
 	representation: string;
+	target: FocusTarget | null;
 }
 
 /* Boilerplate types */

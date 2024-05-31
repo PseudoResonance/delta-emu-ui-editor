@@ -13,21 +13,21 @@ import {
 import { Dispatch, SetStateAction } from "react";
 
 export default function ElementValueWindow(args: {
+	addAsset: (path: string, asset: Asset) => void;
+	addElementData: (data: EmulatorElement) => void;
+	assets: Record<string, Asset> | null;
+	currentRepresentation: string;
+	editingElement: number;
+	elements: EmulatorElement[];
 	getCurrentBackgroundAssetName: () => string;
 	infoFile: InfoFile;
-	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
-	addAsset: (path: string, asset: Asset) => void;
-	elements: EmulatorElement[];
-	addElementData: (data: EmulatorElement) => void;
-	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
-	removeElement: (key: number) => void;
 	layoutData: EmulatorLayout | null;
-	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
-	editingElement: number;
+	removeElement: (key: number) => void;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	setEditingElement: (val: number) => void;
+	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 	showPopup: ShowPopupFunc;
-	currentRepresentation: string;
+	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 }) {
 	return (
 		args.layoutData &&

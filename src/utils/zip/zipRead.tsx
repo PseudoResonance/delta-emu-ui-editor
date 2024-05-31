@@ -18,10 +18,9 @@ const readZip = async (file: File) => {
 					promises.push(
 						entry
 							.getData(new zip.BlobWriter(), {
-								onstart: (totalBytes) => {
-									total = totalBytes;
+								onend: (finalSize) => {
 									console.debug(
-										`[Unzip ${entry.filename}]: ${total > 0 ? "0%" : "Err%"}`,
+										`[Unzip ${entry.filename}]: Read ${finalSize}B`,
 									);
 								},
 								onprogress: (currentBytes) => {
@@ -29,9 +28,10 @@ const readZip = async (file: File) => {
 										`[Unzip ${entry.filename}]: ${total > 0 ? (currentBytes * 100.0) / total + "%" : "Err%"}`,
 									);
 								},
-								onend: (finalSize) => {
+								onstart: (totalBytes) => {
+									total = totalBytes;
 									console.debug(
-										`[Unzip ${entry.filename}]: Read ${finalSize}B`,
+										`[Unzip ${entry.filename}]: ${total > 0 ? "0%" : "Err%"}`,
 									);
 								},
 							} as zip.EntryGetDataOptions)
@@ -43,10 +43,10 @@ const readZip = async (file: File) => {
 											[blob],
 											path[path.length - 1],
 										),
+										height: -1,
 										type: null,
 										url: null,
 										width: -1,
-										height: -1,
 									};
 								} catch (e) {
 									console.error(

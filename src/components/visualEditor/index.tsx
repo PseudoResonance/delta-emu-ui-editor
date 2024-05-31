@@ -24,24 +24,24 @@ import { getElementLabel } from "./element";
 import * as CONSTANT from "@/data/constants";
 
 export default function VisualEditor(args: {
-	getCurrentBackgroundAssetName: () => string;
-	focusState: FocusState;
-	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
-	pressedKeys: string[];
-	elements: EmulatorElement[];
 	addElementData: (data: EmulatorElement) => void;
-	removeElement: (key: number) => void;
-	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
-	layoutData: EmulatorLayout | null;
+	assets: Record<string, Asset> | null;
 	editingElement: number;
-	setEditingElement: (val: number) => void;
-	scale: ScaleData;
-	setScale: Dispatch<SetStateAction<ScaleData>>;
+	elements: EmulatorElement[];
+	focusState: FocusState;
+	getCurrentBackgroundAssetName: () => string;
 	hoverIndex: number;
+	layoutData: EmulatorLayout | null;
+	pressedKeys: string[];
+	removeElement: (key: number) => void;
+	scale: ScaleData;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	setEditingElement: (val: number) => void;
 	setHoverIndex: Dispatch<SetStateAction<number>>;
-	showPopup: ShowPopupFunc;
+	setScale: Dispatch<SetStateAction<ScaleData>>;
 	showContextMenu: ShowContextMenuFunc;
+	showPopup: ShowPopupFunc;
+	updateElement: (key: number, data: Spec<EmulatorElement, never>) => void;
 }) {
 	const panZoom = useCallback(
 		(

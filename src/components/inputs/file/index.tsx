@@ -4,8 +4,8 @@ import React, { useMemo } from "react";
 import { ChangeEvent, useRef } from "react";
 
 export default function FileInput(args: {
-	label: string;
 	accept?: string;
+	label: string;
 	onChange: (val: File) => void;
 }) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);

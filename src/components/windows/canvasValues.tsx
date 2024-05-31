@@ -14,13 +14,13 @@ import Suggestions from "@/components/inputs/inputSuggestions";
 import requestFiles from "@/utils/requestFiles";
 
 export default function CanvasValues(args: {
-	getCurrentBackgroundAssetName: () => string;
-	assets: Record<string, Asset> | null;
-	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
 	addAsset: (path: string, asset: Asset) => void;
-	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
-	layoutData: EmulatorLayout;
+	assets: Record<string, Asset> | null;
 	currentRepresentation: string;
+	getCurrentBackgroundAssetName: () => string;
+	layoutData: EmulatorLayout;
+	setAssets: Dispatch<SetStateAction<Record<string, Asset> | null>>;
+	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 }) {
 	return (
 		<>
@@ -85,10 +85,10 @@ export default function CanvasValues(args: {
 									const val = files[0];
 									args.addAsset(val.name, {
 										file: val,
+										height: -1,
 										type: null,
 										url: null,
 										width: -1,
-										height: -1,
 									});
 									args.setLayoutData({
 										assets: {
@@ -139,10 +139,10 @@ export default function CanvasValues(args: {
 									const val = files[0];
 									args.addAsset(val.name, {
 										file: val,
+										height: -1,
 										type: null,
 										url: null,
 										width: -1,
-										height: -1,
 									});
 									args.setLayoutData({
 										assets: {
@@ -193,10 +193,10 @@ export default function CanvasValues(args: {
 									const val = files[0];
 									args.addAsset(val.name, {
 										file: val,
+										height: -1,
 										type: null,
 										url: null,
 										width: -1,
-										height: -1,
 									});
 									args.setLayoutData({
 										assets: {
@@ -245,10 +245,10 @@ export default function CanvasValues(args: {
 								const val = files[0];
 								args.addAsset(val.name, {
 									file: val,
+									height: -1,
 									type: null,
 									url: null,
 									width: -1,
-									height: -1,
 								});
 								args.setLayoutData({
 									assets: {
@@ -351,9 +351,9 @@ export default function CanvasValues(args: {
 						<div />
 						<div
 							style={{
-								borderTop:
-									"var(--tree-line-width) var(--tree-line-rgb) solid",
 								borderRight:
+									"var(--tree-line-width) var(--tree-line-rgb) solid",
+								borderTop:
 									"var(--tree-line-width) var(--tree-line-rgb) solid",
 							}}
 						/>
@@ -539,11 +539,11 @@ export default function CanvasValues(args: {
 					) {
 						args.setLayoutData({
 							canvas: {
-								width: {
-									$set: args.assets[bgName].width,
-								},
 								height: {
 									$set: args.assets[bgName].height,
+								},
+								width: {
+									$set: args.assets[bgName].width,
 								},
 							},
 						});
