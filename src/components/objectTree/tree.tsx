@@ -28,6 +28,84 @@ interface ChildrenFunction extends BaseArgs {
 
 type Args = ChildrenDefined | ChildrenFunction;
 
+const getChildNode: (e: HTMLElement, lowestNode: boolean) => HTMLElement | null = (e: HTMLElement, lowestNode: boolean) => {
+	if (e.children.length > 0) {
+		if (lowestNode) {
+			for (let i = e.children.length - 1; i >= 0; i--) {
+				const node = getChildNode(e.children[i] as HTMLElement, lowestNode);
+				if (node) {
+					return node;
+				}
+			}
+		} else {
+			for (let i = 0; i < e.children.length; i++) {
+				if (e.children[i].getAttribute("data-type") === "tree-node") {
+					return e.children[i] as HTMLElement;
+				}
+				const node = getChildNode(e.children[i] as HTMLElement, lowestNode);
+				if (node) {
+					return node;
+				}
+			}
+		}
+	}
+	if (e.getAttribute("data-type") === "tree-node") {
+		return e;
+	}
+	return null;
+};
+
+const getParentNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) => {
+	const parent = e.parentElement;
+	if (parent && parent.getAttribute("data-type") !== "tree-wrapper") {
+		if (parent.getAttribute("data-type") === "tree-node") {
+			return parent;
+		} else {
+			return getParentNode(parent);
+		}
+	}
+	return null;
+};
+
+const getAboveNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) => {
+	const testElem = e.previousElementSibling;
+	if (testElem) {
+		const node = getChildNode(testElem as HTMLElement, true);
+		if (node) {
+			return node;
+		}
+		return getAboveNode(testElem as HTMLElement);
+	} else if (e.getAttribute("data-type") !== "tree-wrapper") {
+		return getParentNode(e);
+	}
+	return null;
+};
+
+const getBelowNode: (e: HTMLElement, tryChildren: boolean) => HTMLElement | null = (e: HTMLElement, tryChildren: boolean) => {
+	let testElem;
+	if (tryChildren && e.getAttribute("data-type") === "tree-node") {
+		testElem = getChildNode(e, false);
+		if (testElem && testElem !== e) {
+			return testElem;
+		}
+	}
+	testElem = e.nextElementSibling as HTMLElement;
+	if (testElem) {
+		if (testElem.getAttribute("data-type") === "tree-node") {
+			return testElem;
+		} else {
+			return getBelowNode(testElem, true);
+		}
+	}
+	if (e.getAttribute("data-type") !== "tree-wrapper") {
+		const parent = getParentNode(e);
+		if (parent) {
+			return getBelowNode(parent, false);
+		}
+	}
+	return null;
+};
+
 export default function TreeItem(args: Args) {
 	const children =
 		"getChildren" in args
@@ -80,78 +158,33 @@ export default function TreeItem(args: Args) {
 			}}
 			onKeyDown={(e) => {
 				if (e.target === e.currentTarget) {
-					const elem = e.target as HTMLElement;
-					let children;
+					let newFocus;
 					switch (e.key) {
 						case "ArrowUp":
-							if (
-								elem.previousElementSibling?.getAttribute(
-									"data-type",
-								) === "tree-node"
-							) {
-								(
-									elem.previousElementSibling as HTMLElement
-								).focus();
-								e.preventDefault();
-							} else if (
-								elem.parentElement?.parentElement?.getAttribute(
-									"data-type",
-								) === "tree-node"
-							) {
-								elem.parentElement?.parentElement.focus();
+							newFocus = getAboveNode(e.target as HTMLElement);
+							if (newFocus) {
+								newFocus.focus();
 								e.preventDefault();
 							}
 							break;
 						case "ArrowDown":
-							if (
-								elem.nextElementSibling?.getAttribute(
-									"data-type",
-								) === "tree-node"
-							) {
-								(
-									elem.nextElementSibling as HTMLElement
-								).focus();
+							newFocus = getBelowNode(e.target as HTMLElement, true);
+							if (newFocus) {
+								newFocus.focus();
 								e.preventDefault();
-							} else {
-								children = elem.querySelector(
-									'[data-type="tree-children"]',
-								);
-								if (
-									children &&
-									children.children.length > 0 &&
-									children.children[0].getAttribute(
-										"data-type",
-									) === "tree-node"
-								) {
-									(
-										children.children[0] as HTMLElement
-									).focus();
-									e.preventDefault();
-								}
 							}
 							break;
 						case "ArrowLeft":
-							if (
-								elem.parentElement?.parentElement?.getAttribute(
-									"data-type",
-								) === "tree-node"
-							) {
-								elem.parentElement?.parentElement.focus();
+							newFocus = getParentNode(e.target as HTMLElement);
+							if (newFocus) {
+								newFocus.focus();
 								e.preventDefault();
 							}
 							break;
 						case "ArrowRight":
-							children = elem.querySelector(
-								'[data-type="tree-children"]',
-							);
-							if (
-								children &&
-								children.children.length > 0 &&
-								children.children[0].getAttribute(
-									"data-type",
-								) === "tree-node"
-							) {
-								(children.children[0] as HTMLElement).focus();
+							newFocus = getChildNode(e.target as HTMLElement, false);
+							if (newFocus) {
+								newFocus.focus();
 								e.preventDefault();
 							}
 							break;
