@@ -9,7 +9,7 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
-		"@zip.js/zip.js": "^2.7.44",
+		"@zip.js/zip.js": "^2.7.45",
 		"build": "^0.1.4",
 		"immutability-helper": "^3.1.1",
 		"next": "^14.2.3",
