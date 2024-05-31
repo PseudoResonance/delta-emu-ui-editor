@@ -28,11 +28,17 @@ interface ChildrenFunction extends BaseArgs {
 
 type Args = ChildrenDefined | ChildrenFunction;
 
-const getChildNode: (e: HTMLElement, lowestNode: boolean) => HTMLElement | null = (e: HTMLElement, lowestNode: boolean) => {
+const getChildNode: (
+	e: HTMLElement,
+	lowestNode: boolean,
+) => HTMLElement | null = (e: HTMLElement, lowestNode: boolean) => {
 	if (e.children.length > 0) {
 		if (lowestNode) {
 			for (let i = e.children.length - 1; i >= 0; i--) {
-				const node = getChildNode(e.children[i] as HTMLElement, lowestNode);
+				const node = getChildNode(
+					e.children[i] as HTMLElement,
+					lowestNode,
+				);
 				if (node) {
 					return node;
 				}
@@ -42,7 +48,10 @@ const getChildNode: (e: HTMLElement, lowestNode: boolean) => HTMLElement | null 
 				if (e.children[i].getAttribute("data-type") === "tree-node") {
 					return e.children[i] as HTMLElement;
 				}
-				const node = getChildNode(e.children[i] as HTMLElement, lowestNode);
+				const node = getChildNode(
+					e.children[i] as HTMLElement,
+					lowestNode,
+				);
 				if (node) {
 					return node;
 				}
@@ -55,7 +64,9 @@ const getChildNode: (e: HTMLElement, lowestNode: boolean) => HTMLElement | null 
 	return null;
 };
 
-const getParentNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) => {
+const getParentNode: (e: HTMLElement) => HTMLElement | null = (
+	e: HTMLElement,
+) => {
 	const parent = e.parentElement;
 	if (parent && parent.getAttribute("data-type") !== "tree-wrapper") {
 		if (parent.getAttribute("data-type") === "tree-node") {
@@ -67,7 +78,9 @@ const getParentNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) =
 	return null;
 };
 
-const getAboveNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) => {
+const getAboveNode: (e: HTMLElement) => HTMLElement | null = (
+	e: HTMLElement,
+) => {
 	const testElem = e.previousElementSibling;
 	if (testElem) {
 		const node = getChildNode(testElem as HTMLElement, true);
@@ -81,7 +94,10 @@ const getAboveNode: (e: HTMLElement) => HTMLElement | null = (e: HTMLElement) =>
 	return null;
 };
 
-const getBelowNode: (e: HTMLElement, tryChildren: boolean) => HTMLElement | null = (e: HTMLElement, tryChildren: boolean) => {
+const getBelowNode: (
+	e: HTMLElement,
+	tryChildren: boolean,
+) => HTMLElement | null = (e: HTMLElement, tryChildren: boolean) => {
 	let testElem;
 	if (tryChildren && e.getAttribute("data-type") === "tree-node") {
 		testElem = getChildNode(e, false);
@@ -168,7 +184,10 @@ export default function TreeItem(args: Args) {
 							}
 							break;
 						case "ArrowDown":
-							newFocus = getBelowNode(e.target as HTMLElement, true);
+							newFocus = getBelowNode(
+								e.target as HTMLElement,
+								true,
+							);
 							if (newFocus) {
 								newFocus.focus();
 								e.preventDefault();
@@ -182,7 +201,10 @@ export default function TreeItem(args: Args) {
 							}
 							break;
 						case "ArrowRight":
-							newFocus = getChildNode(e.target as HTMLElement, false);
+							newFocus = getChildNode(
+								e.target as HTMLElement,
+								false,
+							);
 							if (newFocus) {
 								newFocus.focus();
 								e.preventDefault();
