@@ -7,11 +7,10 @@ on:
         branches: ["main"]
         paths-ignore:
             [".github/**", ".vscode/**", "README.md", ".gitignore", "LICENSE"]
-    workflow_dispatch:
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
-    build-image:
+    lint-and-format:
         runs-on: ubuntu-latest
         # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
         permissions:
