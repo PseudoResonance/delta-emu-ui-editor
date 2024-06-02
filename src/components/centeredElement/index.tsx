@@ -1,16 +1,7 @@
 "use client";
+import { PropsWithChildren } from "react";
 import styles from "./index.module.css";
 
-export default function CenteredElement(args: {
-	children?: React.JSX.Element | React.JSX.Element[];
-}) {
-	return (
-		<div className={styles.popupHolder}>
-			{...args.children
-				? args.children instanceof Array
-					? args.children
-					: [args.children]
-				: []}
-		</div>
-	);
+export default function CenteredElement(args: PropsWithChildren) {
+	return <div className={styles.popupHolder}>{args.children}</div>;
 }

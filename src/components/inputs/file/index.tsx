@@ -1,12 +1,13 @@
 "use client";
 import styles from "../input.module.css";
-import React, { useMemo } from "react";
+import React, { CSSProperties, useMemo } from "react";
 import { ChangeEvent, useRef } from "react";
 
 export default function FileInput(args: {
 	accept?: string;
 	label: string;
 	onChange: (val: File) => void;
+	style?: CSSProperties;
 }) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	const ref = useRef<HTMLInputElement>(null);
@@ -16,8 +17,12 @@ export default function FileInput(args: {
 		}
 	};
 	return (
-		<div className={`${styles.input} ${styles.button}`}>
-			<label className={styles.label} htmlFor={id}>
+		<div className={`${styles.input} ${styles.button}`} style={args.style}>
+			<label
+				className={styles.label}
+				htmlFor={id}
+				style={{ alignSelf: "center" }}
+			>
 				{args.label}
 			</label>
 			<label

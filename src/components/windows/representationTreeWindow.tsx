@@ -4,6 +4,7 @@ import ValueInput from "../inputs/valueinput";
 import CheckboxInput from "../inputs/checkbox";
 import { InfoFile, ShowContextMenuFunc, ShowPopupFunc } from "@/data/types";
 import * as Tree from "../objectTree";
+import InputGrid from "../inputGrid";
 
 export default function RepresentationTreeWindow(args: {
 	applyRepresentation: (key: string) => void;
@@ -62,24 +63,41 @@ export default function RepresentationTreeWindow(args: {
 													)}
 													&quot;
 												</p>
-												<ValueInput
-													context={"-1"}
-													label="Name"
-													onChange={(val: string) => {
-														newData[0] = val;
+												<InputGrid
+													style={{
+														gridTemplateColumns:
+															"[start] 1fr [label] 1fr [end]",
 													}}
-													value=""
-												/>
-												<CheckboxInput
-													onChange={(
-														val: boolean,
-													) => {
-														newData[1] = val;
-													}}
-													value={depth >= 1}
 												>
-													Layout Node
-												</CheckboxInput>
+													<ValueInput
+														context={"-1"}
+														label="Name"
+														onChange={(
+															val: string,
+														) => {
+															newData[0] = val;
+														}}
+														style={{
+															gridColumn:
+																"start / end",
+														}}
+														value=""
+													/>
+													<CheckboxInput
+														onChange={(
+															val: boolean,
+														) => {
+															newData[1] = val;
+														}}
+														style={{
+															gridColumn:
+																"start / end",
+														}}
+														value={depth >= 1}
+													>
+														Layout Node
+													</CheckboxInput>
+												</InputGrid>
 											</>,
 											() => {},
 											() => {
@@ -170,23 +188,40 @@ export default function RepresentationTreeWindow(args: {
 												&quot;Representations&quot;
 											</p>
 
-											<ValueInput
-												context={"-1"}
-												label="Name"
-												onChange={(val: string) => {
-													newData[0] = val;
+											<InputGrid
+												style={{
+													gridTemplateColumns:
+														"[start] 1fr [label] 1fr [end]",
 												}}
-												value=""
-											/>
-
-											<CheckboxInput
-												onChange={(val: boolean) => {
-													newData[1] = val;
-												}}
-												value={false}
 											>
-												Layout Node
-											</CheckboxInput>
+												<ValueInput
+													context={"-1"}
+													label="Name"
+													onChange={(val: string) => {
+														newData[0] = val;
+													}}
+													style={{
+														gridColumn:
+															"start / end",
+													}}
+													value=""
+												/>
+
+												<CheckboxInput
+													onChange={(
+														val: boolean,
+													) => {
+														newData[1] = val;
+													}}
+													style={{
+														gridColumn:
+															"start / end",
+													}}
+													value={false}
+												>
+													Layout Node
+												</CheckboxInput>
+											</InputGrid>
 										</>,
 										() => {},
 										() => {

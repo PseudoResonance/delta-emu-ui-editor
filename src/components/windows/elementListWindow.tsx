@@ -12,6 +12,7 @@ import Button from "../inputs/button";
 import { Dispatch, SetStateAction } from "react";
 import { Spec } from "immutability-helper";
 import * as Tree from "../objectTree";
+import InputGrid from "../inputGrid";
 
 export default function ElementListWindow(args: {
 	addElement: () => void;
@@ -37,13 +38,19 @@ export default function ElementListWindow(args: {
 		<div>
 			{args.layoutData && (
 				<>
-					<Button
-						onClick={() => {
-							args.addElement();
+					<InputGrid
+						style={{
+							gridTemplateColumns: "[start] 1fr [end]",
 						}}
 					>
-						Add Element
-					</Button>
+						<Button
+							onClick={() => {
+								args.addElement();
+							}}
+						>
+							Add Element
+						</Button>
+					</InputGrid>
 					<Tree.Wrapper
 						ariaLabel={"Element list"}
 						style={{ padding: "3px 5px" }}

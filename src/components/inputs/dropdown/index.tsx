@@ -1,7 +1,7 @@
 "use client";
 import inputStyles from "../input.module.css";
 import styles from "./index.module.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 
 const recurseOffsetHeight: (elem: HTMLElement) => number = (
 	elem: HTMLElement,
@@ -19,6 +19,7 @@ const recurseOffsetHeight: (elem: HTMLElement) => number = (
 export default function DropdownInput(args: {
 	label: string;
 	onChange: (val: string) => void;
+	style?: CSSProperties;
 	value: string;
 	values: Record<string, string>;
 }) {
@@ -95,7 +96,14 @@ export default function DropdownInput(args: {
 		};
 	}, []);
 	return (
-		<form className={styles.input}>
+		<form
+			className={styles.input}
+			style={{
+				...args.style,
+				display: "grid",
+				gridTemplateColumns: "subgrid",
+			}}
+		>
 			<span
 				style={{
 					height: 0,
@@ -128,7 +136,10 @@ export default function DropdownInput(args: {
 					))}
 				</select>
 			</span>
-			<div className={inputStyles.input}>
+			<div
+				className={inputStyles.input}
+				style={{ gridColumn: "start / end" }}
+			>
 				<label
 					className={inputStyles.label}
 					htmlFor={id}
@@ -142,6 +153,7 @@ export default function DropdownInput(args: {
 					onPointerOver={() => {
 						setIsHover(true);
 					}}
+					style={{ alignSelf: "center", gridColumn: "start / label" }}
 				>
 					{args.label}
 				</label>
@@ -155,6 +167,7 @@ export default function DropdownInput(args: {
 						if (innerRef.current) innerRef.current.focus();
 					}}
 					ref={elem}
+					style={{ gridColumn: "label / end" }}
 				>
 					<div
 						style={{

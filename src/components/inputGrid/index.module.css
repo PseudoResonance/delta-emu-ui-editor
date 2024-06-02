@@ -1,0 +1,10 @@
+.inputGrid {
+	display: grid;
+	--margin: 5px;
+	width: calc(100% - var(--margin) - var(--margin));
+	column-gap: var(--margin);
+	row-gap: var(--margin);
+	grid-auto-rows: minmax(max-content, 1.75em);
+	margin: var(--margin);
+	position: relative;
+}

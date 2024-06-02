@@ -1,10 +1,7 @@
 .input {
-	margin: 5px;
 	padding: 0;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	font-size: 1em;
+	display: grid;
+	grid-template-columns: subgrid;
 }
 
 .button {
@@ -34,7 +31,6 @@
 	color: var(--foreground-rgb);
 	padding: 5px;
 	min-width: 0;
-	width: 100%;
 	flex-shrink: 10000;
 	text-align: left;
 }

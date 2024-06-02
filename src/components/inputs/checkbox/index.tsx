@@ -2,10 +2,17 @@
 import inputStyles from "../input.module.css";
 import styles from "./index.module.css";
 import icons from "@/utils/icons.module.css";
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+	CSSProperties,
+	PropsWithChildren,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 interface BaseArgs {
 	onChange: (val: boolean) => void;
+	style?: CSSProperties;
 	value: boolean;
 }
 
@@ -15,9 +22,7 @@ interface IconArgs extends BaseArgs {
 	label: string;
 }
 
-interface TextArgs extends BaseArgs {
-	children: string | React.JSX.Element | React.JSX.Element[];
-}
+type TextArgs = PropsWithChildren<BaseArgs>;
 
 type Args = TextArgs | IconArgs;
 
@@ -35,7 +40,10 @@ export default function CheckboxInput(args: Args) {
 		}
 	}, [args.value]);
 	return (
-		<form className={`${inputStyles.input} ${inputStyles.button}`}>
+		<form
+			className={`${inputStyles.input} ${inputStyles.button}`}
+			style={args.style}
+		>
 			<span
 				style={{
 					height: 0,
@@ -62,6 +70,7 @@ export default function CheckboxInput(args: Args) {
 				aria-label={"label" in args ? args.label : undefined}
 				className={`${inputStyles.inputInner} ${styles.container}`}
 				htmlFor={id}
+				style={{ gridColumn: "start / end" }}
 				title={"label" in args ? args.label : undefined}
 			>
 				<span
@@ -71,15 +80,7 @@ export default function CheckboxInput(args: Args) {
 						width: "var(--icon-size)",
 					}}
 				/>
-				{"children" in args && (
-					<span>
-						{...args.children
-							? args.children instanceof Array
-								? args.children
-								: [args.children]
-							: []}
-					</span>
-				)}
+				{"children" in args && <span>{args.children}</span>}
 			</label>
 		</form>
 	);

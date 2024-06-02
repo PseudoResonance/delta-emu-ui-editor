@@ -1,26 +1,21 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { PropsWithChildren, useEffect, useRef } from "react";
 import styles from "./index.module.css";
 
-export default function Popup(args: {
-	children?: React.JSX.Element | React.JSX.Element[];
-	onAccept?: () => void;
-	onClose: () => void;
-	removeSelf: () => void;
-}) {
+export default function Popup(
+	args: PropsWithChildren<{
+		onAccept?: () => void;
+		onClose: () => void;
+		removeSelf: () => void;
+	}>,
+) {
 	const defaultButton = useRef<HTMLButtonElement>(null);
 	useEffect(() => {
 		defaultButton.current?.focus({ focusVisible: true } as FocusOptions);
 	}, []);
 	return (
 		<div className={styles.popup} role="dialog">
-			<div className={styles.content}>
-				{...args.children
-					? args.children instanceof Array
-						? args.children
-						: [args.children]
-					: []}
-			</div>
+			<div className={styles.content}>{args.children}</div>
 
 			<menu className={styles.buttons}>
 				<li>

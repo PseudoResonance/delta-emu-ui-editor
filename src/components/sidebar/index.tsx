@@ -1,13 +1,14 @@
 "use client";
 import styles from "./index.module.css";
-import React, { useEffect, useRef } from "react";
+import React, { PropsWithChildren, useEffect, useRef } from "react";
 
-export default function Sidebar(args: {
-	children?: React.JSX.Element | React.JSX.Element[];
-	hiddenNarrow: boolean;
-	position: SidebarPosition;
-	requestVisible: () => void;
-}) {
+export default function Sidebar(
+	args: PropsWithChildren<{
+		hiddenNarrow: boolean;
+		position: SidebarPosition;
+		requestVisible: () => void;
+	}>,
+) {
 	const ref = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		const onFocus = () => {

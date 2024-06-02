@@ -1,6 +1,6 @@
 "use client";
 import styles from "./index.module.css";
-import React, { MouseEvent, SyntheticEvent } from "react";
+import React, { MouseEvent, PropsWithChildren, SyntheticEvent } from "react";
 
 interface BaseArgs {
 	label: string | React.JSX.Element;
@@ -11,9 +11,7 @@ interface BaseArgs {
 	showActive?: boolean;
 }
 
-interface ChildrenDefined extends BaseArgs {
-	children?: string | React.JSX.Element | React.JSX.Element[] | false;
-}
+type ChildrenDefined = PropsWithChildren<BaseArgs>;
 
 interface ChildrenFunction extends BaseArgs {
 	data: Record<string, unknown>;

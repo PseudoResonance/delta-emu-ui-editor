@@ -1,6 +1,6 @@
 "use client";
 import styles from "./input.module.css";
-import React, { useEffect, useMemo } from "react";
+import React, { CSSProperties, useEffect, useMemo } from "react";
 import { ChangeEvent, KeyboardEvent, WheelEvent, useRef } from "react";
 
 const nonBlockingKeys = [
@@ -63,6 +63,7 @@ export default function ValueInput(args: {
 	onChange: (val: string) => void;
 	onFocusLost?: (val: string) => void;
 	places?: number;
+	style?: CSSProperties;
 	suggestionsId?: string;
 	type?: string;
 	value: string;
@@ -329,11 +330,12 @@ export default function ValueInput(args: {
 		attrs.list = args.suggestionsId;
 	}
 	return (
-		<div className={styles.input}>
+		<div className={styles.input} style={args.style}>
 			<label
 				aria-label={args.ariaLabel ? args.ariaLabel : undefined}
 				className={styles.label}
 				htmlFor={id}
+				style={{ alignSelf: "center" }}
 			>
 				{args.label}
 			</label>
@@ -354,6 +356,7 @@ export default function ValueInput(args: {
 				{...attrs}
 				onWheel={onWheel}
 				ref={ref}
+				style={{ gridColumn: "label / end" }}
 			/>
 		</div>
 	);

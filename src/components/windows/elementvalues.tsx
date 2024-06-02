@@ -1,5 +1,4 @@
 "use client";
-import inputFlexStyle from "./inputFlex.module.css";
 import icons from "@/utils/icons.module.css";
 import ValueInput from "@/components/inputs/valueinput";
 import React, { Dispatch, SetStateAction } from "react";
@@ -19,6 +18,7 @@ import Suggestions from "@/components/inputs/inputSuggestions";
 import INPUT_PRESETS from "@/data/consoleInfo";
 import { getElementLabel } from "@/components/visualEditor/element";
 import requestFiles from "@/utils/requestFiles";
+import InputGrid from "../inputGrid";
 
 export default function ElementValues(args: {
 	addAsset: (path: string, asset: Asset) => void;
@@ -44,21 +44,21 @@ export default function ElementValues(args: {
 		INPUT_PRESET && args.elementData.type in INPUT_PRESET.buttons
 			? INPUT_PRESET.buttons[args.elementData.type]
 			: null;
-	let valueElements: React.JSX.Element[] = [];
+	const valueElements: React.JSX.Element[] = [];
 	switch (args.elementData.type) {
 		case EmulatorElementType.Thumbstick:
-			valueElements = [
-				<Suggestions
-					id={"assets"}
-					values={
-						args.assets
-							? Object.keys(args.assets).filter(
-									(name) => name !== "info.json",
-								)
-							: []
-					}
-				/>,
-				<div className={inputFlexStyle.inputFlex}>
+			valueElements.push(
+				<>
+					<Suggestions
+						id={"assets"}
+						values={
+							args.assets
+								? Object.keys(args.assets).filter(
+										(name) => name !== "info.json",
+									)
+								: []
+						}
+					/>
 					<ValueInput
 						context={String(args.elementIndex)}
 						debounce={1000}
@@ -70,6 +70,7 @@ export default function ElementValues(args: {
 							});
 							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
+						style={{ gridColumn: "start / button" }}
 						suggestionsId="assets"
 						value={args.elementData.data.thumbstick.name}
 					/>
@@ -94,6 +95,7 @@ export default function ElementValues(args: {
 								});
 							});
 						}}
+						style={{ gridColumn: "button / end" }}
 					>
 						<div
 							className={`${icons.icon} ${icons.fileAdd}`}
@@ -103,487 +105,512 @@ export default function ElementValues(args: {
 							}}
 						/>
 					</Button>
-				</div>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="thumbstickwidth"
-					label="Thumbstick Width"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									thumbstick: {
-										width: {
-											$set: num,
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="thumbstickwidth"
+						label="Thumbstick Width"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										thumbstick: {
+											width: {
+												$set: num,
+											},
 										},
 									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									thumbstick: {
-										width: {
-											$set: 0,
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										thumbstick: {
+											width: {
+												$set: 0,
+											},
 										},
 									},
-								},
-							});
-						}
-					}}
-					type="number"
-					value={String(args.elementData.data.thumbstick.width)}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="thumbstickheight"
-					label="Thumbstick Height"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									thumbstick: {
-										height: {
-											$set: num,
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={String(args.elementData.data.thumbstick.width)}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="thumbstickheight"
+						label="Thumbstick Height"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										thumbstick: {
+											height: {
+												$set: num,
+											},
 										},
 									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									thumbstick: {
-										height: {
-											$set: 0,
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										thumbstick: {
+											height: {
+												$set: 0,
+											},
 										},
 									},
-								},
-							});
-						}
-					}}
-					type="number"
-					value={String(args.elementData.data.thumbstick.height)}
-				/>,
-			];
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={String(args.elementData.data.thumbstick.height)}
+					/>
+				</>,
+			);
 		// eslint-disable-next-line no-fallthrough
 		case EmulatorElementType.Dpad:
-			valueElements = [
-				...valueElements,
-				<Suggestions
-					id={"inputUp"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"up" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.up
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="inputup"
-					label="Bind Up"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									up: {
-										$set: val,
+			valueElements.push(
+				<>
+					<Suggestions
+						id={"inputUp"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"up" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.up
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="inputup"
+						label="Bind Up"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										up: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputUp"
-					value={args.elementData.data.inputsobj.up}
-				/>,
-				<Suggestions
-					id={"inputDown"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"down" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.down
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="inputdown"
-					label="Bind Down"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									down: {
-										$set: val,
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputUp"
+						value={args.elementData.data.inputsobj.up}
+					/>
+					<Suggestions
+						id={"inputDown"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"down" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.down
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="inputdown"
+						label="Bind Down"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										down: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputDown"
-					value={args.elementData.data.inputsobj.down}
-				/>,
-				<Suggestions
-					id={"inputLeft"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"left" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.left
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="inputleft"
-					label="Bind Left"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									left: {
-										$set: val,
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputDown"
+						value={args.elementData.data.inputsobj.down}
+					/>
+					<Suggestions
+						id={"inputLeft"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"left" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.left
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="inputleft"
+						label="Bind Left"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										left: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputLeft"
-					value={args.elementData.data.inputsobj.left}
-				/>,
-				<Suggestions
-					id={"inputRight"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"right" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.right
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="inputright"
-					label="Bind Right"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									right: {
-										$set: val,
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputLeft"
+						value={args.elementData.data.inputsobj.left}
+					/>
+					<Suggestions
+						id={"inputRight"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"right" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.right
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="inputright"
+						label="Bind Right"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										right: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputRight"
-					value={args.elementData.data.inputsobj.right}
-				/>,
-			];
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputRight"
+						value={args.elementData.data.inputsobj.right}
+					/>
+				</>,
+			);
 			break;
 		case EmulatorElementType.Touchscreen:
-			valueElements = [
-				<Suggestions
-					id={"inputX"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"x" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.x
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="touchscreenx"
-					label="Bind Touch X"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									x: {
-										$set: val,
+			valueElements.push(
+				<>
+					<Suggestions
+						id={"inputX"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"x" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.x
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="touchscreenx"
+						label="Bind Touch X"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										x: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputX"
-					value={args.elementData.data.inputsobj.x}
-				/>,
-				<Suggestions
-					id={"inputY"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						!(BUTTON_INPUTS.values instanceof Array) &&
-						"y" in BUTTON_INPUTS.values
-							? BUTTON_INPUTS.values.y
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="touchscreeny"
-					label="Bind Touch Y"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputsobj: {
-									y: {
-										$set: val,
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputX"
+						value={args.elementData.data.inputsobj.x}
+					/>
+					<Suggestions
+						id={"inputY"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							!(BUTTON_INPUTS.values instanceof Array) &&
+							"y" in BUTTON_INPUTS.values
+								? BUTTON_INPUTS.values.y
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="touchscreeny"
+						label="Bind Touch Y"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputsobj: {
+										y: {
+											$set: val,
+										},
 									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputY"
-					value={args.elementData.data.inputsobj.y}
-				/>,
-			];
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputY"
+						value={args.elementData.data.inputsobj.y}
+					/>
+				</>,
+			);
 			break;
 		case EmulatorElementType.Screen:
-			valueElements = [
-				<Suggestions
-					id={"screenX"}
-					values={
-						INPUT_PRESET
-							? INPUT_PRESET.screens.map((val) =>
-									val.x.toFixed(0),
-								)
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="screenx"
-					label="Capture Screen X"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									screen: {
-										x: {
-											$set: num,
-										},
-									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									screen: {
-										x: {
-											$set: 0,
-										},
-									},
-								},
-							});
+			valueElements.push(
+				<>
+					<Suggestions
+						id={"screenX"}
+						values={
+							INPUT_PRESET
+								? INPUT_PRESET.screens.map((val) =>
+										val.x.toFixed(0),
+									)
+								: []
 						}
-					}}
-					suggestionsId="screenX"
-					type="number"
-					value={String(args.elementData.data.screen.x)}
-				/>,
-				<Suggestions
-					id={"screenY"}
-					values={
-						INPUT_PRESET
-							? INPUT_PRESET.screens.map((val) =>
-									val.y.toFixed(0),
-								)
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="screeny"
-					label="Capture Screen Y"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									screen: {
-										y: {
-											$set: num,
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="screenx"
+						label="Capture Screen X"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										screen: {
+											x: {
+												$set: num,
+											},
 										},
 									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									screen: {
-										y: {
-											$set: 0,
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										screen: {
+											x: {
+												$set: 0,
+											},
 										},
 									},
-								},
-							});
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="screenX"
+						type="number"
+						value={String(args.elementData.data.screen.x)}
+					/>
+					<Suggestions
+						id={"screenY"}
+						values={
+							INPUT_PRESET
+								? INPUT_PRESET.screens.map((val) =>
+										val.y.toFixed(0),
+									)
+								: []
 						}
-					}}
-					suggestionsId="screenY"
-					type="number"
-					value={String(args.elementData.data.screen.y)}
-				/>,
-				<Suggestions
-					id={"screenWidth"}
-					values={
-						INPUT_PRESET
-							? INPUT_PRESET.screens.map((val) =>
-									val.width.toFixed(0),
-								)
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="screenwidth"
-					label="Capture Screen Width"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									screen: {
-										width: {
-											$set: num,
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="screeny"
+						label="Capture Screen Y"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										screen: {
+											y: {
+												$set: num,
+											},
 										},
 									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									screen: {
-										width: {
-											$set: 0,
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										screen: {
+											y: {
+												$set: 0,
+											},
 										},
 									},
-								},
-							});
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="screenY"
+						type="number"
+						value={String(args.elementData.data.screen.y)}
+					/>
+					<Suggestions
+						id={"screenWidth"}
+						values={
+							INPUT_PRESET
+								? INPUT_PRESET.screens.map((val) =>
+										val.width.toFixed(0),
+									)
+								: []
 						}
-					}}
-					suggestionsId="screenWidth"
-					type="number"
-					value={String(args.elementData.data.screen.width)}
-				/>,
-				<Suggestions
-					id={"screenHeight"}
-					values={
-						INPUT_PRESET
-							? INPUT_PRESET.screens.map((val) =>
-									val.height.toFixed(0),
-								)
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="screenheight"
-					label="Capture Screen Height"
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								data: {
-									screen: {
-										height: {
-											$set: num,
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="screenwidth"
+						label="Capture Screen Width"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										screen: {
+											width: {
+												$set: num,
+											},
 										},
 									},
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								data: {
-									screen: {
-										height: {
-											$set: 0,
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										screen: {
+											width: {
+												$set: 0,
+											},
 										},
 									},
-								},
-							});
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="screenWidth"
+						type="number"
+						value={String(args.elementData.data.screen.width)}
+					/>
+					<Suggestions
+						id={"screenHeight"}
+						values={
+							INPUT_PRESET
+								? INPUT_PRESET.screens.map((val) =>
+										val.height.toFixed(0),
+									)
+								: []
 						}
-					}}
-					suggestionsId="screenHeight"
-					type="number"
-					value={String(args.elementData.data.screen.height)}
-				/>,
-			];
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="screenheight"
+						label="Capture Screen Height"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									data: {
+										screen: {
+											height: {
+												$set: num,
+											},
+										},
+									},
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									data: {
+										screen: {
+											height: {
+												$set: 0,
+											},
+										},
+									},
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="screenHeight"
+						type="number"
+						value={String(args.elementData.data.screen.height)}
+					/>
+				</>,
+			);
 			break;
 		default:
-			valueElements = [
-				<Suggestions
-					id={"inputs"}
-					values={
-						BUTTON_INPUTS &&
-						BUTTON_INPUTS.values &&
-						BUTTON_INPUTS.values instanceof Array
-							? BUTTON_INPUTS.values
-							: []
-					}
-				/>,
-				<ValueInput
-					context={String(args.elementIndex)}
-					key="inputs"
-					label="Bindings"
-					onChange={(val: string) => {
-						args.updateElement({
-							data: {
-								inputs: {
-									$set: val
-										.replace(/\s/g, "")
-										.split(",")
-										.filter((e) => e),
+			valueElements.push(
+				<>
+					<Suggestions
+						id={"inputs"}
+						values={
+							BUTTON_INPUTS &&
+							BUTTON_INPUTS.values &&
+							BUTTON_INPUTS.values instanceof Array
+								? BUTTON_INPUTS.values
+								: []
+						}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="inputs"
+						label="Bindings"
+						onChange={(val: string) => {
+							args.updateElement({
+								data: {
+									inputs: {
+										$set: val
+											.replace(/\s/g, "")
+											.split(",")
+											.filter((e) => e),
+									},
 								},
-							},
-						});
-					}}
-					suggestionsId="inputs"
-					value={args.elementData.data.inputs?.join(", ")}
-				/>,
-			];
+							});
+						}}
+						style={{ gridColumn: "start / end" }}
+						suggestionsId="inputs"
+						value={args.elementData.data.inputs?.join(", ")}
+					/>
+				</>,
+			);
 			break;
 	}
 	const label = getElementLabel(args.elementData, true);
 	return (
-		<div>
+		<InputGrid
+			style={{
+				gridTemplateColumns:
+					"[start] 1fr [label] 1fr [button] 1.75em [end]",
+			}}
+		>
 			<DropdownInput
 				label="Type"
 				onChange={(val: string) => {
@@ -595,6 +622,7 @@ export default function ElementValues(args: {
 						},
 					});
 				}}
+				style={{ gridColumn: "start / end" }}
 				value={args.elementData.type}
 				values={
 					{
@@ -608,109 +636,106 @@ export default function ElementValues(args: {
 			/>
 
 			{...valueElements}
-			<div className={inputFlexStyle.inputFlex}>
-				<ValueInput
-					context={String(args.elementIndex)}
-					label="X"
-					maxValue={args.parentWidth - args.elementData.width}
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								x: {
-									$set: num,
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								x: {
-									$set: 0,
-								},
-							});
-						}
-					}}
-					type="number"
-					value={args.elementData.x.toFixed(0)}
-				/>
-				<Button
-					label={"Center Along X Axis"}
-					onClick={() => {
+			<ValueInput
+				context={String(args.elementIndex)}
+				label="X"
+				maxValue={args.parentWidth - args.elementData.width}
+				minValue={0}
+				onChange={(val: string) => {
+					const num = parseInt(val);
+					if (!isNaN(num))
 						args.updateElement({
 							x: {
-								$set: Math.round(
-									(args.parentWidth -
-										args.elementData.width) /
-										2,
-								),
+								$set: num,
 							},
 						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							x: {
+								$set: 0,
+							},
+						});
+					}
+				}}
+				style={{ gridColumn: "start / button" }}
+				type="number"
+				value={args.elementData.x.toFixed(0)}
+			/>
+			<Button
+				label={"Center Along X Axis"}
+				onClick={() => {
+					args.updateElement({
+						x: {
+							$set: Math.round(
+								(args.parentWidth - args.elementData.width) / 2,
+							),
+						},
+					});
+				}}
+				style={{ gridColumn: "button / end" }}
+			>
+				<div
+					className={`${icons.icon} ${icons.horizontalAlign}`}
+					style={{
+						height: "var(--icon-size)",
+						width: "var(--icon-size)",
 					}}
-				>
-					<div
-						className={`${icons.icon} ${icons.horizontalAlign}`}
-						style={{
-							height: "var(--icon-size)",
-							width: "var(--icon-size)",
-						}}
-					/>
-				</Button>
-			</div>
-
-			<div className={inputFlexStyle.inputFlex}>
-				<ValueInput
-					context={String(args.elementIndex)}
-					label="Y"
-					maxValue={args.parentHeight - args.elementData.height}
-					minValue={0}
-					onChange={(val: string) => {
-						const num = parseInt(val);
-						if (!isNaN(num))
-							args.updateElement({
-								y: {
-									$set: num,
-								},
-							});
-					}}
-					onFocusLost={(val: string) => {
-						const num = parseInt(val);
-						if (isNaN(num) || val.length === 0) {
-							args.updateElement({
-								y: {
-									$set: 0,
-								},
-							});
-						}
-					}}
-					type="number"
-					value={args.elementData.y.toFixed(0)}
 				/>
-				<Button
-					label={"Center Along Y Axis"}
-					onClick={() => {
+			</Button>
+
+			<ValueInput
+				context={String(args.elementIndex)}
+				label="Y"
+				maxValue={args.parentHeight - args.elementData.height}
+				minValue={0}
+				onChange={(val: string) => {
+					const num = parseInt(val);
+					if (!isNaN(num))
 						args.updateElement({
 							y: {
-								$set: Math.round(
-									(args.parentHeight -
-										args.elementData.height) /
-										2,
-								),
+								$set: num,
 							},
 						});
+				}}
+				onFocusLost={(val: string) => {
+					const num = parseInt(val);
+					if (isNaN(num) || val.length === 0) {
+						args.updateElement({
+							y: {
+								$set: 0,
+							},
+						});
+					}
+				}}
+				style={{ gridColumn: "start / button" }}
+				type="number"
+				value={args.elementData.y.toFixed(0)}
+			/>
+			<Button
+				label={"Center Along Y Axis"}
+				onClick={() => {
+					args.updateElement({
+						y: {
+							$set: Math.round(
+								(args.parentHeight - args.elementData.height) /
+									2,
+							),
+						},
+					});
+				}}
+				style={{ gridColumn: "button / end" }}
+			>
+				<div
+					className={`${icons.icon} ${icons.verticalAlign}`}
+					style={{
+						height: "var(--icon-size)",
+						width: "var(--icon-size)",
 					}}
-				>
-					<div
-						className={`${icons.icon} ${icons.verticalAlign}`}
-						style={{
-							height: "var(--icon-size)",
-							width: "var(--icon-size)",
-						}}
-					/>
-				</Button>
-			</div>
+				/>
+			</Button>
 
 			<ValueInput
 				context={String(args.elementIndex)}
@@ -736,6 +761,7 @@ export default function ElementValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={args.elementData.width.toFixed(0)}
 			/>
@@ -764,126 +790,132 @@ export default function ElementValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={args.elementData.height.toFixed(0)}
 			/>
 
-			{...args.elementData.type === EmulatorElementType.Screen
-				? [<></>]
-				: [
-						<ValueInput
-							context={String(args.elementIndex)}
-							key="paddingtop"
-							label="Padding Top"
-							minValue={0}
-							onChange={(val: string) => {
-								const num = parseInt(val);
-								if (!isNaN(num))
-									args.updateElement({
-										paddingTop: {
-											$set: num,
-										},
-									});
-							}}
-							onFocusLost={(val: string) => {
-								const num = parseInt(val);
-								if (isNaN(num) || val.length === 0) {
-									args.updateElement({
-										paddingTop: {
-											$set: 0,
-										},
-									});
-								}
-							}}
-							type="number"
-							value={args.elementData.paddingTop.toFixed(0)}
-						/>,
-						<ValueInput
-							context={String(args.elementIndex)}
-							key="paddingbottom"
-							label="Padding Bottom"
-							minValue={0}
-							onChange={(val: string) => {
-								const num = parseInt(val);
-								if (!isNaN(num))
-									args.updateElement({
-										paddingBottom: {
-											$set: num,
-										},
-									});
-							}}
-							onFocusLost={(val: string) => {
-								const num = parseInt(val);
-								if (isNaN(num) || val.length === 0) {
-									args.updateElement({
-										paddingBottom: {
-											$set: 0,
-										},
-									});
-								}
-							}}
-							type="number"
-							value={args.elementData.paddingBottom.toFixed(0)}
-						/>,
-						<ValueInput
-							context={String(args.elementIndex)}
-							key="paddingleft"
-							label="Padding Left"
-							minValue={0}
-							onChange={(val: string) => {
-								const num = parseInt(val);
-								if (!isNaN(num))
-									args.updateElement({
-										paddingLeft: {
-											$set: num,
-										},
-									});
-							}}
-							onFocusLost={(val: string) => {
-								const num = parseInt(val);
-								if (isNaN(num) || val.length === 0) {
-									args.updateElement({
-										paddingLeft: {
-											$set: 0,
-										},
-									});
-								}
-							}}
-							type="number"
-							value={args.elementData.paddingLeft.toFixed(0)}
-						/>,
-						<ValueInput
-							context={String(args.elementIndex)}
-							key="paddingright"
-							label="Padding Right"
-							minValue={0}
-							onChange={(val: string) => {
-								const num = parseInt(val);
-								if (!isNaN(num))
-									args.updateElement({
-										paddingRight: {
-											$set: num,
-										},
-									});
-							}}
-							onFocusLost={(val: string) => {
-								const num = parseInt(val);
-								if (isNaN(num) || val.length === 0) {
-									args.updateElement({
-										paddingRight: {
-											$set: 0,
-										},
-									});
-								}
-							}}
-							type="number"
-							value={args.elementData.paddingRight.toFixed(0)}
-						/>,
-					]}
+			{args.elementData.type === EmulatorElementType.Screen && (
+				<>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="paddingtop"
+						label="Padding Top"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									paddingTop: {
+										$set: num,
+									},
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									paddingTop: {
+										$set: 0,
+									},
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={args.elementData.paddingTop.toFixed(0)}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="paddingbottom"
+						label="Padding Bottom"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									paddingBottom: {
+										$set: num,
+									},
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									paddingBottom: {
+										$set: 0,
+									},
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={args.elementData.paddingBottom.toFixed(0)}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="paddingleft"
+						label="Padding Left"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									paddingLeft: {
+										$set: num,
+									},
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									paddingLeft: {
+										$set: 0,
+									},
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={args.elementData.paddingLeft.toFixed(0)}
+					/>
+					<ValueInput
+						context={String(args.elementIndex)}
+						key="paddingright"
+						label="Padding Right"
+						minValue={0}
+						onChange={(val: string) => {
+							const num = parseInt(val);
+							if (!isNaN(num))
+								args.updateElement({
+									paddingRight: {
+										$set: num,
+									},
+								});
+						}}
+						onFocusLost={(val: string) => {
+							const num = parseInt(val);
+							if (isNaN(num) || val.length === 0) {
+								args.updateElement({
+									paddingRight: {
+										$set: 0,
+									},
+								});
+							}
+						}}
+						style={{ gridColumn: "start / end" }}
+						type="number"
+						value={args.elementData.paddingRight.toFixed(0)}
+					/>
+				</>
+			)}
 			<Button
 				onClick={() => {
 					args.duplicateThis();
 				}}
+				style={{ gridColumn: "start / end" }}
 			>
 				Duplicate Element
 			</Button>
@@ -905,9 +937,10 @@ export default function ElementValues(args: {
 						},
 					);
 				}}
+				style={{ gridColumn: "start / end" }}
 			>
 				Delete Element
 			</Button>
-		</div>
+		</InputGrid>
 	);
 }

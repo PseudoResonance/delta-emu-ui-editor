@@ -1,11 +1,12 @@
 "use client";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, PropsWithChildren } from "react";
 
-export default function TreeWrapper(args: {
-	ariaLabel?: string;
-	children?: React.JSX.Element | React.JSX.Element[];
-	style?: CSSProperties | undefined;
-}) {
+export default function TreeWrapper(
+	args: PropsWithChildren<{
+		ariaLabel?: string;
+		style?: CSSProperties | undefined;
+	}>,
+) {
 	return (
 		<div
 			aria-label={args.ariaLabel ? args.ariaLabel : undefined}
@@ -29,11 +30,7 @@ export default function TreeWrapper(args: {
 			style={args.style}
 			tabIndex={0}
 		>
-			{...args.children
-				? args.children instanceof Array
-					? args.children
-					: [args.children]
-				: []}
+			{args.children}
 		</div>
 	);
 }

@@ -1,13 +1,14 @@
 "use client";
 import styles from "./index.module.css";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, PropsWithChildren, SetStateAction } from "react";
 
-export default function MenuCategory(args: {
-	children?: React.JSX.Element | React.JSX.Element[];
-	isActive: boolean;
-	label: string;
-	setIsActive: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function MenuCategory(
+	args: PropsWithChildren<{
+		isActive: boolean;
+		label: string;
+		setIsActive: Dispatch<SetStateAction<boolean>>;
+	}>,
+) {
 	return (
 		<div className={`${styles.menucategory}`}>
 			<button
@@ -27,13 +28,7 @@ export default function MenuCategory(args: {
 				{args.label}
 			</button>
 
-			<div className={styles.menudropdown}>
-				{...args.children
-					? args.children instanceof Array
-						? args.children
-						: [args.children]
-					: []}
-			</div>
+			<div className={styles.menudropdown}>{args.children}</div>
 		</div>
 	);
 }

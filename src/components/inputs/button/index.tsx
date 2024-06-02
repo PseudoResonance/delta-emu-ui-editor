@@ -1,15 +1,20 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { CSSProperties, PropsWithChildren, useMemo } from "react";
 import styles from "../input.module.css";
 
-export default function Button(args: {
-	children?: string | React.JSX.Element | React.JSX.Element[];
-	label?: string;
-	onClick: () => void;
-}) {
+export default function Button(
+	args: PropsWithChildren<{
+		label?: string;
+		onClick: () => void;
+		style?: CSSProperties;
+	}>,
+) {
 	const id = useMemo(() => (Math.random() + 1).toString(36).substring(2), []);
 	return (
-		<form className={`${styles.input} ${styles.button}`}>
+		<form
+			className={`${styles.input} ${styles.button}`}
+			style={{ ...args.style }}
+		>
 			<span
 				style={{
 					height: 0,
@@ -26,15 +31,10 @@ export default function Button(args: {
 				aria-label={"label" in args ? args.label : undefined}
 				className={styles.inputInner}
 				htmlFor={id}
+				style={{ gridColumn: "start / end" }}
 				title={"label" in args ? args.label : undefined}
 			>
-				<span>
-					{...args.children
-						? args.children instanceof Array
-							? args.children
-							: [args.children]
-						: []}
-				</span>
+				<span>{args.children}</span>
 			</label>
 		</form>
 	);

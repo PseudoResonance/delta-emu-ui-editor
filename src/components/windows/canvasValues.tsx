@@ -1,5 +1,4 @@
 "use client";
-import inputFlexStyle from "./inputFlex.module.css";
 import lockRatioStyle from "./lockRatio.module.css";
 import icons from "@/utils/icons.module.css";
 import ValueInput from "@/components/inputs/valueinput";
@@ -12,6 +11,7 @@ import { Spec } from "immutability-helper";
 import CheckboxInput from "@/components/inputs/checkbox";
 import Suggestions from "@/components/inputs/inputSuggestions";
 import requestFiles from "@/utils/requestFiles";
+import InputGrid from "../inputGrid";
 
 export default function CanvasValues(args: {
 	addAsset: (path: string, asset: Asset) => void;
@@ -23,7 +23,22 @@ export default function CanvasValues(args: {
 	setLayoutData: (layout: Spec<EmulatorLayout, never>) => void;
 }) {
 	return (
-		<>
+		<InputGrid
+			style={{
+				gridTemplateColumns:
+					"[start] 1fr [label] 1fr [button] 1.75em [end]",
+			}}
+		>
+			<Suggestions
+				id={"assets"}
+				values={
+					args.assets
+						? Object.keys(args.assets).filter(
+								(name) => name !== "info.json",
+							)
+						: []
+				}
+			/>
 			<DropdownInput
 				label="Background Type"
 				onChange={(val: string) => {
@@ -35,6 +50,7 @@ export default function CanvasValues(args: {
 						},
 					});
 				}}
+				style={{ gridColumn: "start / end" }}
 				value={args.layoutData.assets.type}
 				values={
 					{
@@ -43,183 +59,161 @@ export default function CanvasValues(args: {
 					} as { [key in AssetType]: string }
 				}
 			/>
-			<Suggestions
-				id={"assets"}
-				values={
-					args.assets
-						? Object.keys(args.assets).filter(
-								(name) => name !== "info.json",
-							)
-						: []
-				}
-			/>
 			{args.layoutData.assets.type === AssetType.PNG ? (
 				<>
-					<div className={inputFlexStyle.inputFlex}>
-						<ValueInput
-							ariaLabel="Small Image File Name"
-							context={args.currentRepresentation}
-							debounce={1000}
-							label="Small Image"
-							onChange={(val: string) => {
+					<ValueInput
+						ariaLabel="Small Image File Name"
+						context={args.currentRepresentation}
+						debounce={1000}
+						label="Small Image"
+						onChange={(val: string) => {
+							args.setLayoutData({
+								assets: {
+									small: {
+										$set: val,
+									},
+								},
+							});
+							loadAssetHelper(val, args.assets, args.setAssets);
+						}}
+						style={{ gridColumn: "start / button" }}
+						suggestionsId="assets"
+						value={args.layoutData.assets.small}
+					/>
+					<Button
+						label={"Select Small Image File"}
+						onClick={() => {
+							requestFiles(".png", false, (files) => {
+								const val = files[0];
+								args.addAsset(val.name, {
+									file: val,
+									height: -1,
+									type: null,
+									url: null,
+									width: -1,
+								});
 								args.setLayoutData({
 									assets: {
 										small: {
-											$set: val,
+											$set: val.name,
 										},
 									},
 								});
-								loadAssetHelper(
-									val,
-									args.assets,
-									args.setAssets,
-								);
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+					>
+						<div
+							className={`${icons.icon} ${icons.fileAdd}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
 							}}
-							suggestionsId="assets"
-							value={args.layoutData.assets.small}
 						/>
-						<Button
-							label={"Select Small Image File"}
-							onClick={() => {
-								requestFiles(".png", false, (files) => {
-									const val = files[0];
-									args.addAsset(val.name, {
-										file: val,
-										height: -1,
-										type: null,
-										url: null,
-										width: -1,
-									});
-									args.setLayoutData({
-										assets: {
-											small: {
-												$set: val.name,
-											},
-										},
-									});
+					</Button>
+					<ValueInput
+						ariaLabel="Medium Image File Name"
+						context={args.currentRepresentation}
+						debounce={1000}
+						label="Medium Image"
+						onChange={(val: string) => {
+							args.setLayoutData({
+								assets: {
+									medium: {
+										$set: val,
+									},
+								},
+							});
+							loadAssetHelper(val, args.assets, args.setAssets);
+						}}
+						style={{ gridColumn: "start / button" }}
+						suggestionsId="assets"
+						value={args.layoutData.assets.medium}
+					/>
+					<Button
+						label={"Select Medium Image File"}
+						onClick={() => {
+							requestFiles(".png", false, (files) => {
+								const val = files[0];
+								args.addAsset(val.name, {
+									file: val,
+									height: -1,
+									type: null,
+									url: null,
+									width: -1,
 								});
-							}}
-						>
-							<div
-								className={`${icons.icon} ${icons.fileAdd}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						</Button>
-					</div>
-					<div className={inputFlexStyle.inputFlex}>
-						<ValueInput
-							ariaLabel="Medium Image File Name"
-							context={args.currentRepresentation}
-							debounce={1000}
-							label="Medium Image"
-							onChange={(val: string) => {
 								args.setLayoutData({
 									assets: {
 										medium: {
-											$set: val,
+											$set: val.name,
 										},
 									},
 								});
-								loadAssetHelper(
-									val,
-									args.assets,
-									args.setAssets,
-								);
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+					>
+						<div
+							className={`${icons.icon} ${icons.fileAdd}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
 							}}
-							suggestionsId="assets"
-							value={args.layoutData.assets.medium}
 						/>
-						<Button
-							label={"Select Medium Image File"}
-							onClick={() => {
-								requestFiles(".png", false, (files) => {
-									const val = files[0];
-									args.addAsset(val.name, {
-										file: val,
-										height: -1,
-										type: null,
-										url: null,
-										width: -1,
-									});
-									args.setLayoutData({
-										assets: {
-											medium: {
-												$set: val.name,
-											},
-										},
-									});
+					</Button>
+					<ValueInput
+						ariaLabel="Large Image File Name"
+						context={args.currentRepresentation}
+						debounce={1000}
+						label="Large Image"
+						onChange={(val: string) => {
+							args.setLayoutData({
+								assets: {
+									large: {
+										$set: val,
+									},
+								},
+							});
+							loadAssetHelper(val, args.assets, args.setAssets);
+						}}
+						style={{ gridColumn: "start / button" }}
+						suggestionsId="assets"
+						value={args.layoutData.assets.large}
+					/>
+					<Button
+						label={"Select Large Image File"}
+						onClick={() => {
+							requestFiles(".png", false, (files) => {
+								const val = files[0];
+								args.addAsset(val.name, {
+									file: val,
+									height: -1,
+									type: null,
+									url: null,
+									width: -1,
 								});
-							}}
-						>
-							<div
-								className={`${icons.icon} ${icons.fileAdd}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						</Button>
-					</div>
-					<div className={inputFlexStyle.inputFlex}>
-						<ValueInput
-							ariaLabel="Large Image File Name"
-							context={args.currentRepresentation}
-							debounce={1000}
-							label="Large Image"
-							onChange={(val: string) => {
 								args.setLayoutData({
 									assets: {
 										large: {
-											$set: val,
+											$set: val.name,
 										},
 									},
 								});
-								loadAssetHelper(
-									val,
-									args.assets,
-									args.setAssets,
-								);
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+					>
+						<div
+							className={`${icons.icon} ${icons.fileAdd}`}
+							style={{
+								height: "var(--icon-size)",
+								width: "var(--icon-size)",
 							}}
-							suggestionsId="assets"
-							value={args.layoutData.assets.large}
 						/>
-						<Button
-							label={"Select Large Image File"}
-							onClick={() => {
-								requestFiles(".png", false, (files) => {
-									const val = files[0];
-									args.addAsset(val.name, {
-										file: val,
-										height: -1,
-										type: null,
-										url: null,
-										width: -1,
-									});
-									args.setLayoutData({
-										assets: {
-											large: {
-												$set: val.name,
-											},
-										},
-									});
-								});
-							}}
-						>
-							<div
-								className={`${icons.icon} ${icons.fileAdd}`}
-								style={{
-									height: "var(--icon-size)",
-									width: "var(--icon-size)",
-								}}
-							/>
-						</Button>
-					</div>
+					</Button>
 				</>
 			) : (
-				<div className={inputFlexStyle.inputFlex}>
+				<>
 					<ValueInput
 						ariaLabel="PDF Image File Name"
 						context={args.currentRepresentation}
@@ -235,6 +229,7 @@ export default function CanvasValues(args: {
 							});
 							loadAssetHelper(val, args.assets, args.setAssets);
 						}}
+						style={{ gridColumn: "start / button" }}
 						suggestionsId="assets"
 						value={args.layoutData.assets.resizable}
 					/>
@@ -259,6 +254,9 @@ export default function CanvasValues(args: {
 								});
 							});
 						}}
+						style={{
+							gridColumn: "button / end",
+						}}
 					>
 						<div
 							className={`${icons.icon} ${icons.fileAdd}`}
@@ -268,84 +266,101 @@ export default function CanvasValues(args: {
 							}}
 						/>
 					</Button>
-				</div>
+				</>
 			)}
-
-			<div className={lockRatioStyle.container}>
-				<div className={lockRatioStyle.inputs}>
-					<ValueInput
-						context={args.currentRepresentation}
-						label="Canvas Width"
-						minValue={0}
-						onChange={(val: string) => {
-							const res = parseInt(val);
-							if (!isNaN(res)) {
-								let height = -1;
-								if (
-									args.layoutData &&
-									args.layoutData.lockBackgroundRatio
-								) {
-									height =
-										res *
-										(args.layoutData.canvas.height /
-											args.layoutData.canvas.width);
-								}
-								args.setLayoutData({
-									canvas: {
-										width: {
-											$set: res,
-										},
-										...(height > -1 && {
-											height: {
-												$set: height,
-											},
-										}),
-									},
-								});
+			<div
+				style={{
+					display: "grid",
+					gridColumn: "start / end",
+					gridRow: "span 2",
+					gridTemplateColumns: "subgrid",
+					gridTemplateRows: "subgrid",
+				}}
+			>
+				<ValueInput
+					context={args.currentRepresentation}
+					label="Canvas Width"
+					minValue={0}
+					onChange={(val: string) => {
+						const res = parseInt(val);
+						if (!isNaN(res)) {
+							let height = -1;
+							if (
+								args.layoutData &&
+								args.layoutData.lockBackgroundRatio
+							) {
+								height =
+									res *
+									(args.layoutData.canvas.height /
+										args.layoutData.canvas.width);
 							}
-						}}
-						type="number"
-						value={String(Math.round(args.layoutData.canvas.width))}
-					/>
-
-					<ValueInput
-						context={args.currentRepresentation}
-						label="Canvas Height"
-						minValue={0}
-						onChange={(val: string) => {
-							const res = parseInt(val);
-							if (!isNaN(res)) {
-								let width = -1;
-								if (
-									args.layoutData &&
-									args.layoutData.lockBackgroundRatio
-								) {
-									width =
-										res *
-										(args.layoutData.canvas.width /
-											args.layoutData.canvas.height);
-								}
-								args.setLayoutData({
-									canvas: {
+							args.setLayoutData({
+								canvas: {
+									width: {
+										$set: res,
+									},
+									...(height > -1 && {
 										height: {
-											$set: res,
+											$set: height,
 										},
-										...(width > -1 && {
-											width: {
-												$set: width,
-											},
-										}),
-									},
-								});
+									}),
+								},
+							});
+						}
+					}}
+					style={{
+						gridColumn: "start / button",
+						gridRow: "1 / 2",
+					}}
+					type="number"
+					value={String(Math.round(args.layoutData.canvas.width))}
+				/>
+
+				<ValueInput
+					context={args.currentRepresentation}
+					label="Canvas Height"
+					minValue={0}
+					onChange={(val: string) => {
+						const res = parseInt(val);
+						if (!isNaN(res)) {
+							let width = -1;
+							if (
+								args.layoutData &&
+								args.layoutData.lockBackgroundRatio
+							) {
+								width =
+									res *
+									(args.layoutData.canvas.width /
+										args.layoutData.canvas.height);
 							}
-						}}
-						type="number"
-						value={String(
-							Math.round(args.layoutData.canvas.height),
-						)}
-					/>
-				</div>
-				<div className={lockRatioStyle.buttonContainer}>
+							args.setLayoutData({
+								canvas: {
+									height: {
+										$set: res,
+									},
+									...(width > -1 && {
+										width: {
+											$set: width,
+										},
+									}),
+								},
+							});
+						}
+					}}
+					style={{
+						gridColumn: "start / button",
+						gridRow: "2 / 3",
+					}}
+					type="number"
+					value={String(Math.round(args.layoutData.canvas.height))}
+				/>
+				<div
+					className={lockRatioStyle.buttonContainer}
+					style={{
+						gridColumn: "button / end",
+						gridRow: "1 / 3",
+					}}
+				>
 					<div className={lockRatioStyle.buttonTop}>
 						<div />
 						<div />
@@ -418,6 +433,7 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.top))}
 			/>
@@ -449,6 +465,7 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.bottom))}
 			/>
@@ -480,6 +497,7 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.left))}
 			/>
@@ -511,6 +529,7 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 				type="number"
 				value={String(Math.round(args.layoutData.padding.right))}
 			/>
@@ -523,6 +542,7 @@ export default function CanvasValues(args: {
 						},
 					});
 				}}
+				style={{ gridColumn: "start / end" }}
 				value={args.layoutData.translucent}
 			>
 				Translucent Layout
@@ -549,9 +569,10 @@ export default function CanvasValues(args: {
 						});
 					}
 				}}
+				style={{ gridColumn: "start / end" }}
 			>
 				Resize to Background
 			</Button>
-		</>
+		</InputGrid>
 	);
 }
