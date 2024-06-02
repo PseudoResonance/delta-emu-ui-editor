@@ -16,6 +16,19 @@ const recurseOffsetHeight: (elem: HTMLElement) => number = (
 	}
 };
 
+const recurseOffsetWidth: (elem: HTMLElement) => number = (
+	elem: HTMLElement,
+) => {
+	if (elem.offsetParent === null) {
+		return elem.offsetWidth - elem.offsetLeft;
+	} else {
+		return (
+			recurseOffsetWidth(elem.offsetParent as HTMLElement) +
+			elem.offsetLeft
+		);
+	}
+};
+
 export default function DropdownInput(args: {
 	label: string;
 	onChange: (val: string) => void;
@@ -69,7 +82,7 @@ export default function DropdownInput(args: {
 				heightLeft:
 					recurseOffsetHeight(elem.current) -
 					elem.current.offsetHeight,
-				left: elem.current.offsetLeft,
+				left: recurseOffsetWidth(elem.current),
 				top: elem.current.offsetTop + elem.current.offsetHeight,
 				width: elem.current.offsetWidth,
 			});
@@ -82,7 +95,7 @@ export default function DropdownInput(args: {
 					heightLeft:
 						recurseOffsetHeight(elem.current) -
 						elem.current.offsetHeight,
-					left: elem.current.offsetLeft,
+					left: recurseOffsetWidth(elem.current),
 					top: elem.current.offsetTop + elem.current.offsetHeight,
 					width: elem.current.offsetWidth,
 				});
@@ -183,45 +196,44 @@ export default function DropdownInput(args: {
 						))}
 					</div>
 				</div>
-
-				{isOpen && (
+			</div>
+			{isOpen && (
+				<div
+					className={styles.horizontalAlign}
+					ref={elemDropdown}
+					style={{
+						bottom: 0,
+						height: dropdownPos.heightLeft,
+					}}
+				>
 					<div
-						className={styles.horizontalAlign}
-						ref={elemDropdown}
 						style={{
-							height: dropdownPos.heightLeft,
-							top: dropdownPos.top,
+							flexBasis: dropdownPos.left,
+							pointerEvents: "none",
+						}}
+					/>
+					<div
+						className={styles.dropdownItems}
+						style={{
+							maxHeight: dropdownPos.heightLeft,
+							width: dropdownPos.width,
 						}}
 					>
-						<div
-							style={{
-								flexBasis: dropdownPos.left,
-								pointerEvents: "none",
-							}}
-						/>
-						<div
-							className={styles.dropdownItems}
-							style={{
-								maxHeight: dropdownPos.heightLeft,
-								width: dropdownPos.width,
-							}}
-						>
-							{Object.keys(args.values).map((val: string) => (
-								<div
-									key={val}
-									onClick={() => {
-										if (val != state) {
-											onChange(val);
-										}
-									}}
-								>
-									{args.values[val]}
-								</div>
-							))}
-						</div>
+						{Object.keys(args.values).map((val: string) => (
+							<div
+								key={val}
+								onClick={() => {
+									if (val != state) {
+										onChange(val);
+									}
+								}}
+							>
+								{args.values[val]}
+							</div>
+						))}
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 		</form>
 	);
 }
