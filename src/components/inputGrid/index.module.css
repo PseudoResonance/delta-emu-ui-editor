@@ -4,7 +4,16 @@
 	width: calc(100% - var(--margin) - var(--margin));
 	column-gap: var(--margin);
 	row-gap: var(--margin);
-	grid-auto-rows: minmax(max-content, 1.75em);
+	grid-auto-rows: max-content;
 	margin: var(--margin);
 	position: relative;
+}
+
+.inputGrid > span {
+	align-self: center;
+	grid-column: start / end;
+}
+
+.inputGrid > hr {
+	grid-column: start / end;
 }

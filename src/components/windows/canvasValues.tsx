@@ -13,6 +13,8 @@ import Suggestions from "@/components/inputs/inputSuggestions";
 import requestFiles from "@/utils/requestFiles";
 import InputGrid from "../inputGrid";
 
+const GRID_TEMPLATE_COLUMNS = "[start] 1fr [label] 2fr [button] 1.75em [end]";
+
 export default function CanvasValues(args: {
 	addAsset: (path: string, asset: Asset) => void;
 	assets: Record<string, Asset> | null;
@@ -25,10 +27,10 @@ export default function CanvasValues(args: {
 	return (
 		<InputGrid
 			style={{
-				gridTemplateColumns:
-					"[start] 1fr [label] 1fr [button] 1.75em [end]",
+				gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
 			}}
 		>
+			<span>Background Image</span>
 			<Suggestions
 				id={"assets"}
 				values={
@@ -40,7 +42,7 @@ export default function CanvasValues(args: {
 				}
 			/>
 			<DropdownInput
-				label="Background Type"
+				label="Type"
 				onChange={(val: string) => {
 					args.setLayoutData({
 						assets: {
@@ -65,7 +67,7 @@ export default function CanvasValues(args: {
 						ariaLabel="Small Image File Name"
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Small Image"
+						label="Small"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -115,7 +117,7 @@ export default function CanvasValues(args: {
 						ariaLabel="Medium Image File Name"
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Medium Image"
+						label="Medium"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -165,7 +167,7 @@ export default function CanvasValues(args: {
 						ariaLabel="Large Image File Name"
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="Large Image"
+						label="Large"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -218,7 +220,7 @@ export default function CanvasValues(args: {
 						ariaLabel="PDF Image File Name"
 						context={args.currentRepresentation}
 						debounce={1000}
-						label="PDF Image"
+						label="PDF"
 						onChange={(val: string) => {
 							args.setLayoutData({
 								assets: {
@@ -268,6 +270,8 @@ export default function CanvasValues(args: {
 					</Button>
 				</>
 			)}
+			<hr />
+			<span>Canvas</span>
 			<div
 				style={{
 					display: "grid",
@@ -279,7 +283,7 @@ export default function CanvasValues(args: {
 			>
 				<ValueInput
 					context={args.currentRepresentation}
-					label="Canvas Width"
+					label="Width"
 					minValue={0}
 					onChange={(val: string) => {
 						const res = parseInt(val);
@@ -318,7 +322,7 @@ export default function CanvasValues(args: {
 
 				<ValueInput
 					context={args.currentRepresentation}
-					label="Canvas Height"
+					label="Height"
 					minValue={0}
 					onChange={(val: string) => {
 						const res = parseInt(val);
@@ -405,10 +409,36 @@ export default function CanvasValues(args: {
 					</div>
 				</div>
 			</div>
-
+			<Button
+				onClick={() => {
+					const bgName = args.getCurrentBackgroundAssetName();
+					if (
+						args.assets &&
+						bgName in args.assets &&
+						args.assets[bgName].height > -1 &&
+						args.assets[bgName].width > -1
+					) {
+						args.setLayoutData({
+							canvas: {
+								height: {
+									$set: args.assets[bgName].height,
+								},
+								width: {
+									$set: args.assets[bgName].width,
+								},
+							},
+						});
+					}
+				}}
+				style={{ gridColumn: "start / end" }}
+			>
+				Resize to Background
+			</Button>
+			<hr />
+			<span>Default Padding</span>
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Padding Top"
+				label="Top"
 				minValue={0}
 				onChange={(val: string) => {
 					const num = parseInt(val);
@@ -440,7 +470,7 @@ export default function CanvasValues(args: {
 
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Padding Bottom"
+				label="Bottom"
 				minValue={0}
 				onChange={(val: string) => {
 					const num = parseInt(val);
@@ -472,7 +502,7 @@ export default function CanvasValues(args: {
 
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Padding Left"
+				label="Left"
 				minValue={0}
 				onChange={(val: string) => {
 					const num = parseInt(val);
@@ -504,7 +534,7 @@ export default function CanvasValues(args: {
 
 			<ValueInput
 				context={args.currentRepresentation}
-				label="Padding Right"
+				label="Right"
 				minValue={0}
 				onChange={(val: string) => {
 					const num = parseInt(val);
@@ -533,7 +563,7 @@ export default function CanvasValues(args: {
 				type="number"
 				value={String(Math.round(args.layoutData.padding.right))}
 			/>
-
+			<hr />
 			<CheckboxInput
 				onChange={(val: boolean) => {
 					args.setLayoutData({
@@ -547,32 +577,6 @@ export default function CanvasValues(args: {
 			>
 				Translucent Layout
 			</CheckboxInput>
-
-			<Button
-				onClick={() => {
-					const bgName = args.getCurrentBackgroundAssetName();
-					if (
-						args.assets &&
-						bgName in args.assets &&
-						args.assets[bgName].height > -1 &&
-						args.assets[bgName].width > -1
-					) {
-						args.setLayoutData({
-							canvas: {
-								height: {
-									$set: args.assets[bgName].height,
-								},
-								width: {
-									$set: args.assets[bgName].width,
-								},
-							},
-						});
-					}
-				}}
-				style={{ gridColumn: "start / end" }}
-			>
-				Resize to Background
-			</Button>
 		</InputGrid>
 	);
 }

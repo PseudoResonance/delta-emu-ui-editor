@@ -20,6 +20,8 @@ import { getElementLabel } from "@/components/visualEditor/element";
 import requestFiles from "@/utils/requestFiles";
 import InputGrid from "../inputGrid";
 
+const GRID_TEMPLATE_COLUMNS = "[start] 1fr [label] 2fr [button] 1.75em [end]";
+
 export default function ElementValues(args: {
 	addAsset: (path: string, asset: Asset) => void;
 	assets: Record<string, Asset> | null;
@@ -49,6 +51,8 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Thumbstick:
 			valueElements.push(
 				<>
+					<hr />
+					<span>Thumbstick Image</span>
 					<Suggestions
 						id={"assets"}
 						values={
@@ -63,7 +67,7 @@ export default function ElementValues(args: {
 						context={String(args.elementIndex)}
 						debounce={1000}
 						key="thumbstickname"
-						label="Thumbstick Image"
+						label="Image"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: { thumbstick: { name: { $set: val } } },
@@ -108,7 +112,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="thumbstickwidth"
-						label="Thumbstick Width"
+						label="Width"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -144,7 +148,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="thumbstickheight"
-						label="Thumbstick Height"
+						label="Height"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -183,6 +187,8 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Dpad:
 			valueElements.push(
 				<>
+					<hr />
+					<span>Input Bindings</span>
 					<Suggestions
 						id={"inputUp"}
 						values={
@@ -197,7 +203,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="inputup"
-						label="Bind Up"
+						label="Up"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -227,7 +233,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="inputdown"
-						label="Bind Down"
+						label="Down"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -257,7 +263,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="inputleft"
-						label="Bind Left"
+						label="Left"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -287,7 +293,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="inputright"
-						label="Bind Right"
+						label="Right"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -309,6 +315,8 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Touchscreen:
 			valueElements.push(
 				<>
+					<hr />
+					<span>Input Bindings</span>
 					<Suggestions
 						id={"inputX"}
 						values={
@@ -323,7 +331,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="touchscreenx"
-						label="Bind Touch X"
+						label="Touch X"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -353,7 +361,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="touchscreeny"
-						label="Bind Touch Y"
+						label="Touch Y"
 						onChange={(val: string) => {
 							args.updateElement({
 								data: {
@@ -375,6 +383,8 @@ export default function ElementValues(args: {
 		case EmulatorElementType.Screen:
 			valueElements.push(
 				<>
+					<hr />
+					<span>Input Screen Size</span>
 					<Suggestions
 						id={"screenX"}
 						values={
@@ -388,7 +398,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="screenx"
-						label="Capture Screen X"
+						label="X"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -435,7 +445,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="screeny"
-						label="Capture Screen Y"
+						label="Y"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -482,7 +492,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="screenwidth"
-						label="Capture Screen Width"
+						label="Width"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -529,7 +539,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="screenheight"
-						label="Capture Screen Height"
+						label="Height"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -569,6 +579,7 @@ export default function ElementValues(args: {
 		default:
 			valueElements.push(
 				<>
+					<hr />
 					<Suggestions
 						id={"inputs"}
 						values={
@@ -607,8 +618,7 @@ export default function ElementValues(args: {
 	return (
 		<InputGrid
 			style={{
-				gridTemplateColumns:
-					"[start] 1fr [label] 1fr [button] 1.75em [end]",
+				gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
 			}}
 		>
 			<DropdownInput
@@ -636,6 +646,8 @@ export default function ElementValues(args: {
 			/>
 
 			{...valueElements}
+			<hr />
+			<span>Position</span>
 			<ValueInput
 				context={String(args.elementIndex)}
 				label="X"
@@ -795,12 +807,14 @@ export default function ElementValues(args: {
 				value={args.elementData.height.toFixed(0)}
 			/>
 
-			{args.elementData.type === EmulatorElementType.Screen && (
+			{args.elementData.type !== EmulatorElementType.Screen && (
 				<>
+					<hr />
+					<span>Padding</span>
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="paddingtop"
-						label="Padding Top"
+						label="Top"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -828,7 +842,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="paddingbottom"
-						label="Padding Bottom"
+						label="Bottom"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -856,7 +870,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="paddingleft"
-						label="Padding Left"
+						label="Left"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -884,7 +898,7 @@ export default function ElementValues(args: {
 					<ValueInput
 						context={String(args.elementIndex)}
 						key="paddingright"
-						label="Padding Right"
+						label="Right"
 						minValue={0}
 						onChange={(val: string) => {
 							const num = parseInt(val);
@@ -911,6 +925,7 @@ export default function ElementValues(args: {
 					/>
 				</>
 			)}
+			<hr />
 			<Button
 				onClick={() => {
 					args.duplicateThis();

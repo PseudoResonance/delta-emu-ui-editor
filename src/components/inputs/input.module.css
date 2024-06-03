@@ -2,6 +2,7 @@
 	padding: 0;
 	display: grid;
 	grid-template-columns: subgrid;
+	min-height: 1.9em;
 }
 
 .button {

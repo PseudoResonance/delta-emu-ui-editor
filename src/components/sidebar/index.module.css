@@ -16,7 +16,7 @@
 	flex-basis: calc(50% - var(--border-width));
 }
 
-.sidebar > hr {
+.sidebar hr {
 	width: 100%;
 	height: var(--border-width);
 	border: none;
