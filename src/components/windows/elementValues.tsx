@@ -19,6 +19,7 @@ import INPUT_PRESETS from "@/data/consoleInfo";
 import { getElementLabel } from "@/components/visualEditor/element";
 import requestFiles from "@/utils/requestFiles";
 import InputGrid from "../inputGrid";
+import CheckboxInput from "../inputs/checkbox";
 
 const GRID_TEMPLATE_COLUMNS = "[start] 1fr [label] 2fr [button] 1.75em [end]";
 
@@ -813,6 +814,7 @@ export default function ElementValues(args: {
 					<span>Padding</span>
 					<ValueInput
 						context={String(args.elementIndex)}
+						disabled={args.elementData.paddingTopGlobal}
 						key="paddingtop"
 						label="Top"
 						minValue={0}
@@ -835,12 +837,27 @@ export default function ElementValues(args: {
 								});
 							}
 						}}
-						style={{ gridColumn: "start / end" }}
+						style={{ gridColumn: "start / button" }}
 						type="number"
 						value={args.elementData.paddingTop.toFixed(0)}
 					/>
+					<CheckboxInput
+						iconClassFalse={icons.lockOff}
+						iconClassTrue={icons.lock}
+						label={"Use Default Padding Top"}
+						onChange={(val) => {
+							args.updateElement({
+								paddingTopGlobal: {
+									$set: val,
+								},
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+						value={args.elementData.paddingTopGlobal}
+					/>
 					<ValueInput
 						context={String(args.elementIndex)}
+						disabled={args.elementData.paddingBottomGlobal}
 						key="paddingbottom"
 						label="Bottom"
 						minValue={0}
@@ -863,12 +880,27 @@ export default function ElementValues(args: {
 								});
 							}
 						}}
-						style={{ gridColumn: "start / end" }}
+						style={{ gridColumn: "start / button" }}
 						type="number"
 						value={args.elementData.paddingBottom.toFixed(0)}
 					/>
+					<CheckboxInput
+						iconClassFalse={icons.lockOff}
+						iconClassTrue={icons.lock}
+						label={"Use Default Padding Bottom"}
+						onChange={(val) => {
+							args.updateElement({
+								paddingBottomGlobal: {
+									$set: val,
+								},
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+						value={args.elementData.paddingBottomGlobal}
+					/>
 					<ValueInput
 						context={String(args.elementIndex)}
+						disabled={args.elementData.paddingLeftGlobal}
 						key="paddingleft"
 						label="Left"
 						minValue={0}
@@ -891,12 +923,27 @@ export default function ElementValues(args: {
 								});
 							}
 						}}
-						style={{ gridColumn: "start / end" }}
+						style={{ gridColumn: "start / button" }}
 						type="number"
 						value={args.elementData.paddingLeft.toFixed(0)}
 					/>
+					<CheckboxInput
+						iconClassFalse={icons.lockOff}
+						iconClassTrue={icons.lock}
+						label={"Use Default Padding Left"}
+						onChange={(val) => {
+							args.updateElement({
+								paddingLeftGlobal: {
+									$set: val,
+								},
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+						value={args.elementData.paddingLeftGlobal}
+					/>
 					<ValueInput
 						context={String(args.elementIndex)}
+						disabled={args.elementData.paddingRightGlobal}
 						key="paddingright"
 						label="Right"
 						minValue={0}
@@ -919,9 +966,23 @@ export default function ElementValues(args: {
 								});
 							}
 						}}
-						style={{ gridColumn: "start / end" }}
+						style={{ gridColumn: "start / button" }}
 						type="number"
 						value={args.elementData.paddingRight.toFixed(0)}
+					/>
+					<CheckboxInput
+						iconClassFalse={icons.lockOff}
+						iconClassTrue={icons.lock}
+						label={"Use Default Padding Right"}
+						onChange={(val) => {
+							args.updateElement({
+								paddingRightGlobal: {
+									$set: val,
+								},
+							});
+						}}
+						style={{ gridColumn: "button / end" }}
+						value={args.elementData.paddingRightGlobal}
 					/>
 				</>
 			)}

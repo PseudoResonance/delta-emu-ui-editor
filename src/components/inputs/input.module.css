@@ -42,7 +42,12 @@
 	transition: all 0.02s linear;
 }
 
+.input .inputInner:disabled {
+	color: var(--foreground-rgb-disabled);
+	background-color: var(--button-rgb-disabled);
+}
+
 .input > .inputInner:focus,
-.input > .inputInner:hover {
+.input > .inputInner:hover:not(:disabled) {
 	background-color: var(--button-rgb-hover);
 }

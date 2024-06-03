@@ -56,6 +56,7 @@ export default function ValueInput(args: {
 	ariaLabel?: string;
 	context: string;
 	debounce?: number;
+	disabled?: boolean;
 	increment?: number;
 	label: string;
 	maxValue?: number;
@@ -343,18 +344,19 @@ export default function ValueInput(args: {
 			<input
 				className={styles.inputInner}
 				defaultValue={args.value}
+				disabled={args.disabled}
 				id={id}
 				inputMode={inputmode}
 				onChange={onChange}
-				onKeyDown={onKeyDown}
+				onKeyDown={!args.disabled ? onKeyDown : undefined}
 				onMouseEnter={() => {
-					wheelLock.current = true;
+					if (!args.disabled) wheelLock.current = true;
 				}}
 				onMouseLeave={() => {
 					wheelLock.current = false;
 				}}
 				{...attrs}
-				onWheel={onWheel}
+				onWheel={!args.disabled ? onWheel : undefined}
 				ref={ref}
 				style={{ gridColumn: "label / end" }}
 			/>

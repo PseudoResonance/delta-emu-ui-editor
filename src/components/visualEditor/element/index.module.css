@@ -1,26 +1,88 @@
 .element {
+	--bottom-padding-color: var(--element-border-padding);
+	--left-padding-color: var(--element-border-padding);
+	--right-padding-color: var(--element-border-padding);
+	--top-padding-color: var(--element-border-padding);
+	--padding-opacity: var(--element-background-opacity);
+}
+
+.paddingBottomGlobal {
+	--bottom-padding-color: var(--element-border-default-padding);
+}
+
+.paddingLeftGlobal {
+	--left-padding-color: var(--element-border-default-padding);
+}
+
+.paddingRightGlobal {
+	--right-padding-color: var(--element-border-default-padding);
+}
+
+.paddingTopGlobal {
+	--top-padding-color: var(--element-border-default-padding);
+}
+
+.element {
 	border: var(--element-border-padding) var(--element-border-width) solid;
-	background-color: color-mix(
-		in srgb,
-		var(--element-border-padding) var(--element-background-opacity),
-		transparent
-	);
+	border-bottom-color: var(--bottom-padding-color);
+	border-left-color: var(--left-padding-color);
+	border-right-color: var(--right-padding-color);
+	border-top-color: var(--top-padding-color);
 	position: absolute;
 	display: block;
 	touch-action: none;
 }
 
-.element.hidden {
-	visibility: hidden;
+.element .paddingBackgrounds,
+.element .paddingBackgrounds div {
+	width: 100%;
+	height: 100%;
+	position: absolute;
 }
 
 .element:hover,
 .element.hover {
+	--padding-opacity: var(--element-background-opacity-hover);
+}
+
+.paddingBackgrounds .paddingBottom {
 	background-color: color-mix(
 		in srgb,
-		var(--element-border-padding) var(--element-background-opacity-hover),
+		var(--bottom-padding-color) var(--padding-opacity),
 		transparent
 	);
+	clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+}
+
+.paddingBackgrounds .paddingLeft {
+	background-color: color-mix(
+		in srgb,
+		var(--left-padding-color) var(--padding-opacity),
+		transparent
+	);
+	clip-path: polygon(0% 0%, 50% 50%, 0% 100%);
+}
+
+.paddingBackgrounds .paddingRight {
+	background-color: color-mix(
+		in srgb,
+		var(--right-padding-color) var(--padding-opacity),
+		transparent
+	);
+	clip-path: polygon(100% 0%, 50% 50%, 100% 100%);
+}
+
+.paddingBackgrounds .paddingTop {
+	background-color: color-mix(
+		in srgb,
+		var(--top-padding-color) var(--padding-opacity),
+		transparent
+	);
+	clip-path: polygon(0% 0%, 50% 50%, 100% 0%);
+}
+
+.element.hidden {
+	visibility: hidden;
 }
 
 .inner {

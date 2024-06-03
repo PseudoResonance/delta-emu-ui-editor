@@ -2,7 +2,7 @@
 
 import { Spec } from "immutability-helper";
 import CanvasValues from "./canvasValues";
-import ElementValues from "./elementvalues";
+import ElementValues from "./elementValues";
 import {
 	Asset,
 	EmulatorElement,

@@ -41,7 +41,20 @@ interface EmulatorElementBase {
 	readonly y: number;
 }
 
-interface EmulatorElementThumbstick extends EmulatorElementBase {
+interface EmulatorElementPadded {
+	readonly paddingBottom: number;
+	readonly paddingBottomGlobal: boolean;
+	readonly paddingLeft: number;
+	readonly paddingLeftGlobal: boolean;
+	readonly paddingRight: number;
+	readonly paddingRightGlobal: boolean;
+	readonly paddingTop: number;
+	readonly paddingTopGlobal: boolean;
+}
+
+interface EmulatorElementThumbstick
+	extends EmulatorElementBase,
+		EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly down: string;
@@ -56,13 +69,11 @@ interface EmulatorElementThumbstick extends EmulatorElementBase {
 			readonly width: number;
 		};
 	};
-	readonly paddingBottom: number;
-	readonly paddingLeft: number;
-	readonly paddingRight: number;
-	readonly paddingTop: number;
 }
 
-interface EmulatorElementDpad extends EmulatorElementBase {
+interface EmulatorElementDpad
+	extends EmulatorElementBase,
+		EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly down: string;
@@ -71,23 +82,17 @@ interface EmulatorElementDpad extends EmulatorElementBase {
 			readonly up: string;
 		};
 	};
-	readonly paddingBottom: number;
-	readonly paddingLeft: number;
-	readonly paddingRight: number;
-	readonly paddingTop: number;
 }
 
-interface EmulatorElementTouchscreen extends EmulatorElementBase {
+interface EmulatorElementTouchscreen
+	extends EmulatorElementBase,
+		EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly x: string;
 			readonly y: string;
 		};
 	};
-	readonly paddingBottom: number;
-	readonly paddingLeft: number;
-	readonly paddingRight: number;
-	readonly paddingTop: number;
 }
 
 interface EmulatorElementScreen extends EmulatorElementBase {
@@ -101,14 +106,12 @@ interface EmulatorElementScreen extends EmulatorElementBase {
 	};
 }
 
-interface EmulatorElementDefault extends EmulatorElementBase {
+interface EmulatorElementDefault
+	extends EmulatorElementBase,
+		EmulatorElementPadded {
 	readonly data: {
 		readonly inputs: string[];
 	};
-	readonly paddingBottom: number;
-	readonly paddingLeft: number;
-	readonly paddingRight: number;
-	readonly paddingTop: number;
 }
 
 export type EmulatorElement = EmulatorElementDefault &

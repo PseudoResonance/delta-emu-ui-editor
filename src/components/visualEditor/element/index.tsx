@@ -12,8 +12,6 @@ import * as CONSTANT from "@/data/constants";
 import { loadAssetHelper } from "@/utils/readImage";
 import { Spec } from "immutability-helper";
 
-const PADDING_EXPANDS_WITH_BOX_MOVE = false;
-
 export default function EmulatorElementComponent(args: {
 	assets: Record<string, Asset> | null;
 	defaultPadding: {
@@ -59,7 +57,7 @@ export default function EmulatorElementComponent(args: {
 	const bgUrl =
 		bgAsset && bgAsset.url && bgAsset.url.length > 0 ? bgAsset.url : "";
 
-	const moveHelper = (e: React.PointerEvent, inner: boolean) => {
+	const moveHelper = (e: React.PointerEvent) => {
 		if (
 			!args.isEditing[0] &&
 			(e.pointerType !== "mouse" || e.button === 0)
@@ -71,77 +69,40 @@ export default function EmulatorElementComponent(args: {
 			const yStartMouse = e.clientY;
 			const xStart = args.elementData.x;
 			const yStart = args.elementData.y;
-			const paddingTopStart = args.elementData.paddingTop;
-			const paddingBottomStart = args.elementData.paddingBottom;
-			const paddingLeftStart = args.elementData.paddingLeft;
-			const paddingRightStart = args.elementData.paddingRight;
-			let paddingTop = -1;
-			let paddingBottom = -1;
-			let paddingLeft = -1;
-			let paddingRight = -1;
 			const moveHandler = (e: PointerEvent) => {
 				if (!args.isEditing[0]) {
 					e.preventDefault();
-					if (!PADDING_EXPANDS_WITH_BOX_MOVE && inner) {
-						paddingTop =
-							paddingTopStart +
-							(e.clientY - yStartMouse) / args.scale;
-						paddingBottom =
-							paddingBottomStart -
-							(e.clientY - yStartMouse) / args.scale;
-						if (paddingTop < 0) {
-							paddingTop = 0;
-							paddingBottom =
-								paddingBottomStart + paddingTopStart;
-						} else if (paddingBottom < 0) {
-							paddingBottom = 0;
-							paddingTop = paddingBottomStart + paddingTopStart;
-						}
-						paddingLeft =
-							paddingLeftStart +
-							(e.clientX - xStartMouse) / args.scale;
-						paddingRight =
-							paddingRightStart -
-							(e.clientX - xStartMouse) / args.scale;
-						if (paddingLeft < 0) {
-							paddingLeft = 0;
-							paddingRight = paddingRightStart + paddingLeftStart;
-						} else if (paddingRight < 0) {
-							paddingRight = 0;
-							paddingLeft = paddingRightStart + paddingLeftStart;
-						}
-					}
 					let newTop =
 						yStart + (e.clientY - yStartMouse) / args.scale;
 					newTop = Math.max(
 						newTop,
-						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-							? args.elementData.paddingTop
-							: 0,
+						args.elementData.paddingTopGlobal
+							? args.defaultPadding.top
+							: args.elementData.paddingTop,
 					);
 					newTop = Math.min(
 						newTop,
-						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-							? args.parentHeight -
-									(args.elementData.height +
-										args.elementData.paddingBottom)
-							: args.parentHeight - args.elementData.height,
+						args.parentHeight -
+							(args.elementData.height +
+								(args.elementData.paddingBottomGlobal
+									? args.defaultPadding.bottom
+									: args.elementData.paddingBottom)),
 					);
 					let newLeft =
 						xStart + (e.clientX - xStartMouse) / args.scale;
 					newLeft = Math.max(
 						newLeft,
-						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-							? args.elementData.paddingLeft
-							: 0,
+						args.elementData.paddingLeftGlobal
+							? args.defaultPadding.left
+							: args.elementData.paddingLeft,
 					);
 					newLeft = Math.min(
 						newLeft,
-						PADDING_EXPANDS_WITH_BOX_MOVE || !inner
-							? args.parentWidth -
-									(args.elementData.width +
-										args.elementData.paddingRight)
-							: args.parentWidth - args.elementData.width,
+						args.parentWidth -
+							(args.elementData.width +
+								(args.elementData.paddingRightGlobal
+									? args.defaultPadding.right
+									: args.elementData.paddingRight)),
 					);
 					args.updateElement({
 						x: {
@@ -150,26 +111,6 @@ export default function EmulatorElementComponent(args: {
 						y: {
 							$set: Math.round(newTop),
 						},
-						...(paddingTop >= 0 && {
-							paddingTop: {
-								$set: Math.round(paddingTop),
-							},
-						}),
-						...(paddingBottom >= 0 && {
-							paddingBottom: {
-								$set: Math.round(paddingBottom),
-							},
-						}),
-						...(paddingLeft >= 0 && {
-							paddingLeft: {
-								$set: Math.round(paddingLeft),
-							},
-						}),
-						...(paddingRight >= 0 && {
-							paddingRight: {
-								$set: Math.round(paddingRight),
-							},
-						}),
 					});
 				} else {
 					document.removeEventListener("pointerup", stopHandler);
@@ -230,16 +171,31 @@ export default function EmulatorElementComponent(args: {
 								((e.clientY - yStartMouse) / args.scale) *
 								yScale;
 							if (yScale < 0) {
-								if (padding) {
+								if (
+									padding &&
+									!args.elementData.paddingTopGlobal
+								) {
 									if (paddingTopStart + diffY < 0)
 										paddingTop = 0;
 									else if (paddingTopStart + diffY > yStart)
 										paddingTop = yStart;
 									else paddingTop = paddingTopStart + diffY;
 								} else {
-									if (yStart - diffY <= 0) {
-										y = 0;
-										height = heightStart + yStart;
+									if (
+										yStart - diffY <=
+										(args.elementData.paddingTopGlobal
+											? args.defaultPadding.top
+											: 0)
+									) {
+										y = args.elementData.paddingTopGlobal
+											? args.defaultPadding.top
+											: 0;
+										height =
+											heightStart +
+											yStart -
+											(args.elementData.paddingTopGlobal
+												? args.defaultPadding.top
+												: 0);
 									} else if (heightStart + diffY <= 0) {
 										y = yStart + heightStart;
 										height = 0;
@@ -247,7 +203,10 @@ export default function EmulatorElementComponent(args: {
 										y = yStart - diffY;
 										height = heightStart + diffY;
 									}
-									if (paddingTopStart > 0) {
+									if (
+										paddingTopStart > 0 &&
+										!args.elementData.paddingTopGlobal
+									) {
 										paddingTop =
 											paddingTopStart +
 											(heightStart - height);
@@ -257,7 +216,10 @@ export default function EmulatorElementComponent(args: {
 									}
 								}
 							} else {
-								if (padding) {
+								if (
+									padding &&
+									!args.elementData.paddingBottomGlobal
+								) {
 									if (paddingBottomStart + diffY < 0)
 										paddingBottom = 0;
 									else if (
@@ -275,13 +237,26 @@ export default function EmulatorElementComponent(args: {
 									if (heightStart + diffY < 0) height = 0;
 									else if (
 										heightStart + diffY + yStart >=
-										args.parentHeight
+										args.parentHeight -
+											(args.elementData
+												.paddingBottomGlobal
+												? args.defaultPadding.bottom
+												: 0)
 									) {
-										height = args.parentHeight - yStart;
+										height =
+											args.parentHeight -
+											yStart -
+											(args.elementData
+												.paddingBottomGlobal
+												? args.defaultPadding.bottom
+												: 0);
 									} else {
 										height = heightStart + diffY;
 									}
-									if (paddingBottomStart > 0) {
+									if (
+										paddingBottomStart > 0 &&
+										!args.elementData.paddingBottomGlobal
+									) {
 										paddingBottom =
 											paddingBottomStart +
 											(heightStart - height);
@@ -297,16 +272,31 @@ export default function EmulatorElementComponent(args: {
 								((e.clientX - xStartMouse) / args.scale) *
 								xScale;
 							if (xScale < 0) {
-								if (padding) {
+								if (
+									padding &&
+									!args.elementData.paddingLeftGlobal
+								) {
 									if (paddingLeftStart + diffX < 0)
 										paddingLeft = 0;
 									else if (paddingLeftStart + diffX > xStart)
 										paddingLeft = xStart;
 									else paddingLeft = paddingLeftStart + diffX;
 								} else {
-									if (xStart - diffX <= 0) {
-										x = 0;
-										width = widthStart + xStart;
+									if (
+										xStart - diffX <=
+										(args.elementData.paddingLeftGlobal
+											? args.defaultPadding.left
+											: 0)
+									) {
+										x = args.elementData.paddingLeftGlobal
+											? args.defaultPadding.left
+											: 0;
+										width =
+											widthStart +
+											xStart -
+											(args.elementData.paddingLeftGlobal
+												? args.defaultPadding.left
+												: 0);
 									} else if (widthStart + diffX <= 0) {
 										x = xStart + widthStart;
 										width = 0;
@@ -314,7 +304,10 @@ export default function EmulatorElementComponent(args: {
 										x = xStart - diffX;
 										width = widthStart + diffX;
 									}
-									if (paddingLeftStart > 0) {
+									if (
+										paddingLeftStart > 0 &&
+										!args.elementData.paddingLeftGlobal
+									) {
 										paddingLeft =
 											paddingLeftStart +
 											(widthStart - width);
@@ -324,7 +317,10 @@ export default function EmulatorElementComponent(args: {
 									}
 								}
 							} else {
-								if (padding) {
+								if (
+									padding &&
+									!args.elementData.paddingRightGlobal
+								) {
 									if (paddingRightStart + diffX < 0)
 										paddingRight = 0;
 									else if (
@@ -342,13 +338,24 @@ export default function EmulatorElementComponent(args: {
 									if (widthStart + diffX < 0) width = 0;
 									else if (
 										widthStart + diffX + xStart >=
-										args.parentWidth
+										args.parentWidth -
+											(args.elementData.paddingRightGlobal
+												? args.defaultPadding.right
+												: 0)
 									) {
-										width = args.parentWidth - xStart;
+										width =
+											args.parentWidth -
+											xStart -
+											(args.elementData.paddingRightGlobal
+												? args.defaultPadding.right
+												: 0);
 									} else {
 										width = widthStart + diffX;
 									}
-									if (paddingRightStart > 0) {
+									if (
+										paddingRightStart > 0 &&
+										!args.elementData.paddingRightGlobal
+									) {
 										paddingRight =
 											paddingRightStart +
 											(widthStart - width);
@@ -360,26 +367,30 @@ export default function EmulatorElementComponent(args: {
 							}
 						}
 						args.updateElement({
-							...(paddingTop >= 0 && {
-								paddingTop: {
-									$set: Math.round(paddingTop),
-								},
-							}),
-							...(paddingBottom >= 0 && {
-								paddingBottom: {
-									$set: Math.round(paddingBottom),
-								},
-							}),
-							...(paddingLeft >= 0 && {
-								paddingLeft: {
-									$set: Math.round(paddingLeft),
-								},
-							}),
-							...(paddingRight >= 0 && {
-								paddingRight: {
-									$set: Math.round(paddingRight),
-								},
-							}),
+							...(!args.elementData.paddingTopGlobal &&
+								paddingTop >= 0 && {
+									paddingTop: {
+										$set: Math.round(paddingTop),
+									},
+								}),
+							...(!args.elementData.paddingBottomGlobal &&
+								paddingBottom >= 0 && {
+									paddingBottom: {
+										$set: Math.round(paddingBottom),
+									},
+								}),
+							...(!args.elementData.paddingLeftGlobal &&
+								paddingLeft >= 0 && {
+									paddingLeft: {
+										$set: Math.round(paddingLeft),
+									},
+								}),
+							...(!args.elementData.paddingRightGlobal &&
+								paddingRight >= 0 && {
+									paddingRight: {
+										$set: Math.round(paddingRight),
+									},
+								}),
 							...(x >= 0 && {
 								x: {
 									$set: Math.round(x),
@@ -421,11 +432,29 @@ export default function EmulatorElementComponent(args: {
 		}
 	};
 
+	const paddingTop = args.elementData.paddingTopGlobal
+		? args.defaultPadding.top
+		: args.elementData.paddingTop;
+	const paddingBottom = args.elementData.paddingBottomGlobal
+		? args.defaultPadding.bottom
+		: args.elementData.paddingBottom;
+	const paddingLeft = args.elementData.paddingLeftGlobal
+		? args.defaultPadding.left
+		: args.elementData.paddingLeft;
+	const paddingRight = args.elementData.paddingRightGlobal
+		? args.defaultPadding.right
+		: args.elementData.paddingRight;
+
 	return (
 		<div
-			className={`${styles.element}${
-				isActive ? " " + styles.active : ""
-			}${args.isHover || isActive ? " " + styles.hover : ""}${args.elementData.hidden ? " " + styles.hidden : ""}`}
+			className={`${styles.element} 
+			${isActive ? styles.active : ""} 
+			${args.isHover || isActive ? styles.hover : ""} 
+			${args.elementData.hidden ? styles.hidden : ""} 
+			${args.elementData.paddingBottomGlobal ? styles.paddingBottomGlobal : ""} 
+			${args.elementData.paddingLeftGlobal ? styles.paddingLeftGlobal : ""} 
+			${args.elementData.paddingRightGlobal ? styles.paddingRightGlobal : ""} 
+			${args.elementData.paddingTopGlobal ? styles.paddingTopGlobal : ""}`}
 			onContextMenu={(e) => {
 				e.preventDefault();
 				args.showContextMenu(
@@ -477,8 +506,7 @@ export default function EmulatorElementComponent(args: {
 					(args.elementData.height +
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingTop +
-								args.elementData.paddingBottom)) *
+							: paddingTop + paddingBottom)) *
 						args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				),
@@ -486,14 +514,14 @@ export default function EmulatorElementComponent(args: {
 					(args.elementData.x -
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingLeft)) *
+							: paddingLeft)) *
 						args.scale -
 					CONSTANT.ELEMENT_BORDER_WIDTH,
 				top:
 					(args.elementData.y -
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingTop)) *
+							: paddingTop)) *
 						args.scale -
 					CONSTANT.ELEMENT_BORDER_WIDTH,
 				width: Math.max(
@@ -501,14 +529,19 @@ export default function EmulatorElementComponent(args: {
 					(args.elementData.width +
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingLeft +
-								args.elementData.paddingRight)) *
+							: paddingLeft + paddingRight)) *
 						args.scale -
 						2 * CONSTANT.ELEMENT_BORDER_WIDTH,
 				),
 				zIndex: args.zIndex !== null ? args.zIndex : "auto",
 			}}
 		>
+			<div className={styles.paddingBackgrounds}>
+				<div className={styles.paddingBottom} />
+				<div className={styles.paddingLeft} />
+				<div className={styles.paddingRight} />
+				<div className={styles.paddingTop} />
+			</div>
 			<div className={styles.expandGrid}>
 				<div
 					onPointerDown={(e) => {
@@ -540,7 +573,7 @@ export default function EmulatorElementComponent(args: {
 
 				<div
 					onPointerDown={(e) => {
-						moveHelper(e, false);
+						moveHelper(e);
 					}}
 					style={{ cursor: "move" }}
 				></div>
@@ -580,19 +613,19 @@ export default function EmulatorElementComponent(args: {
 					paddingBottom:
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingBottom) * args.scale,
+							: paddingBottom) * args.scale,
 					paddingLeft:
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingLeft) * args.scale,
+							: paddingLeft) * args.scale,
 					paddingRight:
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingRight) * args.scale,
+							: paddingRight) * args.scale,
 					paddingTop:
 						(args.elementData.type === EmulatorElementType.Screen
 							? 0
-							: args.elementData.paddingTop) * args.scale,
+							: paddingTop) * args.scale,
 				}}
 			>
 				<div
@@ -608,7 +641,7 @@ export default function EmulatorElementComponent(args: {
 							(args.elementData.type ===
 							EmulatorElementType.Screen
 								? 0
-								: args.elementData.paddingLeft) *
+								: paddingLeft) *
 								args.scale -
 							CONSTANT.ELEMENT_BORDER_WIDTH,
 						position: "absolute",
@@ -616,7 +649,7 @@ export default function EmulatorElementComponent(args: {
 							(args.elementData.type ===
 							EmulatorElementType.Screen
 								? 0
-								: args.elementData.paddingTop) *
+								: paddingTop) *
 								args.scale -
 							CONSTANT.ELEMENT_BORDER_WIDTH,
 						width: Math.max(
@@ -714,7 +747,7 @@ export default function EmulatorElementComponent(args: {
 
 						<div
 							onPointerDown={(e) => {
-								moveHelper(e, true);
+								moveHelper(e);
 							}}
 							style={{ cursor: "move" }}
 						></div>

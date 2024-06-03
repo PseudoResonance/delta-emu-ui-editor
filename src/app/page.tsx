@@ -287,9 +287,13 @@ export default function Home() {
 			height: 100,
 			hidden: false,
 			paddingBottom: 0,
+			paddingBottomGlobal: true,
 			paddingLeft: 0,
+			paddingLeftGlobal: true,
 			paddingRight: 0,
+			paddingRightGlobal: true,
 			paddingTop: 0,
+			paddingTopGlobal: true,
 			type: EmulatorElementType.Default,
 			width: 100,
 			x: 0,
@@ -891,18 +895,18 @@ export default function Home() {
 	const saveRepresentation = (data: Representation) => {
 		const exportObj: {
 			assets: Record<string, string>;
-			extendedEdges: {
-				bottom: number;
-				left: number;
-				right: number;
-				top: number;
+			extendedEdges?: {
+				bottom?: number;
+				left?: number;
+				right?: number;
+				top?: number;
 			};
 			items: {
-				extendedEdges: {
-					bottom: number;
-					left: number;
-					right: number;
-					top: number;
+				extendedEdges?: {
+					bottom?: number;
+					left?: number;
+					right?: number;
+					top?: number;
 				};
 				frame: {
 					height: number;
@@ -1029,12 +1033,25 @@ export default function Home() {
 			}
 			exportObj.items.push({
 				...thumbstick,
-				extendedEdges: {
-					bottom: Math.round(val.paddingBottom),
-					left: Math.round(val.paddingLeft),
-					right: Math.round(val.paddingRight),
-					top: Math.round(val.paddingTop),
-				},
+				...((!val.paddingBottomGlobal ||
+					!val.paddingLeftGlobal ||
+					!val.paddingRightGlobal ||
+					!val.paddingTopGlobal) && {
+					extendedEdges: {
+						...(!val.paddingBottomGlobal && {
+							bottom: Math.round(val.paddingBottom),
+						}),
+						...(!val.paddingLeftGlobal && {
+							left: Math.round(val.paddingLeft),
+						}),
+						...(!val.paddingRightGlobal && {
+							right: Math.round(val.paddingRight),
+						}),
+						...(!val.paddingTopGlobal && {
+							top: Math.round(val.paddingTop),
+						}),
+					},
+				}),
 				frame: {
 					height: Math.round(val.height),
 					width: Math.round(val.width),
@@ -1221,30 +1238,58 @@ export default function Home() {
 								? parseInt(val.frame.height as string)
 								: 0,
 						hidden: false,
-						paddingBottom:
-							val.extendedEdges &&
-							typeof val.extendedEdges === "object" &&
-							"bottom" in val.extendedEdges
-								? parseInt(val.extendedEdges.bottom as string)
-								: 0,
-						paddingLeft:
-							val.extendedEdges &&
-							typeof val.extendedEdges === "object" &&
-							"left" in val.extendedEdges
-								? parseInt(val.extendedEdges.left as string)
-								: 0,
-						paddingRight:
-							val.extendedEdges &&
-							typeof val.extendedEdges === "object" &&
-							"right" in val.extendedEdges
-								? parseInt(val.extendedEdges.right as string)
-								: 0,
-						paddingTop:
-							val.extendedEdges &&
-							typeof val.extendedEdges === "object" &&
-							"top" in val.extendedEdges
-								? parseInt(val.extendedEdges.top as string)
-								: 0,
+						...(val.extendedEdges &&
+						typeof val.extendedEdges === "object" &&
+						"bottom" in val.extendedEdges
+							? {
+									paddingBottom: parseInt(
+										val.extendedEdges.bottom as string,
+									),
+									paddingBottomGlobal: false,
+								}
+							: {
+									paddingBottom: 0,
+									paddingBottomGlobal: true,
+								}),
+						...(val.extendedEdges &&
+						typeof val.extendedEdges === "object" &&
+						"left" in val.extendedEdges
+							? {
+									paddingLeft: parseInt(
+										val.extendedEdges.left as string,
+									),
+									paddingLeftGlobal: false,
+								}
+							: {
+									paddingLeft: 0,
+									paddingLeftGlobal: true,
+								}),
+						...(val.extendedEdges &&
+						typeof val.extendedEdges === "object" &&
+						"right" in val.extendedEdges
+							? {
+									paddingRight: parseInt(
+										val.extendedEdges.right as string,
+									),
+									paddingRightGlobal: false,
+								}
+							: {
+									paddingRight: 0,
+									paddingRightGlobal: true,
+								}),
+						...(val.extendedEdges &&
+						typeof val.extendedEdges === "object" &&
+						"top" in val.extendedEdges
+							? {
+									paddingTop: parseInt(
+										val.extendedEdges.top as string,
+									),
+									paddingTopGlobal: false,
+								}
+							: {
+									paddingTop: 0,
+									paddingTopGlobal: true,
+								}),
 						type: type,
 						width:
 							"width" in val.frame
@@ -1303,9 +1348,13 @@ export default function Home() {
 							: 0,
 					hidden: false,
 					paddingBottom: 0,
+					paddingBottomGlobal: true,
 					paddingLeft: 0,
+					paddingLeftGlobal: true,
 					paddingRight: 0,
+					paddingRightGlobal: true,
 					paddingTop: 0,
+					paddingTopGlobal: true,
 					type: EmulatorElementType.Screen,
 					width:
 						"width" in json.gameScreenFrame
@@ -1373,9 +1422,13 @@ export default function Home() {
 								: 0,
 						hidden: false,
 						paddingBottom: 0,
+						paddingBottomGlobal: true,
 						paddingLeft: 0,
+						paddingLeftGlobal: true,
 						paddingRight: 0,
+						paddingRightGlobal: true,
 						paddingTop: 0,
+						paddingTopGlobal: true,
 						type: EmulatorElementType.Screen,
 						width:
 							"width" in val.outputFrame

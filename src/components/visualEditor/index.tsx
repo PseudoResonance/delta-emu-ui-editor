@@ -381,33 +381,6 @@ export default function VisualEditor(args: {
 	return (
 		<div
 			className={styles.editor}
-			onClick={(e) => {
-				const hasOnClick: (elem: HTMLElement) => boolean = (
-					elem: HTMLElement,
-				) => {
-					if (elem === e.currentTarget) {
-						return false;
-					} else {
-						const props = getReactProps(elem);
-						if (
-							props &&
-							(props.onClick ||
-								props.onClickCapture ||
-								props.onPointerDown ||
-								props.onPointerDownCapture)
-						) {
-							return true;
-						} else if (elem.parentElement) {
-							return hasOnClick(elem.parentElement);
-						}
-						return false;
-					}
-				};
-				if (!hasOnClick(e.target as HTMLElement)) {
-					args.setEditingElement(-1);
-					args.setHoverIndex(-1);
-				}
-			}}
 			onContextMenu={(e) => {
 				const hasOnContextMenu: (elem: HTMLElement) => boolean = (
 					elem: HTMLElement,
@@ -456,6 +429,33 @@ export default function VisualEditor(args: {
 						e.pageX,
 						e.pageY,
 					);
+				}
+			}}
+			onPointerDown={(e) => {
+				const hasOnClick: (elem: HTMLElement) => boolean = (
+					elem: HTMLElement,
+				) => {
+					if (elem === e.currentTarget) {
+						return false;
+					} else {
+						const props = getReactProps(elem);
+						if (
+							props &&
+							(props.onClick ||
+								props.onClickCapture ||
+								props.onPointerDown ||
+								props.onPointerDownCapture)
+						) {
+							return true;
+						} else if (elem.parentElement) {
+							return hasOnClick(elem.parentElement);
+						}
+						return false;
+					}
+				};
+				if (!hasOnClick(e.target as HTMLElement)) {
+					args.setEditingElement(-1);
+					args.setHoverIndex(-1);
 				}
 			}}
 			onPointerDownCapture={pointerDown}
