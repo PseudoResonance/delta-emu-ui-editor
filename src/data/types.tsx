@@ -203,6 +203,8 @@ export interface FocusState {
 
 /* Boilerplate types */
 export type ShowPopupFunc = (
+	alert: boolean,
+	title: string,
 	popup: React.JSX.Element,
 	onClose: () => void,
 	onAccept?: () => void,

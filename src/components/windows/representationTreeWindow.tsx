@@ -54,8 +54,9 @@ export default function RepresentationTreeWindow(args: {
 									label: "Add Node",
 									onClick: () => {
 										args.showPopup(
+											true,
+											"Create Node",
 											<>
-												<h2>Create Node</h2>
 												<p>
 													Add a node under &quot;
 													{`${keyStr}.${key}`.slice(
@@ -124,17 +125,15 @@ export default function RepresentationTreeWindow(args: {
 										label: "Delete",
 										onClick: () => {
 											args.showPopup(
-												<>
-													<h2>Warning</h2>
-
-													<p>
-														Confirm deleting &quot;
-														{`${keyStr}.${key}`.slice(
-															1,
-														)}
-														&quot;
-													</p>
-												</>,
+												true,
+												"Warning",
+												<p>
+													Confirm deleting &quot;
+													{`${keyStr}.${key}`.slice(
+														1,
+													)}
+													&quot;
+												</p>,
 												() => {},
 												() => {
 													args.deleteNode(
@@ -181,8 +180,9 @@ export default function RepresentationTreeWindow(args: {
 								label: "Add Node",
 								onClick: () => {
 									args.showPopup(
+										true,
+										"Create Node",
 										<>
-											<h2>Create Node</h2>
 											<p>
 												Add a node under
 												&quot;Representations&quot;

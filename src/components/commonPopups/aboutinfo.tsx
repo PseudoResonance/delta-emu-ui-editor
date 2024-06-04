@@ -1,11 +1,8 @@
 "use client";
-import * as CONSTANT from "@/data/constants";
 
 export default function AboutInfo() {
 	return (
-		<>
-			<h2>About {CONSTANT.NAME}</h2>
-
+		<div>
 			<p>
 				Created by{" "}
 				<a
@@ -15,7 +12,8 @@ export default function AboutInfo() {
 				>
 					PseudoResonance
 				</a>
-				<br />
+			</p>
+			<p>
 				Source code{" "}
 				<a
 					href="https://github.com/PseudoResonance/delta-emu-ui-editor"
@@ -24,7 +22,8 @@ export default function AboutInfo() {
 				>
 					available at GitHub
 				</a>
-				<br />
+			</p>
+			<p>
 				PDF importing with{" "}
 				<a
 					href="https://mozilla.github.io/pdf.js/"
@@ -33,7 +32,8 @@ export default function AboutInfo() {
 				>
 					PDF.js
 				</a>
-				<br />
+			</p>
+			<p>
 				Zip file support with{" "}
 				<a
 					href="https://gildas-lormeau.github.io/zip.js/"
@@ -42,7 +42,8 @@ export default function AboutInfo() {
 				>
 					ZIP.js
 				</a>
-				<br />
+			</p>
+			<p>
 				Vectors and icons by{" "}
 				<a
 					href="https://www.svgrepo.com"
@@ -52,6 +53,6 @@ export default function AboutInfo() {
 					SVG Repo
 				</a>
 			</p>
-		</>
+		</div>
 	);
 }

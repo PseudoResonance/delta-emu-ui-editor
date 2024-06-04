@@ -219,21 +219,18 @@ export default function ElementListWindow(args: {
 															label: "Delete",
 															onClick: () => {
 																args.showPopup(
-																	<>
-																		<h2>
-																			Warning
-																		</h2>
-																		<p>
-																			Confirm
-																			deleting
-																			&quot;
-																			{getElementLabel(
-																				val,
-																				true,
-																			)}
-																			&quot;
-																		</p>
-																	</>,
+																	true,
+																	"Warning",
+																	<p>
+																		Confirm
+																		deleting
+																		&quot;
+																		{getElementLabel(
+																			val,
+																			true,
+																		)}
+																		&quot;
+																	</p>,
 																	() => {},
 																	() => {
 																		if (
@@ -369,21 +366,18 @@ export default function ElementListWindow(args: {
 																	onClick:
 																		() => {
 																			args.showPopup(
-																				<>
-																					<h2>
-																						Warning
-																					</h2>
-																					<p>
-																						Confirm
-																						deleting
-																						&quot;
-																						{getElementLabel(
-																							val,
-																							true,
-																						)}
-																						&quot;
-																					</p>
-																				</>,
+																				true,
+																				"Warning",
+																				<p>
+																					Confirm
+																					deleting
+																					&quot;
+																					{getElementLabel(
+																						val,
+																						true,
+																					)}
+																					&quot;
+																				</p>,
 																				() => {},
 																				() => {
 																					if (

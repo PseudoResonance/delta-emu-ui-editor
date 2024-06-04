@@ -6,7 +6,6 @@ import * as CONSTANT from "@/data/constants";
 export default function ControlsInfo() {
 	return (
 		<>
-			<h2>Controls</h2>
 			<hr />
 			{Object.keys(CONSTANT.CONTROLS).map((val, i) => (
 				<div key={i}>

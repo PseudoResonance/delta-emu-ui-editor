@@ -121,14 +121,13 @@ export default function VisualEditor(args: {
 						case "Delete":
 						case "Backspace":
 							args.showPopup(
-								<>
-									<h2>Warning</h2>
-									<p>
-										Confirm deleting &quot;
-										{getElementLabel(elem, true)}
-										&quot;
-									</p>
-								</>,
+								true,
+								"Warning",
+								<p>
+									Confirm deleting &quot;
+									{getElementLabel(elem, true)}
+									&quot;
+								</p>,
 								() => {},
 								() => {
 									args.setEditingElement(
@@ -206,6 +205,8 @@ export default function VisualEditor(args: {
 				ref.current.contains(e.target as HTMLElement)
 			) {
 				focused.current = true;
+				if (document.activeElement)
+					(document.activeElement as HTMLElement).blur();
 			} else {
 				focused.current = false;
 			}

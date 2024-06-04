@@ -11,7 +11,6 @@ export default function PreferencesWindow(args: {
 }) {
 	return (
 		<div>
-			<h2>Preferences</h2>
 			<hr />
 			<InputGrid
 				style={{

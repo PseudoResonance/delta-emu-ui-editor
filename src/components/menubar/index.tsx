@@ -12,11 +12,11 @@ import React, {
 import MenuButton from "./menubutton";
 import { Asset, InfoFile, ScaleData, ShowPopupFunc } from "@/data/types";
 import AboutInfo from "../commonPopups/aboutinfo";
-import JSONParseError from "../commonPopups/jsonparseerror";
 import ControlsInfo from "../commonPopups/controlsinfo";
 import MenuToggle from "./menutoggle";
 import SponsorInfo from "../commonPopups/sponsorinfo";
 import requestFiles from "@/utils/requestFiles";
+import * as CONSTANT from "@/data/constants";
 
 export default function MenuBar(args: {
 	canRedo: boolean;
@@ -224,14 +224,12 @@ export default function MenuBar(args: {
 							label="New Skin"
 							onClick={() => {
 								args.showPopup(
-									<>
-										<h1>Warning</h1>
-
-										<p>
-											The current skin will be lost! Are
-											you sure you want to continue?
-										</p>
-									</>,
+									true,
+									"Warning",
+									<p>
+										The current skin will be lost! Are you
+										sure you want to continue?
+									</p>,
 									() => {},
 									() => {
 										args.clearUI();
@@ -294,7 +292,11 @@ export default function MenuBar(args: {
 													e,
 												);
 												args.showPopup(
-													<JSONParseError />,
+													true,
+													"Error",
+													<p>
+														Unable to parse JSON!
+													</p>,
 													() => {},
 												);
 											}
@@ -375,21 +377,36 @@ export default function MenuBar(args: {
 							key="controls"
 							label="Controls"
 							onClick={() => {
-								args.showPopup(<ControlsInfo />, () => {});
+								args.showPopup(
+									false,
+									"Controls",
+									<ControlsInfo />,
+									() => {},
+								);
 							}}
 						/>
 						<MenuButton
 							key="donate"
 							label="Donate"
 							onClick={() => {
-								args.showPopup(<SponsorInfo />, () => {});
+								args.showPopup(
+									false,
+									`Sponsor ${CONSTANT.NAME}`,
+									<SponsorInfo />,
+									() => {},
+								);
 							}}
 						/>
 						<MenuButton
 							key="about"
 							label="About"
 							onClick={() => {
-								args.showPopup(<AboutInfo />, () => {});
+								args.showPopup(
+									false,
+									`About ${CONSTANT.NAME}`,
+									<AboutInfo />,
+									() => {},
+								);
 							}}
 						/>
 					</MenuCategory>

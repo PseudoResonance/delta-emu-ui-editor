@@ -999,14 +999,13 @@ export default function ElementValues(args: {
 			<Button
 				onClick={() => {
 					args.showPopup(
-						<>
-							<h2>Warning</h2>
-							<p>
-								Confirm deleting &quot;
-								{label}
-								&quot;
-							</p>
-						</>,
+						true,
+						"Warning",
+						<p>
+							Confirm deleting &quot;
+							{label}
+							&quot;
+						</p>,
 						() => {},
 						() => {
 							args.deleteThis();

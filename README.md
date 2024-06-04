@@ -32,4 +32,3 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 -   Some input fields reformat the contents while still typing.
 -   Background may not render exactly as in the app yet, but should be acceptable if using a resizable background, or correctly sized PNGs.
 -   Touchscreen pan/zoom doesn't work correctly if the first touch is on an element instead of the background.
--   ARIA is unable to read popups correctly.

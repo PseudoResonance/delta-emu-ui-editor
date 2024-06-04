@@ -34,7 +34,6 @@ import RepresentationTreeWindow from "@/components/windows/representationTreeWin
 import ZoomWindow from "@/components/windows/zoomWindow";
 import ElementListWindow from "@/components/windows/elementListWindow";
 import ElementValueWindow from "@/components/windows/elementValueWindow";
-import JSONParseError from "@/components/commonPopups/jsonparseerror";
 import * as Preferences from "@/preferences/preferences";
 import PreferencesWindow from "@/components/windows/preferences";
 import zipRead from "@/utils/zip/zipRead";
@@ -149,9 +148,11 @@ export default function Home() {
 	const [assets, setAssets] = useState<Record<string, Asset> | null>(null);
 	const [popups, setPopups] = useState<
 		{
+			alert: boolean;
 			data: React.JSX.Element;
 			onAccept?: () => void;
 			onClose: () => void;
+			title: string;
 		}[]
 	>([]);
 	const [contextMenu, setContextMenu] = useState<{
@@ -351,17 +352,20 @@ export default function Home() {
 							setAssets(tree);
 						} catch (e) {
 							console.error("Error parsing imported JSON!", e);
-							showPopup(<JSONParseError />, () => {});
+							showPopup(
+								true,
+								"Error",
+								<p>Unable to parse JSON!</p>,
+								() => {},
+							);
 						}
 					});
 				} else {
 					console.error("Skin file missing info.json!");
 					showPopup(
-						<>
-							<h1>Error</h1>
-
-							<p>Skin file is missing info.json!</p>
-						</>,
+						true,
+						"Error",
+						<p>Skin file is missing info.json!</p>,
 						() => {},
 					);
 				}
@@ -369,11 +373,9 @@ export default function Home() {
 			.catch((e) => {
 				console.error("Error reading skin file!", e);
 				showPopup(
-					<>
-						<h1>Error</h1>
-
-						<p>Unable to read skin file!</p>
-					</>,
+					true,
+					"Error",
+					<p>Unable to read skin file!</p>,
 					() => {},
 				);
 			});
@@ -414,11 +416,9 @@ export default function Home() {
 			.catch((e) => {
 				console.error("Error exporting skin file!", e);
 				showPopup(
-					<>
-						<h1>Error</h1>
-
-						<p>Unable to export skin file!</p>
-					</>,
+					true,
+					"Error",
+					<p>Unable to export skin file!</p>,
 					() => {},
 				);
 			});
@@ -563,8 +563,9 @@ export default function Home() {
 						newKey = split.slice(0, split.length - 1).join(".");
 					}
 					showPopup(
+						true,
+						"Paste Node",
 						<>
-							<h2>Paste Node</h2>
 							<p>Paste node under &quot;{newKey}&quot;</p>
 							<ValueInput
 								context={"-1"}
@@ -647,11 +648,9 @@ export default function Home() {
 				} else {
 					console.error(`Node ${key} already exists!`);
 					showPopup(
-						<>
-							<h1>Error</h1>
-
-							<p>Node &quot;{key}&quot; already exists!</p>
-						</>,
+						true,
+						"Error",
+						<p>Node &quot;{key}&quot; already exists!</p>,
 						() => {},
 					);
 				}
@@ -1137,7 +1136,7 @@ export default function Home() {
 			setHistory([]);
 		} catch (e) {
 			console.error("Error parsing JSON!", e);
-			showPopup(<JSONParseError />, () => {});
+			showPopup(true, "Error", <p>Unable to parse JSON!</p>, () => {});
 		}
 	};
 
@@ -1517,7 +1516,7 @@ export default function Home() {
 			return representationObj;
 		} catch (e) {
 			console.error("Error parsing JSON representation!", e);
-			showPopup(<JSONParseError />, () => {});
+			showPopup(true, "Error", <p>Unable to parse JSON!</p>, () => {});
 		}
 		return null;
 	};
@@ -1582,6 +1581,8 @@ export default function Home() {
 	};
 
 	const showPopup: ShowPopupFunc = (
+		alert: boolean,
+		title: string,
 		data: React.JSX.Element,
 		onClose: () => void,
 		onAccept?: () => void,
@@ -1589,8 +1590,10 @@ export default function Home() {
 		setPopups([
 			...popups.slice(),
 			{
+				alert: alert,
 				data: data,
 				onClose: onClose,
+				title: title,
 				...(onAccept === undefined ? {} : { onAccept: onAccept }),
 			},
 		]);
@@ -1862,8 +1865,10 @@ export default function Home() {
 				{preferencesVisible && (
 					<CenteredElement>
 						<Popup
+							alert={false}
 							onClose={() => {}}
 							removeSelf={() => setPreferencesVisible(false)}
+							title={"Preferences"}
 						>
 							<PreferencesWindow
 								preferences={preferences}
