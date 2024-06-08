@@ -4,6 +4,8 @@ This is a web-based editor/designer for [Delta emulator](https://github.com/rile
 
 An instance is [available for use here](https://pseudo.tokyo/deltaemu).
 
+The editor supports touchscreen devices, but it is generally recommended to use a mouse or pen. Additionally, larger screens, such as a desktop or tablet, will be more convenient to work on. There is also some screen reader/ARIA support, full keyboard navigation and common keyboard shortcuts. Check the menu under Help -> Controls for more information.
+
 ## Major Dependencies
 
 -   [PDF.js](https://mozilla.github.io/pdf.js/) to render PDFs to images
