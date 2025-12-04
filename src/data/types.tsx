@@ -6,7 +6,7 @@ type ImmutableObject<T> = {
 };
 
 export type Immutable<T> = {
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	readonly [K in keyof T]: T[K] extends Function
 		? T[K]
 		: ImmutableObject<T[K]>;
@@ -17,7 +17,7 @@ type MutableObject<T> = {
 };
 
 export type Mutable<T> = {
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	-readonly [K in keyof T]: T[K] extends Function
 		? T[K]
 		: MutableObject<T[K]>;
@@ -53,8 +53,7 @@ interface EmulatorElementPadded {
 }
 
 interface EmulatorElementThumbstick
-	extends EmulatorElementBase,
-		EmulatorElementPadded {
+	extends EmulatorElementBase, EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly down: string;
@@ -72,8 +71,7 @@ interface EmulatorElementThumbstick
 }
 
 interface EmulatorElementDpad
-	extends EmulatorElementBase,
-		EmulatorElementPadded {
+	extends EmulatorElementBase, EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly down: string;
@@ -85,8 +83,7 @@ interface EmulatorElementDpad
 }
 
 interface EmulatorElementTouchscreen
-	extends EmulatorElementBase,
-		EmulatorElementPadded {
+	extends EmulatorElementBase, EmulatorElementPadded {
 	readonly data: {
 		readonly inputsobj: {
 			readonly x: string;
@@ -107,8 +104,7 @@ interface EmulatorElementScreen extends EmulatorElementBase {
 }
 
 interface EmulatorElementDefault
-	extends EmulatorElementBase,
-		EmulatorElementPadded {
+	extends EmulatorElementBase, EmulatorElementPadded {
 	readonly data: {
 		readonly inputs: string[];
 	};

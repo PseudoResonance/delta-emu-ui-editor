@@ -31,7 +31,8 @@
 		(
 				var(--tree-text-line-height) + var(--tree-padding-y) +
 					var(--tree-padding-y)
-			) / 2 + (var(--tree-line-width) / 2)
+			) /
+			2 + (var(--tree-line-width) / 2)
 	);
 }
 
@@ -46,8 +47,10 @@
 				(
 						var(--tree-text-line-height) + var(--tree-padding-y) +
 							var(--tree-padding-y)
-					) / 2
-			) - (var(--tree-line-width) / 2)
+					) /
+					2
+			) -
+			(var(--tree-line-width) / 2)
 	);
 	left: calc(var(--tree-text-line-height) / -2);
 	background-color: var(--tree-line-rgb);

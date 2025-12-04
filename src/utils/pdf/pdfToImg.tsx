@@ -23,7 +23,7 @@ const convertPdfToImage: (file: File) => Promise<{
 	width: number;
 }> = async (file: File) => {
 	pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-		"pdfjs-dist/build/pdf.worker.min.js",
+		"pdfjs-dist/build/pdf.worker.min.mjs",
 		import.meta.url,
 	).toString();
 	const data = await readFileData(file);
@@ -38,6 +38,7 @@ const convertPdfToImage: (file: File) => Promise<{
 			canvas.width = viewport.width;
 			await page.render({
 				background: "rgba(0,0,0,0)",
+				canvas: canvas,
 				canvasContext: context,
 				viewport: viewport,
 			}).promise;

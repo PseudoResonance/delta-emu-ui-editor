@@ -77,7 +77,7 @@ export default function EmulatorWindow(args: {
 					// eslint-disable-next-line @next/next/no-img-element
 					<img
 						className={styles.backgroundImage}
-						src={bgUrl}
+						src={bgUrl ? bgUrl : "null"}
 						style={{
 							display: bgUrl.length > 0 ? "inherit" : "none",
 							height: args.height * args.scale,

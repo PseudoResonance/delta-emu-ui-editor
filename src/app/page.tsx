@@ -1702,8 +1702,8 @@ export default function Home() {
 				className={styles.main}
 				inert={
 					popups.length > 0 || contextMenu.data || preferencesVisible
-						? ("" as unknown as boolean)
-						: undefined
+						? true
+						: false
 				}
 				onScrollCapture={(e: React.UIEvent) => {
 					if (e.target === e.currentTarget) {

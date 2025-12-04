@@ -313,7 +313,7 @@ export default function ValueInput(args: {
 	}
 	useEffect(() => {
 		const cancelWheel = (e: MouseEvent) => {
-			wheelLock.current && e.preventDefault();
+			if (wheelLock.current) e.preventDefault();
 		};
 		document.body.addEventListener("wheel", cancelWheel, {
 			passive: false,

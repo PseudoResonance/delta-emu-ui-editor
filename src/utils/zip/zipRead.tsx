@@ -14,7 +14,7 @@ const readZip = async (file: File) => {
 		entries.forEach((entry) => {
 			if (!entry.filename.startsWith("__MACOSX")) {
 				let total = -1;
-				if (entry.getData && !entry.directory) {
+				if (!entry.directory) {
 					promises.push(
 						entry
 							.getData(new zip.BlobWriter(), {
